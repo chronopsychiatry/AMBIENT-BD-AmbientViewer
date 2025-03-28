@@ -2,7 +2,11 @@
 
 export(filter_epochs_from_sessions)
 export(get_non_complying_sessions)
+export(group_epochs_by_night)
 export(load_data)
+export(plot_timeseries)
 export(remove_sessions_no_sleep)
+export(select_devices)
+export(select_subjects)
 export(set_min_time_in_bed)
 export(set_session_start_time_range)
