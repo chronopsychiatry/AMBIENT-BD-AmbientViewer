@@ -10,7 +10,7 @@ group_epochs_by_night(epochs)
 \item{epochs}{The epochs dataframe}
 }
 \value{
-The epochs dataframe with additional columns
+The epochs dataframe with the \code{night} column added
 }
 \description{
 Create a grouping by night for epoch data
@@ -18,6 +18,7 @@ Create a grouping by night for epoch data
 \details{
 The function creates a new column \code{night} that groups the epochs by night,
 and an \code{adjusted_time} column to facilitate plotting from 12PM to 12PM.
+Timepoints before 12 PM are considered part of the previous night.
 }
 \examples{
 epochs <- group_epochs_by_night(epochs)
