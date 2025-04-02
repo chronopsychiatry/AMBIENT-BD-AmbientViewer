@@ -15,4 +15,6 @@ Config/testthat/edition: 3
 Imports: 
     dplyr,
     ggplot2,
+    shiny,
+    shinyFiles,
     tidyverse

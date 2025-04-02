@@ -1,0 +1,11 @@
+/* Adjust the height of verbatimTextOutput to match that of a button */
+#folder_selector-active_folder {
+    padding: 6px; /* Adjust padding */
+    margin: 0;    /* Remove extra margin */
+    height: 34px; /* Match the height of the button */
+    line-height: 20px; /* Align text vertically */
+    overflow: hidden; /* Prevent text overflow */
+    display: flex; /* Ensure proper alignment */
+    align-items: center; /* Center text vertically */
+    border-radius: 4px; /* Optional: Match button border radius */
+}

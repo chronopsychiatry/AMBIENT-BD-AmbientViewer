@@ -1,3 +1,5 @@
+library(tidyverse)
+
 #' Load session and epoch data
 #'
 #' @param folder The folder where the data is stored
@@ -7,8 +9,13 @@
 #' @examples
 #' load_data("data", "2025-03-03_2025-03-11")
 load_data <- function(folder, basename) {
-  sessions <- read.csv(paste0(folder, "/", basename, "_sessions_reports.csv"))
-  epochs <- read.csv(paste0(folder, "/", basename, "_epoch_data.csv"))
+  sessions_file <- paste0(folder, "/", basename, "_sessions_reports.csv")
+  epochs_file <- paste0(folder, "/", basename, "_epoch_data.csv")
+  if (file.info(sessions_file)$size < 10 || file.info(epochs_file)$size < 10) {
+    return(NULL)
+  }
+  sessions <- read.csv(sessions_file)
+  epochs <- read.csv(epochs_file)
   sessions <- group_sessions_by_night(sessions)
   epochs <- group_epochs_by_night(epochs)
   return(list(sessions = sessions, epochs = epochs))
@@ -49,10 +56,11 @@ group_epochs_by_night <- function(epochs) {
 group_sessions_by_night <- function(sessions) {
   sessions <- sessions %>%
     dplyr::mutate(
-      session_start = as.POSIXct(session_start, format = "%Y-%m-%dT%H:%M:%OS"),
-      date = as.Date(session_start),
-      start_hour = as.numeric(format(session_start, "%H")) + as.numeric(format(session_start, "%M")) / 60,
+      start_time = as.POSIXct(session_start, format = "%Y-%m-%dT%H:%M:%OS"),
+      date = as.Date(start_time),
+      start_hour = as.numeric(format(start_time, "%H")) + as.numeric(format(start_time, "%M")) / 60,
       night = as.Date(ifelse(start_hour < 12, date - 1, date))
-    )
+    ) %>%
+    dplyr::select(-start_time, -date, -start_hour)
   return(sessions)
 }
