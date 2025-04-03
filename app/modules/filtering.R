@@ -1,5 +1,5 @@
-source("../compliance.R")
-source("../filtering.R")
+source("../R/compliance.R")
+source("../R/filtering.R")
 
 filtering_module <- function(id) {
   ns <- shiny::NS(id)
@@ -21,9 +21,9 @@ filtering_module <- function(id) {
       "Minimum Time in Bed:",
       min = 0, max = 12, value = 0, step = 1, post = "h",
       ticks = FALSE
-    ),
-    shiny::uiOutput(ns("subject_selector")),
-    shiny::uiOutput(ns("device_selector"))
+    )
+    # shiny::uiOutput(ns("subject_selector")),
+    # shiny::uiOutput(ns("device_selector"))
   )
 }
 
@@ -55,9 +55,9 @@ filtering_server <- function(id, sessions) {
       filtered <- set_min_time_in_bed(filtered, input$min_time_in_bed)
       filtered <- set_session_start_time_range(filtered, from_time, to_time)
 
-      if (!is.null(input$selected_subjects)) {
-        filtered <- filtered[filtered$subject_id %in% input$selected_subjects, ]
-      }
+      # if (!is.null(input$selected_subjects)) {
+      #   filtered <- select_subjects(filtered, input$selected_subjects)
+      # }
 
       return(filtered)
     })
@@ -66,34 +66,34 @@ filtering_server <- function(id, sessions) {
   })
 }
 
-subject_selector <- function(inputId, sessions) {
-  shiny::req(sessions())
-  subject_ids <- unique(sessions()$subject_id)
-  shinyWidgets::pickerInput(
-    inputId = inputId,
-    label = "Subjects:",
-    choices = subject_ids,
-    selected = subject_ids,  # Default to all subjects selected
-    multiple = TRUE,
-    options = list(
-      `actions-box` = TRUE,
-      `live-search` = TRUE
-    )
-  )
-}
+# subject_selector <- function(inputId, sessions) {
+#   shiny::req(sessions())
+#   subject_ids <- unique(sessions()$subject_id)
+#   shinyWidgets::pickerInput(
+#     inputId = inputId,
+#     label = "Subjects:",
+#     choices = subject_ids,
+#     selected = subject_ids,  # Default to all subjects selected
+#     multiple = TRUE,
+#     options = list(
+#       `actions-box` = TRUE,
+#       `live-search` = TRUE
+#     )
+#   )
+# }
 
-device_selector <- function(inputId, sessions) {
-  shiny::req(sessions())
-  device_ids <- unique(sessions()$device_serial_number)
-  shinyWidgets::pickerInput(
-    inputId = inputId,
-    label = "Devices:",
-    choices = device_ids,
-    selected = device_ids,  # Default to all devices selected
-    multiple = TRUE,
-    options = list(
-      `actions-box` = TRUE,
-      `live-search` = TRUE
-    )
-  )
-}
+# device_selector <- function(inputId, sessions) {
+#   shiny::req(sessions())
+#   device_ids <- unique(sessions()$device_serial_number)
+#   shinyWidgets::pickerInput(
+#     inputId = inputId,
+#     label = "Devices:",
+#     choices = device_ids,
+#     selected = device_ids,  # Default to all devices selected
+#     multiple = TRUE,
+#     options = list(
+#       `actions-box` = TRUE,
+#       `live-search` = TRUE
+#     )
+#   )
+# }

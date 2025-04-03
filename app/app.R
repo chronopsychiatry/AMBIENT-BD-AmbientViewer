@@ -4,6 +4,8 @@ library(shinyFiles)
 source("modules/input.R")
 source("modules/filtering.R")
 source("modules/compliance.R")
+source("modules/summary.R")
+source("modules/timeseries.R")
 
 ui <- fluidPage(
   shinyjs::useShinyjs(),
@@ -11,12 +13,12 @@ ui <- fluidPage(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
   ),
 
-  titlePanel("Ambient Viewer"),
+  tags$h1(class = "custom-title", "Ambient Viewer"),
 
   sidebarLayout(
-
     # Sidebar panel for inputs ----
     sidebarPanel(
+      width = 2,
 
       # Input: Select folder and date range ----
       h4("Data Input"),
@@ -31,12 +33,23 @@ ui <- fluidPage(
     mainPanel(
 
       # Output: Tabset ----
-      tabsetPanel(
-        id = "main_tabs",
-        type = "tabs",
-        tabPanel("Plot", plotOutput("plot")),
-        tabPanel("Summary", verbatimTextOutput("summary")),
-        tabPanel("Compliance", compliance_tab_module("compliance"), value = "compliance_tab"),
+      div(
+        class = "tabset-box",
+        tabsetPanel(
+          id = "main_tabs_tables",
+          type = "tabs",
+          tabPanel("Summary", summary_module_ui("summary")),
+          tabPanel("Compliance", compliance_module("compliance"), value = "compliance_tab")
+        ),
+      ),
+
+      div(
+        class = "tabset-box",
+        tabsetPanel(
+          id = "main_tabs_plots",
+          type = "tabs",
+          tabPanel("Timeseries Plot", timeseries_module_ui("timeseries"))
+        )
       )
 
     )
@@ -57,6 +70,12 @@ server <- function(input, output, session) {
   # Filtering and compliance module
   filtered_sessions <- filtering_server("filtering", sessions)
   compliance_server("compliance", filtered_sessions)
+
+  # Summary table module
+  summary_server("summary", filtered_sessions)
+
+  # Timeseries plotting module
+  timeseries_module_server("timeseries", epochs, filtered_sessions)
 
 }
 

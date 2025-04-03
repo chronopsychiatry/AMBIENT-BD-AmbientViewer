@@ -1,10 +1,11 @@
 library(tidyverse)
 
-source("../compliance.R")
+source("../R/compliance.R")
 
 compliance_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::uiOutput(ns("compliance_text")),
     shiny::tableOutput(ns("compliance_table"))
   )
 }
@@ -26,13 +27,20 @@ compliance_server <- function(id, filtered_sessions) {
       compliance_table()
     })
 
+    output$compliance_text <- shiny::renderUI({
+      shiny::req(compliance_table())
+      if (nrow(compliance_table()) > 0) {
+        shiny::HTML("<br/><p>The compliance table below lists nights where multiple sessions have been recorded.</p>")
+      }
+    })
+
     # Observe changes to the compliance table and update the tab title color
     shiny::observe({
       shiny::req(compliance_table())
       if (nrow(compliance_table()) > 0) {
-        shinyjs::runjs("$('#main_tabs li a[data-value=\"compliance_tab\"]').css('color', 'red');")
+        shinyjs::runjs("$('#main_tabs_tables li a[data-value=\"compliance_tab\"]').css('color', 'red');")
       } else {
-        shinyjs::runjs("$('#main_tabs li a[data-value=\"compliance_tab\"]').css('color', '');")
+        shinyjs::runjs("$('#main_tabs_tables li a[data-value=\"compliance_tab\"]').css('color', '');")
       }
     })
   })
@@ -43,11 +51,12 @@ make_compliance_table <- function(sessions) {
     dplyr::mutate(
       start_time = substr(session_start, 12, 16),
       end_time = substr(session_end, 12, 16),
-      session_duration = difftime(lubridate::ymd_hms(session_end),
+      session_duration_h = difftime(lubridate::ymd_hms(session_end),
                                   lubridate::ymd_hms(session_start),
                                   units = "hours"),
-      night = format(night, "%Y-%m-%d")
+      night = format(night, "%Y-%m-%d"),
+      time_in_bed_h = time_in_bed / 60 / 60
     ) %>%
-    dplyr::select(id, night, start_time, end_time, session_duration)
+    dplyr::select(id, night, start_time, end_time, session_duration_h, time_in_bed_h)
   return(compliance_table)
 }

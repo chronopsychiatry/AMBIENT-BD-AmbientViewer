@@ -1,4 +1,4 @@
-source("../load_data.R")
+source("../R/load_data.R")
 
 input_folder_module <- function(id) {
   ns <- shiny::NS(id)

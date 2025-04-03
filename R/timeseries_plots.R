@@ -4,13 +4,19 @@
 #' @param variable The variable to plot (e.g., "temperature_ambient_mean")
 #' @param start_date The start date for the time window (YYYY-MM-DD)
 #' @param end_date The end date for the time window (YYYY-MM-DD)
+#' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
 #' @export
 #' @examples
 #' plot <- plot_timeseries(epochs, "temperature_ambient_mean", "2025-03-04", "2025-03-11")
-plot_timeseries <- function(epochs, variable, start_date, end_date) {
+plot_timeseries <- function(epochs, variable, start_date, end_date, exclude_zero = FALSE) {
   filtered_epochs <- epochs %>%
     dplyr::filter(night >= as.Date(start_date) & night <= as.Date(end_date))
+
+  if (exclude_zero) {
+    filtered_epochs <- filtered_epochs %>%
+      dplyr::filter(.data[[variable]] != 0)
+  }
 
   p <- ggplot2::ggplot(
     filtered_epochs,
