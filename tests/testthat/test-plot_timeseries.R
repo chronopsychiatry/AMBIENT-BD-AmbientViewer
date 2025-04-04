@@ -1,5 +1,3 @@
-source("../../R/plots/timeseries.R")
-
 mock_epochs <- data.frame(
   timestamp = c(
     "2025-03-03T11:00:00", "2025-03-03T23:00:00",

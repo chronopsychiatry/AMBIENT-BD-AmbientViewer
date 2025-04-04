@@ -1,4 +1,4 @@
-source("../R/plots/timeseries.R")
+source("../R/timeseries.R")
 source("./modules/plot_helpers.R")
 
 timeseries_module_ui <- function(id) {
