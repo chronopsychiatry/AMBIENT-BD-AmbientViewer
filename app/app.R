@@ -6,6 +6,7 @@ source("modules/filtering.R")
 source("modules/compliance.R")
 source("modules/summary.R")
 source("modules/timeseries.R")
+source("modules/sleep_stages.R")
 
 ui <- fluidPage(
   shinyjs::useShinyjs(),
@@ -51,7 +52,8 @@ ui <- fluidPage(
         tabsetPanel(
           id = "main_tabs_plots",
           type = "tabs",
-          tabPanel("Timeseries", timeseries_module_ui("timeseries"))
+          tabPanel("Timeseries", timeseries_module_ui("timeseries")),
+          tabPanel("Sleep Stages", sleep_stages_module_ui("sleep_stages"))
         )
       )
 
@@ -80,8 +82,9 @@ server <- function(input, output, session) {
   # Export data module
   export_data_server("export_data", filtered_sessions, epochs)
 
-  # Timeseries plotting module
+  # Plotting module
   timeseries_module_server("timeseries", epochs, filtered_sessions)
+  sleep_stages_module_server("sleep_stages", epochs, filtered_sessions)
 
 }
 

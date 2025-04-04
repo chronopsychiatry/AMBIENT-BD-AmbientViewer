@@ -44,7 +44,10 @@ plot_sleep_stages <- function(epochs) {
     ) +
     theme_minimal() +
     theme(
-      axis.text.x = element_text(angle = 45, hjust = 1),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+      axis.text.y = element_text(size = 12),
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 14),
       legend.position = "bottom"
     )
   return(p)
