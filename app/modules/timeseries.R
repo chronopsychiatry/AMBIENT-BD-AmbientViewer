@@ -1,4 +1,5 @@
 source("../R/plots/timeseries.R")
+source("./modules/plot_helpers.R")
 
 timeseries_module_ui <- function(id) {
   ns <- shiny::NS(id)
@@ -13,7 +14,17 @@ timeseries_module_ui <- function(id) {
       label = "Exclude Zero Values",
       value = FALSE
     ),
-    shiny::plotOutput(ns("timeseries_plot"))
+    shiny::plotOutput(ns("timeseries_plot")),
+    shiny::downloadButton(
+      outputId = ns("download_plot"),
+      label = NULL
+    ),
+    shiny::radioButtons(
+      inputId = ns("download_format"),
+      label = NULL,
+      choices = c("PNG" = "png", "SVG" = "svg"),
+      inline = TRUE
+    )
   )
 }
 
@@ -70,8 +81,8 @@ timeseries_module_server <- function(id, epochs, sessions) {
       plot_options$variable <- input$variable
     })
 
-    # Render the timeseries plot
-    output$timeseries_plot <- shiny::renderPlot({
+    # Reactive expression to store the plot
+    timeseries_plot <- shiny::reactive({
       shiny::req(input$variable, filtered_epochs())
       plot_timeseries(
         epochs = filtered_epochs(),
@@ -79,5 +90,19 @@ timeseries_module_server <- function(id, epochs, sessions) {
         exclude_zero = input$exclude_zero
       )
     })
+
+    # Render the timeseries plot
+    output$timeseries_plot <- shiny::renderPlot({
+      shiny::req(timeseries_plot())
+      timeseries_plot()
+    })
+
+    # Download handler for the plot
+    output$download_plot <- get_plot_download_handler(
+      session = session,
+      output_plot = timeseries_plot,
+      format = input$download_format
+    )
+
   })
 }
