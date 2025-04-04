@@ -35,8 +35,8 @@ get_sessions_summary <- function(sessions) {
       session_duration_hours = as.numeric(difftime(session_end, session_start, units = "hours"))
     ) %>%
     dplyr::summarise(
-      subject_ids = paste(unique(subject_id), collapse = ", "),
-      device_ids = paste(unique(device_serial_number), collapse = ", "),
+      subject_id = paste(unique(subject_id), collapse = ", "),
+      device_id = paste(unique(device_serial_number), collapse = ", "),
       total_sessions = dplyr::n(),
       mean_session_length = mean(session_duration_hours, na.rm = TRUE)
     )

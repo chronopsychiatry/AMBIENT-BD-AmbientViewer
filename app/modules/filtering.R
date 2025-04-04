@@ -4,6 +4,14 @@ source("../R/filtering.R")
 filtering_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::sliderInput(
+      inputId = ns("date_range"),
+      label = "Date Range:",
+      min = Sys.Date(),
+      max = Sys.Date(),
+      value = c(Sys.Date(), Sys.Date()),
+      timeFormat = "%Y-%m-%d"
+    ),
     shinyWidgets::sliderTextInput(
       inputId = ns("time_range"),
       label = "Session Start Time:",
@@ -22,24 +30,37 @@ filtering_module <- function(id) {
       min = 0, max = 12, value = 0, step = 1, post = "h",
       ticks = FALSE
     )
-    # shiny::uiOutput(ns("subject_selector")),
-    # shiny::uiOutput(ns("device_selector"))
   )
 }
 
 filtering_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
-    output$subject_selector <- shiny::renderUI({
-      subject_selector(
-        inputId = session$ns("selected_subjects"),
-        sessions = sessions
-      )
-    })
 
-    output$device_selector <- shiny::renderUI({
-      device_selector(
-        inputId = session$ns("selected_devices"),
-        sessions = sessions
+    # Set the date range slider dynamically
+    shiny::observe({
+      shiny::req(sessions())
+      if (nrow(sessions()) == 0) {
+        # Handle empty dataframe: set placeholder values
+        shiny::updateSliderInput(
+          session,
+          inputId = "date_range",
+          min = Sys.Date(),
+          max = Sys.Date(),
+          value = c(Sys.Date(), Sys.Date())
+        )
+        return()
+      }
+
+      min_date <- min(sessions()$night, na.rm = TRUE)
+      max_date <- max(sessions()$night, na.rm = TRUE)
+
+      # Update the slider with the new date range
+      shiny::updateSliderInput(
+        session,
+        inputId = "date_range",
+        min = min_date,
+        max = max_date,
+        value = c(min_date, max_date)
       )
     })
 
@@ -55,9 +76,12 @@ filtering_server <- function(id, sessions) {
       filtered <- set_min_time_in_bed(filtered, input$min_time_in_bed)
       filtered <- set_session_start_time_range(filtered, from_time, to_time)
 
-      # if (!is.null(input$selected_subjects)) {
-      #   filtered <- select_subjects(filtered, input$selected_subjects)
-      # }
+      # Filter by date range
+      if (!is.null(input$date_range)) {
+        filtered <- filtered %>%
+          dplyr::filter(night >= as.Date(input$date_range[1]) &
+                          night <= as.Date(input$date_range[2]))
+      }
 
       return(filtered)
     })
@@ -65,35 +89,3 @@ filtering_server <- function(id, sessions) {
     return(filtered_sessions)
   })
 }
-
-# subject_selector <- function(inputId, sessions) {
-#   shiny::req(sessions())
-#   subject_ids <- unique(sessions()$subject_id)
-#   shinyWidgets::pickerInput(
-#     inputId = inputId,
-#     label = "Subjects:",
-#     choices = subject_ids,
-#     selected = subject_ids,  # Default to all subjects selected
-#     multiple = TRUE,
-#     options = list(
-#       `actions-box` = TRUE,
-#       `live-search` = TRUE
-#     )
-#   )
-# }
-
-# device_selector <- function(inputId, sessions) {
-#   shiny::req(sessions())
-#   device_ids <- unique(sessions()$device_serial_number)
-#   shinyWidgets::pickerInput(
-#     inputId = inputId,
-#     label = "Devices:",
-#     choices = device_ids,
-#     selected = device_ids,  # Default to all devices selected
-#     multiple = TRUE,
-#     options = list(
-#       `actions-box` = TRUE,
-#       `live-search` = TRUE
-#     )
-#   )
-# }

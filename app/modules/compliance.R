@@ -6,7 +6,11 @@ compliance_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::uiOutput(ns("compliance_text")),
-    shiny::tableOutput(ns("compliance_table"))
+    shiny::tableOutput(ns("compliance_table")),
+    shiny::downloadButton(
+      outputId = ns("download_compliance"),
+      label = ""
+    )
   )
 }
 
@@ -43,6 +47,18 @@ compliance_server <- function(id, filtered_sessions) {
         shinyjs::runjs("$('#main_tabs_tables li a[data-value=\"compliance_tab\"]').css('color', '');")
       }
     })
+
+    # Download handler for the compliance table
+    output$download_compliance <- shiny::downloadHandler(
+      filename = function() {
+        paste("Compliance_", Sys.Date(), ".csv", sep = "")
+      },
+      content = function(file) {
+        shiny::req(compliance_table())
+        readr::write_csv(compliance_table(), file)
+      }
+    )
+
   })
 }
 

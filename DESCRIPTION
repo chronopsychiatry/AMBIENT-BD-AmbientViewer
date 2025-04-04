@@ -1,9 +1,9 @@
 Package: AmbientViewer
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Filtering and Visualisation for Somnofy Data
+Version: 0.0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Daniel", "Thedie", , "daniel.thedie@ed.ac.uk", role = c("aut", "cre"))
+Description: This package helps importing, filtering and visualising data from Somnofy devices (VitalThings).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -17,4 +17,6 @@ Imports:
     ggplot2,
     shiny,
     shinyFiles,
+    shinyjs,
+    shinyWidgets,
     tidyverse

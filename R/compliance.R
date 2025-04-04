@@ -55,7 +55,7 @@ remove_sessions_no_sleep <- function(sessions) {
 #' @examples
 #' non_complying_sessions <- get_non_complying_sessions(sessions)
 get_non_complying_sessions <- function(sessions) {
-  sessions$date <- substr(sessions$session_start, 1, 10)
-  non_complying_sessions <- sessions[sessions$date %in% sessions$date[duplicated(sessions$date)], ]
+  # sessions$date <- substr(sessions$session_start, 1, 10)
+  non_complying_sessions <- sessions[sessions$night %in% sessions$night[duplicated(sessions$night)], ]
   return(non_complying_sessions)
 }

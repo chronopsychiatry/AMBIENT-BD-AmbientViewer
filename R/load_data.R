@@ -1,5 +1,39 @@
 library(tidyverse)
 
+#' Load session data
+#'
+#' @param sessions_file The path to the sessions file
+#' @returns A dataframe containing the session data
+#' @details The function loads the session data from a CSV file and groups the sessions by night.
+#' @export
+#' @examples
+#' sessions <- load_sessions("data/sessions_reports.csv")
+load_sessions <- function(sessions_file) {
+  if (file.info(sessions_file)$size < 10) {
+    return(NULL)
+  }
+  sessions <- read.csv(sessions_file)
+  sessions <- group_sessions_by_night(sessions)
+  return(sessions)
+}
+
+#' Load epoch data
+#'
+#' @param epochs_file The path to the epochs file
+#' @returns A dataframe containing the epoch data
+#' @details The function loads the epoch data from a CSV file and groups the epochs by night.
+#' @export
+#' @examples
+#' epochs <- load_epochs("data/epoch_data.csv")
+load_epochs <- function(epochs_file) {
+  if (file.info(epochs_file)$size < 10) {
+    return(NULL)
+  }
+  epochs <- read.csv(epochs_file)
+  epochs <- group_epochs_by_night(epochs)
+  return(epochs)
+}
+
 #' Load session and epoch data
 #'
 #' @param folder The folder where the data is stored
@@ -11,13 +45,8 @@ library(tidyverse)
 load_data <- function(folder, basename) {
   sessions_file <- paste0(folder, "/", basename, "_sessions_reports.csv")
   epochs_file <- paste0(folder, "/", basename, "_epoch_data.csv")
-  if (file.info(sessions_file)$size < 10 || file.info(epochs_file)$size < 10) {
-    return(NULL)
-  }
-  sessions <- read.csv(sessions_file)
-  epochs <- read.csv(epochs_file)
-  sessions <- group_sessions_by_night(sessions)
-  epochs <- group_epochs_by_night(epochs)
+  sessions <- load_sessions(sessions_file)
+  epochs <- load_epochs(epochs_file)
   return(list(sessions = sessions, epochs = epochs))
 }
 

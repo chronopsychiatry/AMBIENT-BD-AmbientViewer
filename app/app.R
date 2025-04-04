@@ -26,7 +26,10 @@ ui <- fluidPage(
       input_data_files_module("file_selector"),
       br(),
       h4("Filtering"),
-      filtering_module("filtering")
+      filtering_module("filtering"),
+      br(),
+      h4("Data export"),
+      export_data_module("export_data")
     ),
 
     # Main panel for displaying outputs ----
@@ -48,7 +51,7 @@ ui <- fluidPage(
         tabsetPanel(
           id = "main_tabs_plots",
           type = "tabs",
-          tabPanel("Timeseries Plot", timeseries_module_ui("timeseries"))
+          tabPanel("Timeseries", timeseries_module_ui("timeseries"))
         )
       )
 
@@ -61,7 +64,7 @@ server <- function(input, output, session) {
   # Data loading module
   # folder_path <- input_folder_server("folder_selector", session)
   # For testing purposes:
-  folder_path <- shiny::reactive("E:/Daniel/Ambient-BD/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data")
+  folder_path <- shiny::reactive("//home/dthedie/Documents/Ambient-BD/downloader_data/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data")
   selected_file <- input_data_files_server("file_selector", folder_path)
   data <- load_data_module_server("load_data", folder_path, selected_file)
   sessions <- shiny::reactive(data()$sessions)
@@ -73,6 +76,9 @@ server <- function(input, output, session) {
 
   # Summary table module
   summary_server("summary", filtered_sessions)
+
+  # Export data module
+  export_data_server("export_data", filtered_sessions, epochs)
 
   # Timeseries plotting module
   timeseries_module_server("timeseries", epochs, filtered_sessions)
