@@ -1,24 +1,53 @@
-
 # AmbientViewer
 
-<!-- badges: start -->
-<!-- badges: end -->
+AmbientViewer provides tools to filter and visualise sleep data acquired with a Somnofy device (VitalThings) and downloaded using the [Ambient Downloader package]().
 
-The goal of AmbientViewer is to ...
+## Interactive interface
+The AmbientViewer app is currently under development. You can however run it locally by following these steps:
 
-## Installation
+1. Clone the AmbientViewer repository
+```
+git clone 
+```
 
-You can install the development version of AmbientViewer like so:
+2. In R, from the cloned repository, load the shiny library and start the app
+``` r
+setwd("AmbientViewer")  # Replace with the path to the cloned repository
+library(shiny)
+runApp("app")
+```
+
+## Command line interface
+AmbientViewer functions can be used in R to manipulate sessions and epochs data and generate the same plots as in the interactive version.
+
+First install AmbientViewer:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+install.packages("pak")
+pak::
 ```
+
+...description of available functions to be added...
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to load data, apply some filters and generate a sleep clock plot:
 
 ``` r
 library(AmbientViewer)
-## basic example code
+
+# Load data
+data <- load_data("downloaded_data/zone/subject/data", "2025-03-03_2025-04-04")
+sessions <- data$sessions
+epochs <- data$epochs
+
+# Filter the data
+filtered_sessions <- sessions %>%
+  remove_sessions_no_sleep() %>%
+  set_min_time_in_bed(2) %>%
+  set_session_start_time_range("20:00", "06:00")
+
+# Generate the plot
+plot <- plot_sleep_clock(filtered_sessions)
+print(plot)
 ```

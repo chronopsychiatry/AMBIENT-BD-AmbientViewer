@@ -1,3 +1,5 @@
+library(tidyverse)
+
 #' Get duplicate sessions
 #'
 #' This function identifies sessions that occurred during the same "night" (from 12pm to 12pm).
