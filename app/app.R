@@ -10,6 +10,7 @@ source("modules/timeseries_sessions.R")
 source("modules/sleep_stages.R")
 source("modules/sleep_clock.R")
 source("modules/sleep_bubbles.R")
+source("modules/sleep_spiral.R")
 
 ui <- fluidPage(
   shinyjs::useShinyjs(),
@@ -59,7 +60,8 @@ ui <- fluidPage(
           tabPanel("Session Timeseries", timeseries_sessions_module_ui("timeseries_sessions")),
           tabPanel("Sleep Stages", sleep_stages_module_ui("sleep_stages")),
           tabPanel("Sleep Clock", sleep_clock_module_ui("sleep_clock")),
-          tabPanel("Sleep Bubbles", sleep_bubbles_module_ui("sleep_bubbles"))
+          tabPanel("Sleep Bubbles", sleep_bubbles_module_ui("sleep_bubbles")),
+          tabPanel("Sleep Spiral", sleep_spiral_module_ui("sleep_spiral"))
         )
       )
 
@@ -94,6 +96,7 @@ server <- function(input, output, session) {
   sleep_stages_module_server("sleep_stages", epochs, filtered_sessions)
   sleep_clock_module_server("sleep_clock", filtered_sessions)
   sleep_bubbles_module_server("sleep_bubbles", filtered_sessions)
+  sleep_spiral_module_server("sleep_spiral", epochs, filtered_sessions)
 
 }
 
