@@ -2,7 +2,7 @@
 % Please edit documentation in R/timeseries.R
 \name{plot_timeseries}
 \alias{plot_timeseries}
-\title{Plot time series data for a given variable}
+\title{Plot epoch time series data for a given variable}
 \usage{
 plot_timeseries(epochs, variable, exclude_zero = FALSE)
 }
@@ -17,7 +17,7 @@ plot_timeseries(epochs, variable, exclude_zero = FALSE)
 A ggplot object
 }
 \description{
-Plot time series data for a given variable
+Plot epoch time series data for a given variable
 }
 \examples{
 plot <- plot_timeseries(epochs, "temperature_ambient_mean", exclude_zero = TRUE)
