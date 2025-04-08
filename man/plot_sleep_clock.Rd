@@ -15,6 +15,3 @@ A ggplot object showing the sleep clock
 \description{
 Plot Sleep Clock
 }
-\examples{
-plot <- plot_sleep_clock(sessions)
-}

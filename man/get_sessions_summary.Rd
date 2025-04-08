@@ -15,6 +15,3 @@ A single-row dataframe summarizing session information.
 \description{
 This function summarizes session information, including the number of sessions, mean session length, subject and device ID.
 }
-\examples{
-summary <- get_sessions_summary(sessions)
-}

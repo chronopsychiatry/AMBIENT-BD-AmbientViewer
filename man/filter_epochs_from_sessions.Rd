@@ -17,18 +17,3 @@ The epochs dataframe with only the epochs that belong to the specified sessions
 \description{
 Filter epochs based on session IDs
 }
-\examples{
-sessions <- data.frame(
-  session_id = 1:2,
-  session_start = c("2025-03-03T12:00:00", "2025-03-03T20:00:00"),
-  session_end = c("2025-03-03T14:00:00", "2025-03-03T22:00:00"),
-  night = as.Date(c("2025-03-03", "2025-03-03"))
-)
-epochs <- data.frame(
-  epoch_id = 1:4,
-  session_id = c(1, 1, 2, 2),
-  timestamp = c("2025-03-03T12:00:00", "2025-03-03T12:30:00",
-                "2025-03-03T20:00:00", "2025-03-03T20:30:00")
-)
-filtered_epochs <- filter_epochs_from_sessions(epochs, sessions)
-}

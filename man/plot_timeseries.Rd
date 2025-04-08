@@ -19,6 +19,3 @@ A ggplot object
 \description{
 Plot epoch time series data for a given variable
 }
-\examples{
-plot <- plot_timeseries(epochs, "temperature_ambient_mean", exclude_zero = TRUE)
-}

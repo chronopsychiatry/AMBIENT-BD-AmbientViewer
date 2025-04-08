@@ -17,6 +17,3 @@ The sessions dataframe with only the sessions recorded by the specified devices
 \description{
 Select devices by ID
 }
-\examples{
-sessions <- select_devices(sessions, c("VT_001", "VT_002", "VT_003"))
-}

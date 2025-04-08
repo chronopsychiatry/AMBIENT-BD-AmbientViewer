@@ -3,8 +3,6 @@
 #' @param epochs The epochs dataframe
 #' @returns A ggplot object showing the proportion of sleep stages for each night
 #' @export
-#' @examples
-#' plot <- plot_sleep_stages(epochs)
 plot_sleep_stages <- function(epochs) {
   sleep_stage_labels <- c(
     "1" = "Awake",
@@ -31,23 +29,22 @@ plot_sleep_stages <- function(epochs) {
     )
 
   # Make the bar plot
-  p <- ggplot2::ggplot(stage_proportions, aes(x = night, y = proportion, fill = factor(sleep_stage))) +
-    geom_bar(stat = "identity") +
-    scale_y_continuous(labels = scales::percent_format()) +
-    # scale_x_date(date_breaks = "1 day", date_labels = "%d %b") +
-    scale_fill_manual(values = sleep_stage_colors) +
-    labs(
-      x = "",
-      y = "",
+  p <- ggplot2::ggplot(stage_proportions, ggplot2::aes(x = night, y = proportion, fill = factor(sleep_stage))) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::scale_y_continuous(labels = scales::percent_format()) +
+    ggplot2::scale_fill_manual(values = sleep_stage_colors) +
+    ggplot2::labs(
+      x = NULL,
+      y = NULL,
       fill = "Sleep Stage",
-      title = ""
+      title = NULL
     ) +
-    theme_minimal() +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
-      axis.text.y = element_text(size = 12),
-      legend.text = element_text(size = 12),
-      legend.title = element_text(size = 14),
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 12),
+      axis.text.y = ggplot2::element_text(size = 12),
+      legend.text = ggplot2::element_text(size = 12),
+      legend.title = ggplot2::element_text(size = 14),
       legend.position = "bottom"
     )
   return(p)

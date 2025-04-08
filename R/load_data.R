@@ -58,8 +58,6 @@ load_data <- function(folder, basename) {
 #' and an `adjusted_time` column to facilitate plotting from 12PM to 12PM.
 #' Timepoints before 12 PM are considered part of the previous night.
 #' @export
-#' @examples
-#' epochs <- group_epochs_by_night(epochs)
 group_epochs_by_night <- function(epochs) {
   epochs <- epochs %>%
     dplyr::mutate(
@@ -80,8 +78,6 @@ group_epochs_by_night <- function(epochs) {
 #' @details The function creates a new column `night` that groups the sessions by night depending on their start time.
 #' Sessions that start before 12 PM are considered part of the previous night.
 #' @export
-#' @examples
-#' sessions <- group_sessions_by_night(sessions)
 group_sessions_by_night <- function(sessions) {
   sessions <- sessions %>%
     dplyr::mutate(

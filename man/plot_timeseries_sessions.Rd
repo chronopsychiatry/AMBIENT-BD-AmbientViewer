@@ -19,6 +19,3 @@ A ggplot object
 \description{
 Plot session time series data for a given variable
 }
-\examples{
-plot <- plot_timeseries(sessions, "temperature_ambient_mean", exclude_zero = TRUE)
-}

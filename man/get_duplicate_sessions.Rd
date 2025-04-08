@@ -15,6 +15,3 @@ A dataframe containing only the duplicate sessions.
 \description{
 This function identifies sessions that occurred during the same "night" (from 12pm to 12pm).
 }
-\examples{
-duplicate_sessions <- get_duplicate_sessions(sessions)
-}

@@ -19,6 +19,3 @@ The sessions dataframe with only the sessions that started within the specified 
 \description{
 Set session start time range
 }
-\examples{
-sessions <- set_session_start_time_range(sessions, "20:00", "06:00")
-}

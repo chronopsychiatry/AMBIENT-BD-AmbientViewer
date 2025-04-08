@@ -15,6 +15,3 @@ A ggplot object showing the proportion of sleep stages for each night
 \description{
 Plot Sleep Stages
 }
-\examples{
-plot <- plot_sleep_stages(epochs)
-}

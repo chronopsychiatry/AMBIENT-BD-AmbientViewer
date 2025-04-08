@@ -17,6 +17,3 @@ The sessions dataframe with only the sessions that meet the minimum time in bed 
 \description{
 Set minimum time in bed
 }
-\examples{
-sessions <- set_min_time_in_bed(sessions, 2)
-}

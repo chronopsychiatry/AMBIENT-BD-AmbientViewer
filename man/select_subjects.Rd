@@ -17,6 +17,3 @@ The sessions dataframe with only the sessions that belong to the specified subje
 \description{
 Select subjects by ID
 }
-\examples{
-sessions <- select_subjects(sessions, c("sub_A", "sub_B", "sub_C"))
-}

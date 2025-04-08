@@ -15,6 +15,3 @@ The sessions dataframe with only the sessions that have a sleep period greater t
 \description{
 Remove sessions with no sleep
 }
-\examples{
-sessions <- remove_sessions_no_sleep(sessions)
-}

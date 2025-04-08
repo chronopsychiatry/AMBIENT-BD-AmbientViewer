@@ -6,8 +6,6 @@ library(tidyverse)
 #' @param sessions The sessions dataframe.
 #' @returns A dataframe containing only the duplicate sessions.
 #' @export
-#' @examples
-#' duplicate_sessions <- get_duplicate_sessions(sessions)
 get_duplicate_sessions <- function(sessions) {
   duplicate_sessions <- sessions %>%
     dplyr::mutate(
@@ -27,8 +25,6 @@ get_duplicate_sessions <- function(sessions) {
 #' @param sessions The sessions dataframe.
 #' @returns A single-row dataframe summarizing session information.
 #' @export
-#' @examples
-#' summary <- get_sessions_summary(sessions)
 get_sessions_summary <- function(sessions) {
   sessions_summary <- sessions %>%
     dplyr::mutate(

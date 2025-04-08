@@ -5,8 +5,6 @@
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
 #' @export
-#' @examples
-#' plot <- plot_timeseries(epochs, "temperature_ambient_mean", exclude_zero = TRUE)
 plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   if (exclude_zero) {
     epochs <- epochs %>%
@@ -48,8 +46,6 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
 #' @export
-#' @examples
-#' plot <- plot_timeseries(sessions, "temperature_ambient_mean", exclude_zero = TRUE)
 plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   sessions <- sessions %>%
     dplyr::filter(!is.na(.data[[variable]]) & .data[[variable]] != "")

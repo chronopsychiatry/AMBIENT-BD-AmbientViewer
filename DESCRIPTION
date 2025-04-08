@@ -20,4 +20,5 @@ Imports:
     shinyFiles,
     shinyjs,
     shinyWidgets,
-    tidyverse
+    tidyverse,
+    utils
