@@ -27,6 +27,6 @@ select_subjects <- function(sessions, subject_ids) {
 #' @returns The sessions dataframe with only the sessions recorded by the specified devices
 #' @export
 select_devices <- function(sessions, device_ids) {
-  sessions <- sessions[sessions$device_id %in% device_ids, ]
+  sessions <- sessions[sessions$device_serial_number %in% device_ids, ]
   return(sessions)
 }

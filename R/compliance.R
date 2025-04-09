@@ -12,16 +12,16 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed) {
 #' Set session start time range
 #'
 #' @param sessions The sessions dataframe
-#' @param from_time Include sessions that started after this time
-#' @param to_time Include sessions that started before this time
+#' @param from_time Include sessions that started after this time (in format HH:MM)
+#' @param to_time Include sessions that started before this time (in format HH:MM)
 #' @returns The sessions dataframe with only the sessions that started within the specified time range
 #' @export
 set_session_start_time_range <- function(sessions, from_time, to_time) {
   session_times <- substr(sessions$session_start, 12, 16)
 
-  session_times <- as.POSIXct(session_times, format = "%H:%M")
-  from_time <- as.POSIXct(from_time, format = "%H:%M")
-  to_time <- as.POSIXct(to_time, format = "%H:%M")
+  session_times <- as.POSIXct(session_times, format = "%H:%M", tz = "UTC")
+  from_time <- as.POSIXct(from_time, format = "%H:%M", tz = "UTC")
+  to_time <- as.POSIXct(to_time, format = "%H:%M", tz = "UTC")
 
   if (from_time <= to_time) {
     sessions <- sessions[session_times >= from_time & session_times <= to_time, ]
@@ -47,7 +47,6 @@ remove_sessions_no_sleep <- function(sessions) {
 #' @returns The sessions dataframe with only the sessions that are non-complying
 #' @export
 get_non_complying_sessions <- function(sessions) {
-  # sessions$date <- substr(sessions$session_start, 1, 10)
   non_complying_sessions <- sessions[sessions$night %in% sessions$night[duplicated(sessions$night)], ]
   return(non_complying_sessions)
 }
