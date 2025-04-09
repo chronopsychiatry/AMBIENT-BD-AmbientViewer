@@ -20,11 +20,11 @@ runApp("app")
 ## Command line interface
 AmbientViewer functions can be used in R to manipulate sessions and epochs data and generate the same plots as in the interactive version.
 
-First install AmbientViewer:
+You can install AmbientViewer from github with pak:
 
 ``` r
 install.packages("pak")
-pak::
+pak::pkg_install("chronopsychiatry/AmbientViewer")
 ```
 
 ...description of available functions to be added...
