@@ -31,6 +31,9 @@ sleep_spiral_module_server <- function(id, epochs, sessions) {
     # Reactive expression to store the plot
     sleep_spiral_plot <- shiny::reactive({
       shiny::req(filtered_epochs())
+      if (nrow(filtered_epochs()) == 0) {
+        return(NULL)
+      }
       plot_sleep_spiral(epochs = filtered_epochs())
     })
 

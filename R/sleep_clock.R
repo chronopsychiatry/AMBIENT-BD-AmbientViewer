@@ -12,7 +12,6 @@ plot_sleep_clock <- function(sessions) {
       wakeup_hour = lubridate::hour(lubridate::ymd_hms(time_at_wakeup)) + lubridate::minute(lubridate::ymd_hms(time_at_wakeup)) / 60
     )
 
-  # Prepare data for plotting
   sleep_onset_data <- sessions %>%
     dplyr::select(sleep_onset_hour) %>%
     dplyr::mutate(type = "Sleep Onset", color = "purple")
@@ -32,7 +31,7 @@ plot_sleep_clock <- function(sessions) {
   )
 
   p <- ggplot2::ggplot(plot_data, ggplot2::aes(x = hour, y = 1, color = type)) +
-    ggplot2::geom_path(data = circle_outline, aes(x = hour, y = y), inherit.aes = FALSE, color = "grey", linewidth = 0.5) +
+    ggplot2::geom_path(data = circle_outline, ggplot2::aes(x = hour, y = y), inherit.aes = FALSE, color = "grey", linewidth = 0.5) +
     ggplot2::geom_segment(ggplot2::aes(xend = hour, yend = 0), linewidth = 1) +
     ggplot2::geom_point(ggplot2::aes(x = hour, y = 1), size = 3) +
     ggplot2::scale_x_continuous(

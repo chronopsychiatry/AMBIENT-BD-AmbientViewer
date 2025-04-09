@@ -56,12 +56,12 @@ ui <- fluidPage(
         tabsetPanel(
           id = "main_tabs_plots",
           type = "tabs",
-          tabPanel("Epoch Timeseries", timeseries_module_ui("timeseries")),
-          tabPanel("Session Timeseries", timeseries_sessions_module_ui("timeseries_sessions")),
-          tabPanel("Sleep Stages", sleep_stages_module_ui("sleep_stages")),
+          tabPanel("Sleep Spiral", sleep_spiral_module_ui("sleep_spiral")),
           tabPanel("Sleep Clock", sleep_clock_module_ui("sleep_clock")),
           tabPanel("Sleep Bubbles", sleep_bubbles_module_ui("sleep_bubbles")),
-          tabPanel("Sleep Spiral", sleep_spiral_module_ui("sleep_spiral"))
+          tabPanel("Sleep Stages", sleep_stages_module_ui("sleep_stages")),
+          tabPanel("Session Timeseries", timeseries_sessions_module_ui("timeseries_sessions")),
+          tabPanel("Epoch Timeseries", timeseries_module_ui("timeseries"))
         )
       )
 
@@ -72,9 +72,9 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
   # Data loading module
-  # folder_path <- input_folder_server("folder_selector", session)
+  folder_path <- input_folder_server("folder_selector", session)
   # For testing purposes:
-  folder_path <- shiny::reactive("/home/dthedie/Documents/Ambient-BD/downloader_data/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data")
+  # folder_path <- shiny::reactive("/home/dthedie/Documents/Ambient-BD/downloader_data/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data")
   selected_file <- input_data_files_server("file_selector", folder_path)
   data <- load_data_module_server("load_data", folder_path, selected_file)
   sessions <- shiny::reactive(data()$sessions)
@@ -91,12 +91,12 @@ server <- function(input, output, session) {
   export_data_server("export_data", filtered_sessions, epochs)
 
   # Plotting modules
-  timeseries_module_server("timeseries", epochs, filtered_sessions)
-  timeseries_sessions_module_server("timeseries_sessions", filtered_sessions)
-  sleep_stages_module_server("sleep_stages", epochs, filtered_sessions)
+  sleep_spiral_module_server("sleep_spiral", epochs, filtered_sessions)
   sleep_clock_module_server("sleep_clock", filtered_sessions)
   sleep_bubbles_module_server("sleep_bubbles", filtered_sessions)
-  sleep_spiral_module_server("sleep_spiral", epochs, filtered_sessions)
+  sleep_stages_module_server("sleep_stages", epochs, filtered_sessions)
+  timeseries_sessions_module_server("timeseries_sessions", filtered_sessions)
+  timeseries_module_server("timeseries", epochs, filtered_sessions)
 
 }
 
