@@ -6,8 +6,6 @@ library(tidyverse)
 #' @returns A dataframe containing the session data
 #' @details The function loads the session data from a CSV file and groups the sessions by night.
 #' @export
-#' @examples
-#' sessions <- load_sessions("data/sessions_reports.csv")
 load_sessions <- function(sessions_file) {
   if (file.info(sessions_file)$size < 10) {
     return(NULL)
@@ -23,8 +21,6 @@ load_sessions <- function(sessions_file) {
 #' @returns A dataframe containing the epoch data
 #' @details The function loads the epoch data from a CSV file and groups the epochs by night.
 #' @export
-#' @examples
-#' epochs <- load_epochs("data/epoch_data.csv")
 load_epochs <- function(epochs_file) {
   if (file.info(epochs_file)$size < 10) {
     return(NULL)
@@ -40,8 +36,6 @@ load_epochs <- function(epochs_file) {
 #' @param basename The time range of the files to load
 #' @returns A list containing the sessions and epochs dataframes
 #' @export
-#' @examples
-#' load_data("data", "2025-03-03_2025-03-11")
 load_data <- function(folder, basename) {
   sessions_file <- paste0(folder, "/", basename, "_sessions_reports.csv")
   epochs_file <- paste0(folder, "/", basename, "_epoch_data.csv")

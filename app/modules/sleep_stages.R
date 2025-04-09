@@ -44,7 +44,7 @@ sleep_stages_module_server <- function(id, epochs, sessions) {
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = sleep_stages_plot,
-      format = input$download_format
+      format = shiny::reactive(input$download_format)
     )
 
   })

@@ -21,7 +21,7 @@ plot_sleep_clock <- function(sessions) {
     dplyr::select(wakeup_hour) %>%
     dplyr::mutate(type = "Wakeup", color = "orange")
 
-  plot_data <- bind_rows(
+  plot_data <- dplyr::bind_rows(
     sleep_onset_data %>% dplyr::rename(hour = sleep_onset_hour),
     wakeup_data %>% dplyr::rename(hour = wakeup_hour)
   )

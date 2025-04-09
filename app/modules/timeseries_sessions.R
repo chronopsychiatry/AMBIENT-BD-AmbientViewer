@@ -94,7 +94,7 @@ timeseries_sessions_module_server <- function(id, sessions) {
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = timeseries_sessions_plot,
-      format = input$download_format
+      format = shiny::reactive(input$download_format)
     )
 
   })
