@@ -1,16 +1,9 @@
 library(shiny)
 library(shinyFiles)
+library(AmbientViewer)
 
-source("modules/input.R")
-source("modules/filtering.R")
-source("modules/compliance.R")
-source("modules/summary.R")
-source("modules/timeseries.R")
-source("modules/timeseries_sessions.R")
-source("modules/sleep_stages.R")
-source("modules/sleep_clock.R")
-source("modules/sleep_bubbles.R")
-source("modules/sleep_spiral.R")
+module_files <- list.files("modules", pattern = "\\.R$", full.names = TRUE)
+lapply(module_files, source)
 
 ui <- fluidPage(
   shinyjs::useShinyjs(),

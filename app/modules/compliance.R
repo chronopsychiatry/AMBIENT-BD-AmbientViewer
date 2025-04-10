@@ -1,7 +1,3 @@
-library(tidyverse)
-
-source("../R/compliance.R")
-
 compliance_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(

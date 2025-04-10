@@ -17,6 +17,3 @@ A list containing the sessions and epochs dataframes
 \description{
 Load session and epoch data
 }
-\examples{
-load_data("data", "2025-03-03_2025-03-11")
-}

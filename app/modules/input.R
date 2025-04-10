@@ -1,6 +1,3 @@
-source("../R/load_data.R")
-source("../R/filtering.R")
-
 input_folder_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(

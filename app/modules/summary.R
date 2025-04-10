@@ -1,5 +1,3 @@
-source("../R/data_tables.R")
-
 summary_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(

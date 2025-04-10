@@ -18,6 +18,3 @@ Load epoch data
 \details{
 The function loads the epoch data from a CSV file and groups the epochs by night.
 }
-\examples{
-epochs <- load_epochs("data/epoch_data.csv")
-}

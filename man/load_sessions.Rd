@@ -18,6 +18,3 @@ Load session data
 \details{
 The function loads the session data from a CSV file and groups the sessions by night.
 }
-\examples{
-sessions <- load_sessions("data/sessions_reports.csv")
-}

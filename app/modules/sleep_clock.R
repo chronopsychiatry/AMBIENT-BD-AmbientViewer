@@ -1,6 +1,3 @@
-source("../R/sleep_clock.R")
-source("./modules/plot_helpers.R")
-
 sleep_clock_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(

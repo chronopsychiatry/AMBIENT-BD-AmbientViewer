@@ -1,6 +1,3 @@
-source("../R/compliance.R")
-source("../R/filtering.R")
-
 filtering_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(

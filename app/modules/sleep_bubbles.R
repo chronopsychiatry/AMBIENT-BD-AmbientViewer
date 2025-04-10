@@ -1,6 +1,3 @@
-source("../R/sleep_bubbles.R")
-source("./modules/plot_helpers.R")
-
 sleep_bubbles_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(

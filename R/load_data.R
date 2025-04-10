@@ -1,5 +1,3 @@
-library(tidyverse)
-
 #' Load session data
 #'
 #' @param sessions_file The path to the sessions file

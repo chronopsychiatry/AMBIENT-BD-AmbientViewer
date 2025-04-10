@@ -9,9 +9,9 @@ set_session_start_time_range(sessions, from_time, to_time)
 \arguments{
 \item{sessions}{The sessions dataframe}
 
-\item{from_time}{Include sessions that started after this time}
+\item{from_time}{Include sessions that started after this time (in format HH:MM)}
 
-\item{to_time}{Include sessions that started before this time}
+\item{to_time}{Include sessions that started before this time (in format HH:MM)}
 }
 \value{
 The sessions dataframe with only the sessions that started within the specified time range
