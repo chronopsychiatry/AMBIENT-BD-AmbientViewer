@@ -1,24 +1,32 @@
-mock_sessions <- data.frame(
-  session_id = 1:6,
-  session_start = c("2025-03-03T12:00:00", "2025-03-03T20:00:00", "2025-03-04T12:00:00",
-                    "2025-03-05T12:00:00", "2025-03-06T12:00:00", "2025-03-06T14:00:00"),
-  session_end = c("2025-03-03T14:00:00", "2025-03-04T17:00:00", "2025-03-04T14:00:00",
-                  "2025-03-05T14:00:00", "2025-03-06T14:00:00", "2025-03-06T16:00:00"),
-  night = as.Date(c("2025-03-03", "2025-03-03", "2025-03-04",
-                    "2025-03-05", "2025-03-06", "2025-03-06"))
-)
-
-test_that("get_duplicate_sessions returns duplicates correctly", {
-  result <- get_duplicate_sessions(mock_sessions)
-  expected <- tibble::tibble(
-    session_id = c(1, 2, 5, 6),
-    session_start = as.POSIXct(c("2025-03-03T12:00:00", "2025-03-03T20:00:00", "2025-03-06T12:00:00",
-                                 "2025-03-06T14:00:00"), format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-    session_end = as.POSIXct(c("2025-03-03T14:00:00", "2025-03-04T17:00:00", "2025-03-06T14:00:00",
-                               "2025-03-06T16:00:00"), format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-    night = as.Date(c("2025-03-03", "2025-03-03", "2025-03-06",
-                      "2025-03-06")),
-    session_duration_hours = c(2, 21, 2, 2)
+test_that("get_sessions_summary works correctly with valid input", {
+  sessions <- data.frame(
+    session_start = c("2025-04-01T10:00:00", "2025-04-01T14:00:00"),
+    session_end = c("2025-04-01T12:00:00", "2025-04-01T16:00:00"),
+    subject_id = c("subject1", "subject1"),
+    device_serial_number = c("device123", "device123")
   )
-  expect_equal(result, expected)
+
+  result <- get_sessions_summary(sessions)
+
+  expect_equal(result$subject_id, "subject1")
+  expect_equal(result$device_id, "device123")
+  expect_equal(result$total_sessions, 2)
+  expect_equal(result$mean_session_length, 2)
+})
+
+test_that("get_sessions_summary handles empty input", {
+  sessions <- data.frame(
+    session_start = character(),
+    session_end = character(),
+    subject_id = character(),
+    device_serial_number = character()
+  )
+
+  result <- get_sessions_summary(sessions)
+
+  expect_equal(nrow(result), 1)
+  expect_true(result$subject_id == "")
+  expect_true(result$device_id == "")
+  expect_equal(result$total_sessions, 0)
+  expect_true(is.na(result$mean_session_length))
 })
