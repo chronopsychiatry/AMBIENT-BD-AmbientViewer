@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyFiles)
+library(tidyverse)
 library(AmbientViewer)
 
 module_files <- list.files("modules", pattern = "\\.R$", full.names = TRUE)
