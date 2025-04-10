@@ -69,6 +69,11 @@ ui <- fluidPage(
       )
 
     )
+  ),
+
+  div(
+    style = "text-align: left; margin-top: 5px; font-size: 12px; color: #555;",
+    textOutput("footer_text")
   )
 )
 
@@ -85,10 +90,16 @@ server <- function(input, output, session) {
     }
   })
 
+  # Footer text
+  output$footer_text <- renderText({
+    paste0(
+      "Ambient Viewer version ", packageVersion("AmbientViewer"), ". ",
+      "Developed at the University of Edinburgh as part of the Ambient-BD project."
+    )
+  })
+
   # Data loading module
   folder_path <- input_folder_server("folder_selector", session)
-  # For testing purposes:
-  # folder_path <- shiny::reactive("/home/dthedie/Documents/Ambient-BD/downloader_data/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data")
   selected_file <- input_data_files_server("file_selector", folder_path)
   data <- load_data_module_server("load_data", folder_path, selected_file)
   sessions <- shiny::reactive(data()$sessions)
