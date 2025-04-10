@@ -1,15 +1,24 @@
 library(shiny)
 library(shinyFiles)
 library(tidyverse)
+library(logging)
 library(AmbientViewer)
 
+source("housekeeping.R")
 module_files <- list.files("modules", pattern = "\\.R$", full.names = TRUE)
 lapply(module_files, source)
+
+# Configure logging
+log_file <- "logs/AmbientViewer.log"
+basicConfig()
+addHandler(writeToFile, file = log_file, level = "INFO")
+schedule_log_clearing(log_file)
 
 ui <- fluidPage(
   shinyjs::useShinyjs(),
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+    tags$script(src = "getIP.js")
   ),
 
   tags$h1(class = "custom-title", "Ambient Viewer"),
@@ -64,6 +73,17 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+
+  user_ip <- shiny::reactive({
+    input$getIP
+  })
+
+  observe({
+    ip <- user_ip()$ip
+    if (!is.null(ip)) {
+      loginfo(paste0("Started the Ambient Viewer app - ", ip))
+    }
+  })
 
   # Data loading module
   folder_path <- input_folder_server("folder_selector", session)

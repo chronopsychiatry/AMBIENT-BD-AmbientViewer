@@ -16,6 +16,8 @@ Config/testthat/edition: 3
 Imports: 
     dplyr,
     ggplot2,
+    later,
+    logging,
     shiny,
     shinyFiles,
     shinyjs,

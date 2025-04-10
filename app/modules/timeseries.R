@@ -27,7 +27,6 @@ timeseries_module_ui <- function(id) {
 
 timeseries_module_server <- function(id, epochs, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
-    ns <- session$ns
 
     plot_options <- shiny::reactiveValues(variable = NULL)
 

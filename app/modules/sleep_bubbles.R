@@ -17,7 +17,6 @@ sleep_bubbles_module_ui <- function(id) {
 
 sleep_bubbles_module_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
-    ns <- session$ns
 
     # Reactive expression to store the plot
     sleep_bubbles_plot <- shiny::reactive({

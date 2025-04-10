@@ -17,7 +17,6 @@ sleep_stages_module_ui <- function(id) {
 
 sleep_stages_module_server <- function(id, epochs, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
-    ns <- session$ns
 
     # Filter epochs based on sessions
     filtered_epochs <- shiny::reactive({

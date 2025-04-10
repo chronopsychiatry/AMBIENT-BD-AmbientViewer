@@ -1,0 +1,21 @@
+2025-04-10 16:04:41.902889 INFO::Started the Ambient Viewer app - 129.215.109.115
+2025-04-10 16:04:55.487279 INFO::Loading files from: E:/Daniel/Ambient-BD/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data
+2025-04-10 16:43:58.69407 INFO::Started the Ambient Viewer app - 129.215.109.115
+2025-04-10 16:44:09.6157 INFO::Loading files from: E:/Daniel/Ambient-BD/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data
+2025-04-10 16:44:10.392515 INFO::Filtering sessions - min time in bed: 0h; Start time range: 13:00-12:00
+2025-04-10 16:44:10.472135 INFO::Filtering sessions - min time in bed: 0h; Start time range: 13:00-12:00
+2025-04-10 16:44:19.577853 INFO::Filtering sessions - min time in bed: 1h; Start time range: 13:00-12:00
+2025-04-10 16:44:20.499879 INFO::Filtering sessions - min time in bed: 2h; Start time range: 13:00-12:00
+2025-04-10 16:44:25.002492 INFO::Filtering sessions - min time in bed: 2h; Start time range: 19:00-12:00
+2025-04-10 16:44:25.968046 INFO::Filtering sessions - min time in bed: 2h; Start time range: 20:00-12:00
+2025-04-10 16:44:29.120396 INFO::Filtering sessions - min time in bed: 2h; Start time range: 20:00-05:00
+2025-04-10 16:44:30.073572 INFO::Filtering sessions - min time in bed: 2h; Start time range: 20:00-06:00
+2025-04-10 16:44:48.993657 INFO::Writing Session data to: C:\Users\dthedie\AppData\Local\Temp\RtmpYTv6vg\file2cec7668750.csv
+2025-04-10 16:46:44.132694 INFO::Started the Ambient Viewer app - 129.215.109.115
+2025-04-10 16:47:56.452367 INFO::Loading files from: E:/Daniel/Ambient-BD/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data
+2025-04-10 16:48:03.904403 INFO::Writing Session data to: C:\Users\dthedie\AppData\Local\Temp\RtmpYTv6vg\file2cec5ff4540a.csv (30 rows)
+2025-04-10 16:48:14.728283 INFO::Writing Epoch data to: C:\Users\dthedie\AppData\Local\Temp\RtmpYTv6vg\file2cec7b8852bb.csv (33870 rows)
+2025-04-10 16:49:24.476597 INFO::Started the Ambient Viewer app - 129.215.109.115
+2025-04-10 16:49:33.951121 INFO::Loading files from: E:/Daniel/Ambient-BD/downloaded_data/Testing/future_neuro_pilot-sub_01JNDH3Z5NP0PSV82NFBGPV31X/data
+2025-04-10 16:49:41.672999 INFO::Exporting Session data (30 rows)
+2025-04-10 16:49:47.280575 INFO::Exporting Epoch data (33870 rows)
