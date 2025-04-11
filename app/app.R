@@ -86,7 +86,7 @@ server <- function(input, output, session) {
   observe({
     ip <- user_ip()$ip
     if (!is.null(ip)) {
-      loginfo(paste0("Started the Ambient Viewer app - ", ip))
+      loginfo(paste0("Started Ambient Viewer ", packageVersion("AmbientViewer"), " - ", ip))
     }
   })
 
@@ -104,6 +104,11 @@ server <- function(input, output, session) {
   data <- load_data_module_server("load_data", folder_path, selected_file)
   sessions <- shiny::reactive(data()$sessions)
   epochs <- shiny::reactive(data()$epochs)
+  observe({
+    shiny::req(sessions(), epochs())
+    logging::loginfo(paste0("Loaded sessions (", nrow(sessions()), " rows)"))
+    logging::loginfo(paste0("Loaded epochs (", nrow(epochs()), " rows)"))
+  })
 
   # Filtering and compliance module
   filtered_sessions <- filtering_server("filtering", sessions)
