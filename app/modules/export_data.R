@@ -3,11 +3,11 @@ export_data_module <- function(id) {
   shiny::tagList(
     shiny::downloadButton(
       outputId = ns("download_sessions"),
-      label = "Filtered Sessions"
+      label = "Sessions"
     ),
     shiny::downloadButton(
       outputId = ns("download_epochs"),
-      label = "Filtered Epochs"
+      label = "Epochs"
     )
   )
 }
