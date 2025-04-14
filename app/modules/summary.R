@@ -14,6 +14,9 @@ summary_server <- function(id, sessions) {
 
     output$summary_table <- shiny::renderTable({
       shiny::req(summary_table())
+      shiny::validate(
+        shiny::need(summary_table()$total_sessions > 0, "No Session data found.")
+      )
       summary_table()
     })
   })
