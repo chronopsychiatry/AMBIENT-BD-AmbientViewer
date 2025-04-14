@@ -11,7 +11,7 @@ filtering_module <- function(id) {
     ),
     shinyWidgets::sliderTextInput(
       inputId = ns("time_range"),
-      label = "Session Start Time:",
+      label = "Sleep Onset Time:",
       choices = c(
                   "13", "14", "15", "16", "17",
                   "18", "19", "20", "21", "22", "23",
@@ -71,7 +71,7 @@ filtering_server <- function(id, sessions) {
       # Apply filters
       filtered <- remove_sessions_no_sleep(sessions())
       filtered <- set_min_time_in_bed(filtered, input$min_time_in_bed)
-      filtered <- set_session_start_time_range(filtered, from_time, to_time)
+      filtered <- set_session_sleep_onset_range(filtered, from_time, to_time)
 
       # Filter by date range
       if (!is.null(input$date_range)) {
