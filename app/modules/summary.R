@@ -9,9 +9,6 @@ summary_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
     summary_table <- shiny::reactive({
       shiny::req(sessions())
-      shiny::validate(
-        shiny::need(nrow(sessions()) > 0, "No Session data found.")
-      )
       get_sessions_summary(sessions())
     })
 
