@@ -6,6 +6,13 @@ sessions <- data.frame(
     "2025-03-12T03:00:00.000000+00:00",
     "2025-03-12T18:00:00.000000+00:00"
   ),
+  time_at_sleep_onset = c(
+    "2025-03-10T22:30:00.000000+00:00",
+    "",
+    "",
+    "2025-03-12T05:00:00.000000+00:00",
+    ""
+  ),
   night = c(
     "2025-03-10",
     "2025-03-11",
@@ -25,6 +32,11 @@ test_that("set_time_in_bed works", {
 test_that("set_session_start_time_range works for midnight spanning range", {
   filtered_sessions <- set_session_start_time_range(sessions, "19:00", "02:00")
   expect_equal(nrow(filtered_sessions), 3)
+})
+
+test_that("set_session_sleep_onset_range works for midnight spanning range", {
+  filtered_sessions <- set_session_sleep_onset_range(sessions, "19:00", "02:00")
+  expect_equal(nrow(filtered_sessions), 1)
 })
 
 test_that("remove_sessions_no_sleep works", {
