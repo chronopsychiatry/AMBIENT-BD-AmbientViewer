@@ -54,9 +54,17 @@ input_data_files_server <- function(id, folder_path) {
       shiny::updateSelectInput(session, "file_selector", choices = files())
     })
 
-    selected_file <- shiny::reactive({
-      shiny::req(input$file_selector)
-      input$file_selector
+    selected_file <- shiny::reactiveVal(NULL)
+
+    # Clear selected_file whenever folder_path changes
+    shiny::observeEvent(folder_path(), {
+      selected_file(NULL)  # Reset the selected file
+      shiny::updateSelectInput(session, "file_selector", selected = NULL)  # Clear the UI selection
+    })
+
+    # Update selected_file when a new file is selected
+    shiny::observeEvent(input$file_selector, {
+      selected_file(input$file_selector)
     })
 
     return(selected_file)
@@ -70,10 +78,16 @@ load_data_module_server <- function(id, folder_path, selected_file) {
       shiny::req(folder_path(), selected_file())
       sessions_path <- paste0(folder_path(), "/", selected_file(), "_sessions_reports.csv")
       epochs_path <- paste0(folder_path(), "/", selected_file(), "_epoch_data.csv")
-      if (file.exists(sessions_path) && file.exists(epochs_path)) {
-        load_data(folder_path(), selected_file())
-      } else {
+      logging::loginfo(paste0("Loading sessions from: ", sessions_path))
+      logging::loginfo(paste0("Loading epochs from: ", epochs_path))
+      if (!file.exists(sessions_path)) {
+        logging::logerror(paste0("Sessions file not found: ", sessions_path))
         NULL
+      } else if (!file.exists(epochs_path)) {
+        logging::logerror(paste0("Epochs file not found: ", epochs_path))
+        NULL
+      } else {
+        load_data(folder_path(), selected_file())
       }
     })
   })
