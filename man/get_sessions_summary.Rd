@@ -13,5 +13,6 @@ get_sessions_summary(sessions)
 A single-row dataframe summarizing session information.
 }
 \description{
-This function summarizes session information, including the number of sessions, mean session length, subject and device ID.
+This function summarizes session information, including the number of sessions, mean session length,
+mean time at sleep onset and wakeup, subject and device ID.
 }
