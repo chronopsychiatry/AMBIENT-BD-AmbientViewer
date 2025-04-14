@@ -104,10 +104,10 @@ server <- function(input, output, session) {
   data <- load_data_module_server("load_data", folder_path, selected_file)
   sessions <- shiny::reactive(data()$sessions)
   epochs <- shiny::reactive(data()$epochs)
-  observe({
+  shiny::observe({
     shiny::req(sessions(), epochs())
-    logging::loginfo(paste0("Loaded sessions (", nrow(sessions()), " rows)"))
-    logging::loginfo(paste0("Loaded epochs (", nrow(epochs()), " rows)"))
+    logging::loginfo(paste0("Loaded sessions ", selected_file(), " (", nrow(sessions()), " rows)"))
+    logging::loginfo(paste0("Loaded epochs ", selected_file(), " (", nrow(epochs()), " rows)"))
   })
 
   # Filtering and compliance module
