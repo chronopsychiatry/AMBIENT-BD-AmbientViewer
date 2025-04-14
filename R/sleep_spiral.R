@@ -17,7 +17,7 @@ plot_sleep_spiral <- function(epochs) {
     dplyr::mutate(
       timestamp = as.POSIXct(timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       sleep_stage = as.character(sleep_stage),  # Convert sleep_stage to character for mapping
-      sleep_stage = if_else(sleep_stage == "5", "1", sleep_stage)  # Consider "no presence" as "awake"
+      sleep_stage = dplyr::if_else(sleep_stage == "5", "1", sleep_stage)  # Consider "no presence" as "awake"
     ) %>%
     tidyr::complete(
       timestamp = seq(min(timestamp), max(timestamp), by = "1 min"),  # Fill gaps with 5-minute intervals
