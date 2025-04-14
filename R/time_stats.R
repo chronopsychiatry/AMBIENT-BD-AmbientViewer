@@ -5,6 +5,10 @@
 #' @returns A string representing the mean time in the format "HH:MM".
 #' @export
 mean_time <- function(time_vector) {
+  if (length(time_vector) == 0) {
+    return(NA_character_)
+  }
+  
   if (!inherits(time_vector, "POSIXct")) {
     time_vector <- time_vector[!is.na(time_vector) & time_vector != ""]
     time_vector <- lubridate::ymd_hms(time_vector, tz = "UTC")
