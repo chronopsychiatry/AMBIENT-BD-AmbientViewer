@@ -7,18 +7,27 @@
 plot_actigram <- function(epochs) {
   epochs <- epochs %>%
     dplyr::mutate(
-      timestamp = lubridate::ymd_hms(timestamp),
+      timestamp = lubridate::ymd_hms(timestamp, tz = "UTC"),
       date = as.Date(timestamp),
       time = as.numeric(difftime(timestamp, as.Date(timestamp), units = "secs")) / 3600, # Time in hours
       sleep_value = ifelse(sleep_stage %in% c(2, 3, 4), signal_quality_mean, 0)
-    ) %>%
-    dplyr::mutate(
-      day_label = paste0(date, "/", date + 1),
-      time_48h = ifelse(time < 24, time, time - 24) + 24 * (time >= 24)
     )
 
-  actigram_plot <- ggplot2::ggplot(epochs, ggplot2::aes(x = time_48h, y = sleep_value)) +
-    ggplot2::geom_col(fill = "black", width = 0.5) +
+  epochs_duplicated <- dplyr::bind_rows(
+    epochs %>%
+      dplyr::mutate(
+        day_label = paste0(date, " - ", date + 1), # Current day and next day
+        time_48h = time # Keep original time (0–24)
+      ),
+    epochs %>%
+      dplyr::mutate(
+        day_label = paste0(date - 1, " - ", date), # Previous day and current day
+        time_48h = time + 24 # Shift time by +24 (24–48)
+      )
+  )
+
+  actigram_plot <- ggplot2::ggplot(epochs_duplicated, ggplot2::aes(x = time_48h, y = sleep_value)) +
+    ggplot2::geom_col(fill = "black") +
     ggplot2::geom_hline(yintercept = 0, color = "gray", linetype = "solid") +
     ggplot2::facet_wrap(~day_label, ncol = 1, strip.position = "left") +
     ggplot2::scale_x_continuous(
@@ -37,7 +46,7 @@ plot_actigram <- function(epochs) {
       panel.grid.major.y = ggplot2::element_blank(), # Remove all horizontal grid lines
       panel.grid.minor = ggplot2::element_blank(),
       axis.line.y = ggplot2::element_line(color = "gray"),
-      strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1, size = 8), # Day labels on the left
+      strip.text.y.left = ggplot2::element_text(angle = 0, hjust = 1, size = 5), # Day labels on the left
       axis.text.y = ggplot2::element_blank(),
       axis.ticks.y = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_text(size = 8),
