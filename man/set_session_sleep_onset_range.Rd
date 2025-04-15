@@ -19,3 +19,6 @@ The sessions dataframe with only the sessions where sleep started within the spe
 \description{
 Set sleep onset time range
 }
+\seealso{
+\code{\link[=set_session_start_time_range]{set_session_start_time_range()}} to filter sessions based on start time.
+}

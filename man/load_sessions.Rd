@@ -18,3 +18,9 @@ Load session data
 \details{
 The function loads the session data from a CSV file and groups the sessions by night.
 }
+\seealso{
+Other data loading: 
+\code{\link{load_data}()},
+\code{\link{load_epochs}()}
+}
+\concept{data loading}

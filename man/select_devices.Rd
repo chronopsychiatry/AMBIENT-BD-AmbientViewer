@@ -17,3 +17,6 @@ The sessions dataframe with only the sessions recorded by the specified devices
 \description{
 Select devices by ID
 }
+\seealso{
+\code{\link[=select_subjects]{select_subjects()}} to select sessions by subject ID.
+}

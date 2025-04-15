@@ -19,3 +19,6 @@ Create a grouping by night for session data
 The function creates a new column \code{night} that groups the sessions by night depending on their start time.
 Sessions that start before 12 PM are considered part of the previous night.
 }
+\seealso{
+\code{\link[=group_epochs_by_night]{group_epochs_by_night()}} to group epoch data by night.
+}

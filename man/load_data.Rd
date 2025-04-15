@@ -17,3 +17,9 @@ A list containing the sessions and epochs dataframes
 \description{
 Load session and epoch data
 }
+\seealso{
+Other data loading: 
+\code{\link{load_epochs}()},
+\code{\link{load_sessions}()}
+}
+\concept{data loading}

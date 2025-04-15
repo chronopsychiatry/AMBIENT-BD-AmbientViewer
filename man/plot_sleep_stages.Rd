@@ -15,3 +15,9 @@ A ggplot object showing the proportion of sleep stages for each night
 \description{
 Plot Sleep Stages
 }
+\seealso{
+Other epoch plots: 
+\code{\link{plot_sleep_spiral}()},
+\code{\link{plot_timeseries}()}
+}
+\concept{epoch plots}

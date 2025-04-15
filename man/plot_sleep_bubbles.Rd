@@ -15,3 +15,9 @@ A ggplot object containing the sleep bubbles graph.
 \description{
 This function creates a bubble plot of sleep sessions, where the size and colour of the bubbles represents the sleep duration.
 }
+\seealso{
+Other session plots: 
+\code{\link{plot_sleep_clock}()},
+\code{\link{plot_timeseries_sessions}()}
+}
+\concept{session plots}

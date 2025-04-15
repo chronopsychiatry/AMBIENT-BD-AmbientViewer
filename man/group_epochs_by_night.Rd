@@ -20,3 +20,6 @@ The function creates a new column \code{night} that groups the epochs by night,
 and an \code{adjusted_time} column to facilitate plotting from 12PM to 12PM.
 Timepoints before 12 PM are considered part of the previous night.
 }
+\seealso{
+\code{\link[=group_sessions_by_night]{group_sessions_by_night()}} to group session data by night.
+}

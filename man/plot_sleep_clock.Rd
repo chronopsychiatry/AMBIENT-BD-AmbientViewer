@@ -15,3 +15,9 @@ A ggplot object showing the sleep clock
 \description{
 Plot Sleep Clock
 }
+\seealso{
+Other session plots: 
+\code{\link{plot_sleep_bubbles}()},
+\code{\link{plot_timeseries_sessions}()}
+}
+\concept{session plots}
