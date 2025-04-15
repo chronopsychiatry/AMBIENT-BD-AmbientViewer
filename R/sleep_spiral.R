@@ -30,7 +30,7 @@ plot_sleep_spiral <- function(epochs) {
       radius = time_in_min
     )
 
-  p <- ggplot2::ggplot(epochs, ggplot2::aes(x = angle, y = radius, color = sleep_stage)) +
+  ggplot2::ggplot(epochs, ggplot2::aes(x = angle, y = radius, color = sleep_stage)) +
     ggplot2::geom_point(size = 1, shape = 16) +
     ggplot2::scale_color_manual(values = sleep_stage_colors,
       labels = c(
@@ -63,6 +63,4 @@ plot_sleep_spiral <- function(epochs) {
       legend.text = ggplot2::element_text(size = 14),
       legend.position = "right"
     )
-
-  return(p)
 }

@@ -14,7 +14,6 @@ plot_sleep_bubbles <- function(sessions) {
         as.POSIXct(time_at_sleep_onset, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
         units = "hours"
       )),
-      # Assign colors based on sleep duration
       color = suppressWarnings(dplyr::case_when(
         sleep_duration >= 6 & sleep_duration <= 9 ~ scales::col_numeric(
           palette = c("darkblue", "lightgreen"),
@@ -24,8 +23,7 @@ plot_sleep_bubbles <- function(sessions) {
       ))
     )
 
-  # Create the dot plot
-  p <- ggplot2::ggplot(sessions, ggplot2::aes(x = night, y = sleep_duration, color = color)) +
+  ggplot2::ggplot(sessions, ggplot2::aes(x = night, y = sleep_duration, color = color)) +
     ggplot2::annotate(
       "rect",
       xmin = min(sessions$night)-1, xmax = max(sessions$night)+1,
@@ -43,6 +41,4 @@ plot_sleep_bubbles <- function(sessions) {
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
     )
-
-  return(p)
 }

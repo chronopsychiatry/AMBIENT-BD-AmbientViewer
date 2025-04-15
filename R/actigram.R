@@ -26,7 +26,7 @@ plot_actigram <- function(epochs) {
       )
   )
 
-  actigram_plot <- ggplot2::ggplot(epochs_duplicated, ggplot2::aes(x = time_48h, y = sleep_value)) +
+  ggplot2::ggplot(epochs_duplicated, ggplot2::aes(x = time_48h, y = sleep_value)) +
     ggplot2::geom_col(fill = "black") +
     ggplot2::geom_hline(yintercept = 0, color = "gray", linetype = "solid") +
     ggplot2::facet_wrap(~day_label, ncol = 1, strip.position = "left") +
@@ -55,6 +55,4 @@ plot_actigram <- function(epochs) {
       strip.background = ggplot2::element_blank(), # Remove background from facet labels
       plot.margin = ggplot2::margin(0, 0, 0, 0) # Remove plot margins
     )
-
-  return(actigram_plot)
 }

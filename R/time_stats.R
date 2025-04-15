@@ -16,17 +16,13 @@ mean_time <- function(time_vector) {
 
   seconds_since_midnight <- as.numeric(difftime(time_vector, lubridate::floor_date(time_vector, "day"), units = "secs"))
 
-  # Calculate the mean of the circular times
   mean_angle <- atan2(mean(sin(2 * pi * seconds_since_midnight / 86400)),
                       mean(cos(2 * pi * seconds_since_midnight / 86400)))
 
-  # Convert the mean angle back to seconds since midnight
   mean_seconds <- (mean_angle / (2 * pi)) * 86400
   if (mean_seconds < 0) {
     mean_seconds <- mean_seconds + 86400
   }
 
-  mean_time <- format(as.POSIXct(mean_seconds, origin = "1970-01-01", tz = "UTC"), "%H:%M")
-
-  return(mean_time)
+  format(as.POSIXct(mean_seconds, origin = "1970-01-01", tz = "UTC"), "%H:%M")
 }

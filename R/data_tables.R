@@ -6,7 +6,7 @@
 #' @returns A single-row dataframe summarizing session information.
 #' @export
 get_sessions_summary <- function(sessions) {
-  sessions_summary <- sessions |>
+  sessions |>
     dplyr::mutate(
       session_start = lubridate::ymd_hms(session_start, tz = "UTC"),
       session_end = lubridate::ymd_hms(session_end, tz = "UTC"),
@@ -18,9 +18,8 @@ get_sessions_summary <- function(sessions) {
       subject_id = paste(unique(subject_id), collapse = ", "),
       device_id = paste(unique(device_serial_number), collapse = ", "),
       total_sessions = dplyr::n(),
-      mean_sleep_onset = mean_time(dplyr::pull(., sleep_onset)),
-      mean_wakeup_time = mean_time(dplyr::pull(., wakeup_time)),
+      mean_sleep_onset = mean_time(sleep_onset),
+      mean_wakeup_time = mean_time(wakeup_time),
       mean_session_length = mean(session_duration_hours, na.rm = TRUE)
     )
-  return(sessions_summary)
 }

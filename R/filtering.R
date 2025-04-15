@@ -5,8 +5,7 @@
 #' @returns The epochs dataframe with only the epochs that belong to the specified sessions
 #' @export
 filter_epochs_from_sessions <- function(epochs, sessions) {
-  epochs <- epochs[epochs$session_id %in% unique(sessions$id), ]
-  return(epochs)
+  epochs[epochs$session_id %in% unique(sessions$id), ]
 }
 
 #' Select subjects by ID
@@ -16,8 +15,7 @@ filter_epochs_from_sessions <- function(epochs, sessions) {
 #' @returns The sessions dataframe with only the sessions that belong to the specified subjects
 #' @export
 select_subjects <- function(sessions, subject_ids) {
-  sessions <- sessions[sessions$subject_id %in% subject_ids, ]
-  return(sessions)
+  sessions[sessions$subject_id %in% subject_ids, ]
 }
 
 #' Select devices by ID
@@ -27,6 +25,5 @@ select_subjects <- function(sessions, subject_ids) {
 #' @returns The sessions dataframe with only the sessions recorded by the specified devices
 #' @export
 select_devices <- function(sessions, device_ids) {
-  sessions <- sessions[sessions$device_id %in% device_ids, ]
-  return(sessions)
+  sessions[sessions$device_id %in% device_ids, ]
 }

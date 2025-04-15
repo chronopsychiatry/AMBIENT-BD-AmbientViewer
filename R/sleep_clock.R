@@ -30,7 +30,7 @@ plot_sleep_clock <- function(sessions) {
     y = 1
   )
 
-  p <- ggplot2::ggplot(plot_data, ggplot2::aes(x = hour, y = 1, color = type)) +
+  ggplot2::ggplot(plot_data, ggplot2::aes(x = hour, y = 1, color = type)) +
     ggplot2::geom_path(data = circle_outline, ggplot2::aes(x = hour, y = y), inherit.aes = FALSE, color = "grey", linewidth = 0.5) +
     ggplot2::geom_segment(ggplot2::aes(xend = hour, yend = 0), linewidth = 1) +
     ggplot2::geom_point(ggplot2::aes(x = hour, y = 1), size = 3) +
@@ -57,5 +57,4 @@ plot_sleep_clock <- function(sessions) {
       legend.text = ggplot2::element_text(size = 12),
       legend.position = "bottom"
     )
-  return(p)
 }

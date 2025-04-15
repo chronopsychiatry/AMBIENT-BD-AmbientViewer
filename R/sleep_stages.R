@@ -19,7 +19,6 @@ plot_sleep_stages <- function(epochs) {
     "No presence" = "#D2D2D2"
   )
 
-  # Calculate proportions of sleep stages for each night
   stage_proportions <- epochs |>
     dplyr::group_by(night, sleep_stage) |>
     dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
@@ -28,8 +27,7 @@ plot_sleep_stages <- function(epochs) {
       sleep_stage = factor(sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels)
     )
 
-  # Make the bar plot
-  p <- ggplot2::ggplot(stage_proportions, ggplot2::aes(x = night, y = proportion, fill = factor(sleep_stage))) +
+  ggplot2::ggplot(stage_proportions, ggplot2::aes(x = night, y = proportion, fill = factor(sleep_stage))) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::scale_y_continuous(labels = scales::percent_format()) +
     ggplot2::scale_fill_manual(values = sleep_stage_colors) +
@@ -47,5 +45,4 @@ plot_sleep_stages <- function(epochs) {
       legend.title = ggplot2::element_text(size = 14),
       legend.position = "bottom"
     )
-  return(p)
 }

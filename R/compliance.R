@@ -5,8 +5,7 @@
 #' @returns The sessions dataframe with only the sessions that meet the minimum time in bed requirement
 #' @export
 set_min_time_in_bed <- function(sessions, min_time_in_bed) {
-  sessions <- sessions[sessions$time_in_bed >= min_time_in_bed * 60 * 60, ]
-  return(sessions)
+  sessions[sessions$time_in_bed >= min_time_in_bed * 60 * 60, ]
 }
 
 #' Set session start time range
@@ -24,11 +23,10 @@ set_session_start_time_range <- function(sessions, from_time, to_time) {
   to_time <- as.POSIXct(to_time, format = "%H:%M", tz = "UTC")
 
   if (from_time <= to_time) {
-    sessions <- sessions[session_times >= from_time & session_times <= to_time, ]
+    sessions[session_times >= from_time & session_times <= to_time, ]
   } else {
-    sessions <- sessions[session_times >= from_time | session_times <= to_time, ]
+    sessions[session_times >= from_time | session_times <= to_time, ]
   }
-  return(sessions)
 }
 
 #' Set sleep onset time range
@@ -47,11 +45,10 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time) {
   to_time <- as.POSIXct(to_time, format = "%H:%M", tz = "UTC")
 
   if (from_time <= to_time) {
-    sessions <- sessions[session_times >= from_time & session_times <= to_time, ]
+    sessions[session_times >= from_time & session_times <= to_time, ]
   } else {
-    sessions <- sessions[session_times >= from_time | session_times <= to_time, ]
+    sessions[session_times >= from_time | session_times <= to_time, ]
   }
-  return(sessions)
 }
 
 #' Remove sessions with no sleep
@@ -60,8 +57,7 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time) {
 #' @returns The sessions dataframe with only the sessions that have a sleep period greater than 0
 #' @export
 remove_sessions_no_sleep <- function(sessions) {
-  sessions <- sessions[sessions$sleep_period > 0, ]
-  return(sessions)
+  sessions[sessions$sleep_period > 0, ]
 }
 
 #' Get non-complying sessions (i.e. where there is more than one session on the same day)
@@ -70,6 +66,5 @@ remove_sessions_no_sleep <- function(sessions) {
 #' @returns The sessions dataframe with only the sessions that are non-complying
 #' @export
 get_non_complying_sessions <- function(sessions) {
-  non_complying_sessions <- sessions[sessions$night %in% sessions$night[duplicated(sessions$night)], ]
-  return(non_complying_sessions)
+  sessions[sessions$night %in% sessions$night[duplicated(sessions$night)], ]
 }
