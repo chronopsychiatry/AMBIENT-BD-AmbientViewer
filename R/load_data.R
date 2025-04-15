@@ -51,7 +51,7 @@ load_data <- function(folder, basename) {
 #' Timepoints before 12 PM are considered part of the previous night.
 #' @export
 group_epochs_by_night <- function(epochs) {
-  epochs <- epochs %>%
+  epochs <- epochs |>
     dplyr::mutate(
       timestamp = as.POSIXct(timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       date = as.Date(timestamp, tz = "UTC"),
@@ -71,14 +71,14 @@ group_epochs_by_night <- function(epochs) {
 #' Sessions that start before 12 PM are considered part of the previous night.
 #' @export
 group_sessions_by_night <- function(sessions) {
-  sessions <- sessions %>%
+  sessions <- sessions |>
     dplyr::mutate(
       start_time = as.POSIXct(session_start, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       date = as.Date(start_time, tz = "UTC"),
       start_hour = as.numeric(format(start_time, "%H", tz = "UTC")) +
         as.numeric(format(start_time, "%M", tz = "UTC")) / 60,
       night = as.Date(ifelse(start_hour < 12, date - 1, date))
-    ) %>%
+    ) |>
     dplyr::select(-start_time, -date, -start_hour)
   return(sessions)
 }

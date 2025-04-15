@@ -1,6 +1,5 @@
 library(shiny)
 library(shinyFiles)
-library(tidyverse)
 library(logging)
 library(AmbientViewer)
 
@@ -24,11 +23,11 @@ ui <- fluidPage(
   tags$h1(class = "custom-title", "Ambient Viewer"),
 
   sidebarLayout(
-    # Sidebar panel for inputs ----
+    # Side panel ----
     sidebarPanel(
       width = 2,
 
-      # Input: Select folder and date range ----
+      # Data input, filtering and export ----
       h4("Data Input"),
       input_folder_module("folder_selector"),
       input_data_files_module("file_selector"),
@@ -40,10 +39,10 @@ ui <- fluidPage(
       export_data_module("export_data")
     ),
 
-    # Main panel for displaying outputs ----
+    # Main panel ----
     mainPanel(
 
-      # Output: Tabset ----
+      # Tabset for tables ----
       div(
         class = "tabset-box",
         tabsetPanel(
@@ -54,6 +53,7 @@ ui <- fluidPage(
         ),
       ),
 
+      # Tabset for plots ----
       div(
         class = "tabset-box",
         tabsetPanel(
@@ -71,6 +71,7 @@ ui <- fluidPage(
     )
   ),
 
+  # Footer ----
   div(
     style = "text-align: left; margin-top: 5px; font-size: 12px; color: #555;",
     textOutput("footer_text")

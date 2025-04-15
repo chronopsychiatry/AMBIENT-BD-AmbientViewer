@@ -7,7 +7,7 @@
 #' @export
 plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   if (exclude_zero) {
-    epochs <- epochs %>%
+    epochs <- epochs |>
       dplyr::filter(.data[[variable]] != 0)
   }
 
@@ -47,16 +47,16 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
 #' @returns A ggplot object
 #' @export
 plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
-  sessions <- sessions %>%
+  sessions <- sessions |>
     dplyr::filter(!is.na(.data[[variable]]) & .data[[variable]] != "")
 
   if (exclude_zero) {
-    sessions <- sessions %>%
+    sessions <- sessions |>
       dplyr::filter(.data[[variable]] != 0)
   }
 
   if (is_iso8601_datetime(sessions[[variable]])) {
-    sessions <- sessions %>%
+    sessions <- sessions |>
       dplyr::mutate(
         plot_var = lubridate::hour(as.POSIXct(.data[[variable]], format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")) +
           lubridate::minute(as.POSIXct(.data[[variable]], format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")) / 60

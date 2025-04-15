@@ -13,16 +13,16 @@ plot_sleep_spiral <- function(epochs) {
 
   reference_time <- lubridate::floor_date(min(epochs$timestamp, na.rm = TRUE), unit = "day")
 
-  epochs <- epochs %>%
+  epochs <- epochs |>
     dplyr::mutate(
       timestamp = as.POSIXct(timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       sleep_stage = as.character(sleep_stage),  # Convert sleep_stage to character for mapping
       sleep_stage = dplyr::if_else(sleep_stage == "5", "1", sleep_stage)  # Consider "no presence" as "awake"
-    ) %>%
+    ) |>
     tidyr::complete(
       timestamp = seq(min(timestamp), max(timestamp), by = "1 min"),  # Fill gaps with 5-minute intervals
       fill = list(sleep_stage = "1")  # Mark missing data as "awake"
-    ) %>%
+    ) |>
     dplyr::mutate(
       time_in_days = as.numeric(difftime(timestamp, reference_time, units = "days")),
       time_in_min = as.numeric(difftime(timestamp, reference_time, units = "mins")),

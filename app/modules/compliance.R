@@ -59,7 +59,7 @@ compliance_server <- function(id, filtered_sessions) {
 }
 
 make_compliance_table <- function(sessions) {
-  compliance_table <- get_non_complying_sessions(sessions) %>%
+  compliance_table <- get_non_complying_sessions(sessions) |>
     dplyr::mutate(
       start_time = substr(session_start, 12, 16),
       sleep_onset = substr(time_at_sleep_onset, 12, 16),
@@ -70,7 +70,7 @@ make_compliance_table <- function(sessions) {
                                     units = "hours"),
       night = format(night, "%Y-%m-%d"),
       time_in_bed_h = time_in_bed / 60 / 60
-    ) %>%
+    ) |>
     dplyr::select(id, night, start_time, sleep_onset, wakeup_time, end_time, session_duration_h, time_in_bed_h)
   return(compliance_table)
 }

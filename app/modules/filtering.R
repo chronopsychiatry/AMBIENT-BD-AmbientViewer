@@ -75,7 +75,7 @@ filtering_server <- function(id, sessions) {
 
       # Filter by date range
       if (!is.null(input$date_range)) {
-        filtered <- filtered %>%
+        filtered <- filtered |>
           dplyr::filter(night >= as.Date(input$date_range[1]) &
                           night <= as.Date(input$date_range[2]))
       }

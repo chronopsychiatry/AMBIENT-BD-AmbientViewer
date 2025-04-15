@@ -5,7 +5,7 @@
 #' @return A ggplot object representing the actigram
 #' @export
 plot_actigram <- function(epochs) {
-  epochs <- epochs %>%
+  epochs <- epochs |>
     dplyr::mutate(
       timestamp = lubridate::ymd_hms(timestamp, tz = "UTC"),
       date = as.Date(timestamp),
@@ -14,12 +14,12 @@ plot_actigram <- function(epochs) {
     )
 
   epochs_duplicated <- dplyr::bind_rows(
-    epochs %>%
+    epochs |>
       dplyr::mutate(
         day_label = paste0(date, " - ", date + 1), # Current day and next day
         time_48h = time # Keep original time (0–24)
       ),
-    epochs %>%
+    epochs |>
       dplyr::mutate(
         day_label = paste0(date - 1, " - ", date), # Previous day and current day
         time_48h = time + 24 # Shift time by +24 (24–48)

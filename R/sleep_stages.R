@@ -20,10 +20,10 @@ plot_sleep_stages <- function(epochs) {
   )
 
   # Calculate proportions of sleep stages for each night
-  stage_proportions <- epochs %>%
-    dplyr::group_by(night, sleep_stage) %>%
-    dplyr::summarise(count = dplyr::n(), .groups = "drop") %>%
-    dplyr::group_by(night) %>%
+  stage_proportions <- epochs |>
+    dplyr::group_by(night, sleep_stage) |>
+    dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
+    dplyr::group_by(night) |>
     dplyr::mutate(proportion = count / sum(count),
       sleep_stage = factor(sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels)
     )

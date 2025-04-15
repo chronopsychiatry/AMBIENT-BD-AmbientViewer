@@ -5,9 +5,9 @@
 #' @returns A ggplot object containing the sleep bubbles graph.
 #' @export
 plot_sleep_bubbles <- function(sessions) {
-  sessions <- sessions %>%
+  sessions <- sessions |>
     dplyr::filter(sessions$time_at_sleep_onset != "" &
-                    sessions$time_at_wakeup != "") %>%
+                    sessions$time_at_wakeup != "") |>
     dplyr::mutate(
       sleep_duration = as.numeric(difftime(
         as.POSIXct(time_at_wakeup, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
