@@ -4,6 +4,7 @@
 #' @param sessions The sessions dataframe.
 #' @returns A ggplot object containing the sleep bubbles graph.
 #' @export
+#' @family session plots
 plot_sleep_bubbles <- function(sessions) {
   sessions <- sessions |>
     dplyr::filter(sessions$time_at_sleep_onset != "" &

@@ -4,6 +4,7 @@
 #' @returns A dataframe containing the session data
 #' @details The function loads the session data from a CSV file and groups the sessions by night.
 #' @export
+#' @family data loading
 load_sessions <- function(sessions_file) {
   if (file.info(sessions_file)$size < 10) {
     return(NULL)
@@ -18,6 +19,7 @@ load_sessions <- function(sessions_file) {
 #' @returns A dataframe containing the epoch data
 #' @details The function loads the epoch data from a CSV file and groups the epochs by night.
 #' @export
+#' @family data loading
 load_epochs <- function(epochs_file) {
   if (file.info(epochs_file)$size < 10) {
     return(NULL)
@@ -32,6 +34,7 @@ load_epochs <- function(epochs_file) {
 #' @param basename The time range of the files to load
 #' @returns A list containing the sessions and epochs dataframes
 #' @export
+#' @family data loading
 load_data <- function(folder, basename) {
   sessions_file <- paste0(folder, "/", basename, "_sessions_reports.csv")
   epochs_file <- paste0(folder, "/", basename, "_epoch_data.csv")
@@ -48,6 +51,7 @@ load_data <- function(folder, basename) {
 #' and an `adjusted_time` column to facilitate plotting from 12PM to 12PM.
 #' Timepoints before 12 PM are considered part of the previous night.
 #' @export
+#' @seealso [group_sessions_by_night()] to group session data by night.
 group_epochs_by_night <- function(epochs) {
   epochs |>
     dplyr::mutate(
@@ -67,6 +71,7 @@ group_epochs_by_night <- function(epochs) {
 #' @details The function creates a new column `night` that groups the sessions by night depending on their start time.
 #' Sessions that start before 12 PM are considered part of the previous night.
 #' @export
+#' @seealso [group_epochs_by_night()] to group epoch data by night.
 group_sessions_by_night <- function(sessions) {
   sessions |>
     dplyr::mutate(

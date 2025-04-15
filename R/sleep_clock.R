@@ -3,6 +3,7 @@
 #' @param sessions The sessions dataframe
 #' @returns A ggplot object showing the sleep clock
 #' @export
+#' @family session plots
 plot_sleep_clock <- function(sessions) {
   # Parse times into numeric hours (0-24)
   sessions <- sessions |>

@@ -5,6 +5,8 @@
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
 #' @export
+#' @family epoch plots
+#' @seealso [plot_timeseries_sessions()] to plot session data.
 plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   if (exclude_zero) {
     epochs <- epochs |>
@@ -46,6 +48,8 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
 #' @export
+#' @family session plots
+#' @seealso [plot_timeseries()] to plot epoch data.
 plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   sessions <- sessions |>
     dplyr::filter(!is.na(.data[[variable]]) & .data[[variable]] != "")
@@ -89,15 +93,4 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   }
 
   return(p)
-}
-
-#' Check if a column contains datetime data in ISO 8601 format
-#'
-#' @param column A vector of character strings to check
-#' @returns TRUE if all non-NA values are in ISO 8601 format, FALSE otherwise
-#' @export
-is_iso8601_datetime <- function(column) {
-  column <- column[!is.na(column) & column != ""]
-  parsed <- suppressWarnings(lubridate::ymd_hms(column, quiet = TRUE, tz = "UTC"))
-  return(all(!is.na(parsed)))
 }

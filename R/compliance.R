@@ -15,6 +15,7 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed) {
 #' @param to_time Include sessions that started before this time (in format HH:MM)
 #' @returns The sessions dataframe with only the sessions that started within the specified time range
 #' @export
+#' @seealso [set_session_sleep_onset_range()] to filter sessions based on sleep onset time.
 set_session_start_time_range <- function(sessions, from_time, to_time) {
   session_times <- substr(sessions$session_start, 12, 16)
 
@@ -36,6 +37,7 @@ set_session_start_time_range <- function(sessions, from_time, to_time) {
 #' @param to_time Include sessions where sleep started before this time (in format HH:MM)
 #' @returns The sessions dataframe with only the sessions where sleep started within the specified time range
 #' @export
+#' @seealso [set_session_start_time_range()] to filter sessions based on start time.
 set_session_sleep_onset_range <- function(sessions, from_time, to_time) {
   sessions <- remove_sessions_no_sleep(sessions)
   session_times <- substr(sessions$time_at_sleep_onset, 12, 16)
