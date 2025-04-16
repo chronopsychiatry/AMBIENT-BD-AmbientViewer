@@ -4,6 +4,9 @@
 #' @param time_vector A vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
 #' @returns A string representing the mean time in the format "HH:MM".
 #' @export
+#' @examples
+#' time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
+#' mean_time(time_vector)
 mean_time <- function(time_vector) {
   if (length(time_vector) == 0) {
     return(NA_character_)
