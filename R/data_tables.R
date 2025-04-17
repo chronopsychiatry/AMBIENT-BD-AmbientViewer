@@ -5,6 +5,8 @@
 #' @param sessions The sessions dataframe.
 #' @returns A single-row dataframe summarizing session information.
 #' @export
+#' @examples
+#' get_sessions_summary(example_sessions)
 get_sessions_summary <- function(sessions) {
   sessions |>
     dplyr::mutate(

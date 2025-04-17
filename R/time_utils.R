@@ -5,15 +5,20 @@
 #' @returns A string representing the mean time in the format "HH:MM".
 #' @export
 #' @examples
+#' # Use on a vector of time strings
 #' time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
 #' mean_time(time_vector)
+#'
+#' # Use on a dataframe column
+#' mean_time(example_sessions$time_at_sleep_onset)
 mean_time <- function(time_vector) {
   if (length(time_vector) == 0) {
     return(NA_character_)
   }
 
+  time_vector <- time_vector[!is.na(time_vector)]
   if (!inherits(time_vector, "POSIXct")) {
-    time_vector <- time_vector[!is.na(time_vector) & time_vector != ""]
+    time_vector <- time_vector[time_vector != ""]
     time_vector <- lubridate::ymd_hms(time_vector, tz = "UTC")
   }
 
@@ -38,6 +43,9 @@ mean_time <- function(time_vector) {
 #' @export
 #' @seealso [convert_angle_to_time()] to convert the mean angle back to time format.
 convert_times_to_mean_angle <- function(times, unit = "second") {
+  if (!is.numeric(times) || any(times < 0)) {
+    stop("`times` must be a numeric vector with non-negative values.", call. = FALSE)
+  }
   conversion_factor <- get_time_per_day(unit = unit)
   atan2(mean(sin(2 * pi * times / conversion_factor)),
         mean(cos(2 * pi * times / conversion_factor)))
@@ -52,16 +60,14 @@ convert_times_to_mean_angle <- function(times, unit = "second") {
 #' @export
 #' @seealso [convert_times_to_mean_angle()] to calculate the average angle from a vector of time values.
 convert_angle_to_time <- function(angle, unit = "second") {
+  if (!is.numeric(angle)) {
+    stop("`angle` must be a numeric value.", call. = FALSE)
+  }
   conversion_factor <- get_time_per_day(unit = unit)
   time <- (angle / (2 * pi)) * conversion_factor
   if (time >= 0) time else time + conversion_factor
 }
 
-#' Get the number of seconds, minutes or hours in a day
-#'
-#' @param unit A string indicating the unit of time. Can be "second", "minute", or "hour".
-#' @returns The number of seconds, minutes or hours in a day.
-#' @export
 get_time_per_day <- function(unit = "second") {
   switch(unit,
     second = 86400,
@@ -71,11 +77,6 @@ get_time_per_day <- function(unit = "second") {
   )
 }
 
-#' Check if a column contains datetime data in ISO 8601 format
-#'
-#' @param column A vector of character strings to check
-#' @returns TRUE if all non-NA values are in ISO 8601 format, FALSE otherwise
-#' @export
 is_iso8601_datetime <- function(column) {
   column <- column[!is.na(column) & column != ""]
   parsed <- suppressWarnings(lubridate::ymd_hms(column, quiet = TRUE, tz = "UTC"))

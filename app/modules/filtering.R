@@ -68,19 +68,12 @@ filtering_server <- function(id, sessions) {
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
 
-      # Apply filters
-      filtered <- remove_sessions_no_sleep(sessions())
-      filtered <- set_min_time_in_bed(filtered, input$min_time_in_bed)
-      filtered <- set_session_sleep_onset_range(filtered, from_time, to_time)
-
-      # Filter by date range
-      if (!is.null(input$date_range)) {
-        filtered <- filtered |>
-          dplyr::filter(night >= as.Date(input$date_range[1]) &
-                          night <= as.Date(input$date_range[2]))
-      }
-
-      return(filtered)
+      # Apply filters and return sessions
+      sessions() |>
+        remove_sessions_no_sleep() |>
+        set_min_time_in_bed(input$min_time_in_bed) |>
+        set_session_sleep_onset_range(from_time, to_time) |>
+        filter_by_night_range(input$date_range[1], input$date_range[2])
     })
 
     return(filtered_sessions)

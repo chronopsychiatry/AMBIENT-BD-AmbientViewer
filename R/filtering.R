@@ -4,8 +4,31 @@
 #' @param sessions The sessions dataframe
 #' @returns The epochs dataframe with only the epochs that belong to the specified sessions
 #' @export
+#' @examples
+#' # Apply filtering to sessions to keep specific nights, and filter epochs accordingly
+#' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")#
+#' filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions)
+#'
+#' @seealso [filter_by_night_range()] to filter sessions by night range.
 filter_epochs_from_sessions <- function(epochs, sessions) {
   epochs[epochs$session_id %in% unique(sessions$id), ]
+}
+
+#' Filter sessions for nights within a night range
+#'
+#' @param sessions The sessions dataframe
+#' @param from_night The start night of the range (inclusive) in YYYY-MM-DD format
+#' @param to_night The end night of the range (inclusive) in YYYY-MM-DD format
+#' @returns The sessions dataframe with only the sessions that fall within the specified night range
+#' @export
+#' @examples
+#' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
+filter_by_night_range <- function(sessions, from_night, to_night) {
+  from_night <- if (is.null(from_night)) min(sessions$night) else from_night
+  to_night <- if (is.null(to_night)) min(sessions$night) else to_night
+  sessions |>
+    dplyr::filter(night >= as.Date(from_night) &
+                    night <= as.Date(to_night))
 }
 
 #' Select subjects by ID

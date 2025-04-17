@@ -17,3 +17,12 @@ The epochs dataframe with only the epochs that belong to the specified sessions
 \description{
 Filter epochs based on session IDs
 }
+\examples{
+# Apply filtering to sessions to keep specific nights, and filter epochs accordingly
+filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")#
+filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions)
+
+}
+\seealso{
+\code{\link[=filter_by_night_range]{filter_by_night_range()}} to filter sessions by night range.
+}

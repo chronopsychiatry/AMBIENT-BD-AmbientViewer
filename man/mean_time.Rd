@@ -16,6 +16,10 @@ A string representing the mean time in the format "HH:MM".
 This function calculates the mean time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
 }
 \examples{
+# Use on a vector of time strings
 time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
 mean_time(time_vector)
+
+# Use on a dataframe column
+mean_time(example_sessions$time_at_sleep_onset)
 }

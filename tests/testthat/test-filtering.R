@@ -7,10 +7,17 @@ sessions <- data.frame(
     "2025-03-11T23:45:00.000000+00:00",
     "2025-03-12T01:15:00.000000+00:00",
     "2025-03-12T03:00:00.000000+00:00",
-    "2025-03-12T18:00:00.000000+00:00"
+    "2025-03-13T18:00:00.000000+00:00"
   ),
   time_in_bed = c(8 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 0.5 * 60 * 60, 1 * 60 * 60),
-  sleep_period = c(1736, 0, 0, 26364, 0)
+  sleep_period = c(1736, 0, 0, 26364, 0),
+  night = c(
+    "2025-03-10",
+    "2025-03-11",
+    "2025-03-11",
+    "2025-03-11",
+    "2025-03-13"
+  )
 )
 
 epochs <- data.frame(
@@ -21,6 +28,11 @@ epochs <- data.frame(
 test_that("filter_epochs_from_sessions works", {
   filtered_epochs <- filter_epochs_from_sessions(epochs, sessions)
   expect_equal(nrow(filtered_epochs), 7)
+})
+
+test_that("filter_by_night_range works", {
+  filtered_sessions <- filter_by_night_range(sessions, "2025-03-11", "2025-03-12")
+  expect_equal(nrow(filtered_sessions), 3)
 })
 
 test_that("select_subjects works", {

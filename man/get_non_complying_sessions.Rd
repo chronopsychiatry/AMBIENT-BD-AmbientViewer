@@ -15,3 +15,6 @@ The sessions dataframe with only the sessions that are non-complying
 \description{
 Get non-complying sessions (i.e. where there is more than one session on the same day)
 }
+\examples{
+duplicate_sessions <- get_non_complying_sessions(example_sessions)
+}
