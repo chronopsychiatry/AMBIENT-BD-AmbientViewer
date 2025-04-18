@@ -18,19 +18,16 @@ sleep_clock_module_ui <- function(id) {
 sleep_clock_module_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    # Reactive expression to store the plot
     sleep_clock_plot <- shiny::reactive({
       shiny::req(sessions())
       plot_sleep_clock(sessions = sessions())
     })
 
-    # Render the plot
     output$sleep_clock_plot <- shiny::renderPlot({
       shiny::req(sleep_clock_plot())
       sleep_clock_plot()
     })
 
-    # Download handler for the plot
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = sleep_clock_plot,

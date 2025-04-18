@@ -21,13 +21,10 @@ export_data_server <- function(id, sessions, epochs) {
       output_name = "sessions"
     )
 
-    shiny::observe({
-      shiny::req(sessions(), epochs())
-      output$download_epochs <- get_table_download_handler(
-        session = session,
-        output_table = epochs,
-        output_name = "epochs"
-      )
-    })
+    output$download_epochs <- get_table_download_handler(
+      session = session,
+      output_table = epochs,
+      output_name = "epochs"
+    )
   })
 }

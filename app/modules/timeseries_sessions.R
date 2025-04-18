@@ -70,7 +70,6 @@ timeseries_sessions_module_server <- function(id, sessions) {
       plot_options$variable <- input$variable
     })
 
-    # Reactive expression to store the plot
     timeseries_sessions_plot <- shiny::reactive({
       shiny::req(input$variable, sessions())
       plot_timeseries_sessions(
@@ -80,13 +79,11 @@ timeseries_sessions_module_server <- function(id, sessions) {
       )
     })
 
-    # Render the timeseries plot
     output$timeseries_sessions_plot <- shiny::renderPlot({
       shiny::req(timeseries_sessions_plot())
       timeseries_sessions_plot()
     })
 
-    # Download handler for the plot
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = timeseries_sessions_plot,

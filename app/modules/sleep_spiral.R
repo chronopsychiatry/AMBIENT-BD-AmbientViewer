@@ -26,13 +26,11 @@ sleep_spiral_module_server <- function(id, epochs, sessions) {
       plot_sleep_spiral(epochs = epochs())
     })
 
-    # Render the plot
     output$sleep_spiral_plot <- shiny::renderPlot({
       shiny::req(sleep_spiral_plot())
       sleep_spiral_plot()
     })
 
-    # Download handler for the plot
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = sleep_spiral_plot,
