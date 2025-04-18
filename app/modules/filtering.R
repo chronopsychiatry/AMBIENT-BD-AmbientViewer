@@ -45,13 +45,11 @@ filtering_server <- function(id, sessions) {
           max = Sys.Date(),
           value = c(Sys.Date(), Sys.Date())
         )
-        return()
       }
 
       min_date <- min(sessions()$night, na.rm = TRUE)
       max_date <- max(sessions()$night, na.rm = TRUE)
 
-      # Update the slider with the new date range
       shiny::updateSliderInput(
         session,
         inputId = "date_range",
@@ -61,21 +59,17 @@ filtering_server <- function(id, sessions) {
       )
     })
 
-    filtered_sessions <- shiny::reactive({
+    shiny::reactive({
       shiny::req(sessions())
 
-      # Convert time range to "HH:MM" format
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
 
-      # Apply filters and return sessions
       sessions() |>
         remove_sessions_no_sleep() |>
         set_min_time_in_bed(input$min_time_in_bed) |>
         set_session_sleep_onset_range(from_time, to_time) |>
         filter_by_night_range(input$date_range[1], input$date_range[2])
     })
-
-    return(filtered_sessions)
   })
 }

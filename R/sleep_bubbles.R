@@ -3,6 +3,7 @@
 #' @description This function creates a bubble plot of sleep sessions, where the size and colour of the bubbles represents the sleep duration.
 #' @param sessions The sessions dataframe.
 #' @returns A ggplot object containing the sleep bubbles graph.
+#' @importFrom rlang .data
 #' @export
 #' @family session plots
 plot_sleep_bubbles <- function(sessions) {
@@ -11,8 +12,8 @@ plot_sleep_bubbles <- function(sessions) {
                     sessions$time_at_wakeup != "") |>
     dplyr::mutate(
       sleep_duration = as.numeric(difftime(
-        as.POSIXct(time_at_wakeup, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-        as.POSIXct(time_at_sleep_onset, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+        as.POSIXct(.data$time_at_wakeup, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+        as.POSIXct(.data$time_at_sleep_onset, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
         units = "hours"
       )),
       color = suppressWarnings(dplyr::case_when(
@@ -24,7 +25,7 @@ plot_sleep_bubbles <- function(sessions) {
       ))
     )
 
-  ggplot2::ggplot(sessions, ggplot2::aes(x = night, y = sleep_duration, color = color)) +
+  ggplot2::ggplot(sessions, ggplot2::aes(x = .data$night, y = .data$sleep_duration, color = .data$color)) +
     ggplot2::annotate(
       "rect",
       xmin = min(sessions$night)-1, xmax = max(sessions$night)+1,

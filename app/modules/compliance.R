@@ -12,13 +12,11 @@ compliance_module <- function(id) {
 
 compliance_server <- function(id, filtered_sessions) {
   shiny::moduleServer(id, function(input, output, session) {
-    # Reactive to generate the compliance table
     compliance_table <- shiny::reactive({
       shiny::req(filtered_sessions())
       make_compliance_table(filtered_sessions())
     })
 
-    # Render the compliance table
     output$compliance_table <- shiny::renderTable({
       shiny::req(compliance_table())
       shiny::validate(
@@ -34,7 +32,6 @@ compliance_server <- function(id, filtered_sessions) {
       }
     })
 
-    # Observe changes to the compliance table and update the tab title color
     shiny::observe({
       shiny::req(compliance_table())
       if (nrow(compliance_table()) > 0) {
@@ -44,22 +41,17 @@ compliance_server <- function(id, filtered_sessions) {
       }
     })
 
-    # Download handler for the compliance table
-    output$download_compliance <- shiny::downloadHandler(
-      filename = function() {
-        paste("Compliance_", Sys.Date(), ".csv", sep = "")
-      },
-      content = function(file) {
-        shiny::req(compliance_table())
-        readr::write_csv(compliance_table(), file)
-      }
+    output$download_compliance <- get_table_download_handler(
+      session = session,
+      output_table = compliance_table,
+      output_name = "compliance"
     )
 
   })
 }
 
 make_compliance_table <- function(sessions) {
-  compliance_table <- get_non_complying_sessions(sessions) |>
+  get_non_complying_sessions(sessions) |>
     dplyr::mutate(
       start_time = substr(session_start, 12, 16),
       sleep_onset = substr(time_at_sleep_onset, 12, 16),
@@ -72,5 +64,4 @@ make_compliance_table <- function(sessions) {
       time_in_bed_h = time_in_bed / 60 / 60
     ) |>
     dplyr::select(id, night, start_time, sleep_onset, wakeup_time, end_time, session_duration_h, time_in_bed_h)
-  return(compliance_table)
 }

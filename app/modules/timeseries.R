@@ -30,16 +30,10 @@ timeseries_module_server <- function(id, epochs, sessions) {
 
     plot_options <- shiny::reactiveValues(variable = NULL)
 
-    # Filter epochs based on sessions
-    filtered_epochs <- shiny::reactive({
-      shiny::req(epochs(), sessions())
-      filter_epochs_from_sessions(epochs(), sessions())
-    })
-
     # Populate the variable dropdown dynamically
     shiny::observe({
-      shiny::req(filtered_epochs())
-      if (nrow(filtered_epochs()) == 0) {
+      shiny::req(epochs())
+      if (nrow(epochs()) == 0) {
         # Handle empty dataframe: set placeholder values
         shiny::updateSelectInput(
           session,
@@ -53,7 +47,7 @@ timeseries_module_server <- function(id, epochs, sessions) {
 
       excluded_vars <- c("timestamp", "motion_data_count", "hour", "date",
                          "night", "adjusted_time", "session_id", "sleep_stage", "epoch_duration")
-      available_vars <- setdiff(names(filtered_epochs()), excluded_vars)
+      available_vars <- setdiff(names(epochs()), excluded_vars)
 
       # Update the dropdown, but preserve the selected variable if possible
       current_variable <- plot_options$variable
@@ -79,9 +73,9 @@ timeseries_module_server <- function(id, epochs, sessions) {
 
     # Reactive expression to store the plot
     timeseries_plot <- shiny::reactive({
-      shiny::req(input$variable, filtered_epochs())
+      shiny::req(input$variable, epochs())
       plot_timeseries(
-        epochs = filtered_epochs(),
+        epochs = epochs(),
         variable = input$variable,
         exclude_zero = input$exclude_zero
       )

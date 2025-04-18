@@ -18,12 +18,14 @@ Imports:
     ggplot2,
     later,
     logging,
+    lubridate,
+    rlang,
+    scales,
     shiny,
     shinyFiles,
     shinyjs,
     shinyWidgets,
-    tidyverse,
-    utils
+    tidyr
 Depends: 
-    R (>= 3.5)
+    R (>= 4.3)
 LazyData: true

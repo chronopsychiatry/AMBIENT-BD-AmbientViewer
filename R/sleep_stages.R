@@ -2,6 +2,7 @@
 #'
 #' @param epochs The epochs dataframe
 #' @returns A ggplot object showing the proportion of sleep stages for each night
+#' @importFrom rlang .data
 #' @export
 #' @family epoch plots
 plot_sleep_stages <- function(epochs) {
@@ -21,14 +22,14 @@ plot_sleep_stages <- function(epochs) {
   )
 
   stage_proportions <- epochs |>
-    dplyr::group_by(night, sleep_stage) |>
+    dplyr::group_by(.data$night, .data$sleep_stage) |>
     dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
-    dplyr::group_by(night) |>
-    dplyr::mutate(proportion = count / sum(count),
-      sleep_stage = factor(sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels)
+    dplyr::group_by(.data$night) |>
+    dplyr::mutate(proportion = .data$count / sum(.data$count),
+      sleep_stage = factor(.data$sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels)
     )
 
-  ggplot2::ggplot(stage_proportions, ggplot2::aes(x = night, y = proportion, fill = factor(sleep_stage))) +
+  ggplot2::ggplot(stage_proportions, ggplot2::aes(x = .data$night, y = .data$proportion, fill = factor(.data$sleep_stage))) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::scale_y_continuous(labels = scales::percent_format()) +
     ggplot2::scale_fill_manual(values = sleep_stage_colors) +

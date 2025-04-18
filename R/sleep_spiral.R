@@ -2,6 +2,7 @@
 #'
 #' @param epochs The epochs dataframe
 #' @returns A ggplot object showing the sleep spiral
+#' @importFrom rlang .data
 #' @export
 #' @family epoch plots
 plot_sleep_spiral <- function(epochs) {
@@ -16,22 +17,22 @@ plot_sleep_spiral <- function(epochs) {
 
   epochs <- epochs |>
     dplyr::mutate(
-      timestamp = as.POSIXct(timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-      sleep_stage = as.character(sleep_stage),  # Convert sleep_stage to character for mapping
-      sleep_stage = dplyr::if_else(sleep_stage == "5", "1", sleep_stage)  # Consider "no presence" as "awake"
+      timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      sleep_stage = as.character(.data$sleep_stage),  # Convert sleep_stage to character for mapping
+      sleep_stage = dplyr::if_else(.data$sleep_stage == "5", "1", .data$sleep_stage)  # Consider "no presence" as "awake"
     ) |>
     tidyr::complete(
-      timestamp = seq(min(timestamp), max(timestamp), by = "1 min"),  # Fill gaps with 5-minute intervals
+      timestamp = seq(min(.data$timestamp), max(.data$timestamp), by = "1 min"),  # Fill gaps with 5-minute intervals
       fill = list(sleep_stage = "1")  # Mark missing data as "awake"
     ) |>
     dplyr::mutate(
-      time_in_days = as.numeric(difftime(timestamp, reference_time, units = "days")),
-      time_in_min = as.numeric(difftime(timestamp, reference_time, units = "mins")),
-      angle = (time_in_days %% 1) * 2 * pi,
-      radius = time_in_min
+      time_in_days = as.numeric(difftime(.data$timestamp, reference_time, units = "days")),
+      time_in_min = as.numeric(difftime(.data$timestamp, reference_time, units = "mins")),
+      angle = (.data$time_in_days %% 1) * 2 * pi,
+      radius = .data$time_in_min
     )
 
-  ggplot2::ggplot(epochs, ggplot2::aes(x = angle, y = radius, color = sleep_stage)) +
+  ggplot2::ggplot(epochs, ggplot2::aes(x = .data$angle, y = .data$radius, color = .data$sleep_stage)) +
     ggplot2::geom_point(size = 1, shape = 16) +
     ggplot2::scale_color_manual(values = sleep_stage_colors,
       labels = c(

@@ -9,7 +9,7 @@ load_sessions <- function(sessions_file) {
   if (file.info(sessions_file)$size < 10) {
     return(NULL)
   }
-  read.csv(sessions_file) |>
+  utils::read.csv(sessions_file) |>
     group_sessions_by_night()
 }
 
@@ -24,7 +24,7 @@ load_epochs <- function(epochs_file) {
   if (file.info(epochs_file)$size < 10) {
     return(NULL)
   }
-  read.csv(epochs_file) |>
+  utils::read.csv(epochs_file) |>
     group_epochs_by_night()
 }
 
@@ -50,17 +50,18 @@ load_data <- function(folder, basename) {
 #' @details The function creates a new column `night` that groups the epochs by night,
 #' and an `adjusted_time` column to facilitate plotting from 12PM to 12PM.
 #' Timepoints before 12 PM are considered part of the previous night.
+#' @importFrom rlang .data
 #' @export
 #' @seealso [group_sessions_by_night()] to group session data by night.
 group_epochs_by_night <- function(epochs) {
   epochs |>
     dplyr::mutate(
-      timestamp = as.POSIXct(timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-      date = as.Date(timestamp, tz = "UTC"),
-      hour = as.numeric(format(timestamp, "%H", tz = "UTC")) + as.numeric(format(timestamp, "%M", tz = "UTC")) / 60,
+      timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      date = as.Date(.data$timestamp, tz = "UTC"),
+      hour = as.numeric(format(.data$timestamp, "%H", tz = "UTC")) + as.numeric(format(.data$timestamp, "%M", tz = "UTC")) / 60,
       # Adjust time to always go from 12 PM to 12 PM (for plotting)
-      adjusted_time = ifelse(hour < 12, hour + 24, hour) - 12,
-      night = as.Date(ifelse(hour < 12, date - 1, date))
+      adjusted_time = ifelse(.data$hour < 12, .data$hour + 24, .data$hour) - 12,
+      night = as.Date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
     )
 }
 
@@ -75,11 +76,11 @@ group_epochs_by_night <- function(epochs) {
 group_sessions_by_night <- function(sessions) {
   sessions |>
     dplyr::mutate(
-      start_time = as.POSIXct(session_start, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-      date = as.Date(start_time, tz = "UTC"),
-      start_hour = as.numeric(format(start_time, "%H", tz = "UTC")) +
-        as.numeric(format(start_time, "%M", tz = "UTC")) / 60,
-      night = as.Date(ifelse(start_hour < 12, date - 1, date))
+      start_time = as.POSIXct(.data$session_start, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      date = as.Date(.data$start_time, tz = "UTC"),
+      start_hour = as.numeric(format(.data$start_time, "%H", tz = "UTC")) +
+        as.numeric(format(.data$start_time, "%M", tz = "UTC")) / 60,
+      night = as.Date(ifelse(.data$start_hour < 12, date - 1, date))
     ) |>
-    dplyr::select(-start_time, -date, -start_hour)
+    dplyr::select(-"start_time", -"date", -"start_hour")
 }

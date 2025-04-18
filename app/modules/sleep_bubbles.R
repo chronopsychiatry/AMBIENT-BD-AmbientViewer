@@ -30,7 +30,6 @@ sleep_bubbles_module_server <- function(id, sessions) {
       sleep_bubbles_plot()
     })
 
-    # Download handler for the plot
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = sleep_bubbles_plot,

@@ -18,19 +18,12 @@ sleep_spiral_module_ui <- function(id) {
 sleep_spiral_module_server <- function(id, epochs, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    # Filter epochs based on sessions
-    filtered_epochs <- shiny::reactive({
-      shiny::req(epochs(), sessions())
-      filter_epochs_from_sessions(epochs(), sessions())
-    })
-
-    # Reactive expression to store the plot
     sleep_spiral_plot <- shiny::reactive({
-      shiny::req(filtered_epochs())
-      if (nrow(filtered_epochs()) == 0) {
+      shiny::req(epochs())
+      if (nrow(epochs()) == 0) {
         return(NULL)
       }
-      plot_sleep_spiral(epochs = filtered_epochs())
+      plot_sleep_spiral(epochs = epochs())
     })
 
     # Render the plot

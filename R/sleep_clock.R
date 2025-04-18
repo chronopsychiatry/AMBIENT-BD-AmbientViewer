@@ -2,28 +2,31 @@
 #'
 #' @param sessions The sessions dataframe
 #' @returns A ggplot object showing the sleep clock
+#' @importFrom rlang .data
 #' @export
 #' @family session plots
 plot_sleep_clock <- function(sessions) {
   # Parse times into numeric hours (0-24)
   sessions <- sessions |>
-    dplyr::filter(!is.na(time_at_sleep_onset) & !is.na(time_at_wakeup)) |>
+    dplyr::filter(!is.na(.data$time_at_sleep_onset) & !is.na(.data$time_at_wakeup)) |>
     dplyr::mutate(
-      sleep_onset_hour = lubridate::hour(lubridate::ymd_hms(time_at_sleep_onset)) + lubridate::minute(lubridate::ymd_hms(time_at_sleep_onset)) / 60,
-      wakeup_hour = lubridate::hour(lubridate::ymd_hms(time_at_wakeup)) + lubridate::minute(lubridate::ymd_hms(time_at_wakeup)) / 60
+      sleep_onset_hour = lubridate::hour(lubridate::ymd_hms(.data$time_at_sleep_onset)) +
+        lubridate::minute(lubridate::ymd_hms(.data$time_at_sleep_onset)) / 60,
+      wakeup_hour = lubridate::hour(lubridate::ymd_hms(.data$time_at_wakeup)) +
+        lubridate::minute(lubridate::ymd_hms(.data$time_at_wakeup)) / 60
     )
 
   sleep_onset_data <- sessions |>
-    dplyr::select(sleep_onset_hour) |>
+    dplyr::select("sleep_onset_hour") |>
     dplyr::mutate(type = "Sleep Onset", color = "purple")
 
   wakeup_data <- sessions |>
-    dplyr::select(wakeup_hour) |>
+    dplyr::select("wakeup_hour") |>
     dplyr::mutate(type = "Wakeup", color = "orange")
 
   plot_data <- dplyr::bind_rows(
-    sleep_onset_data |> dplyr::rename(hour = sleep_onset_hour),
-    wakeup_data |> dplyr::rename(hour = wakeup_hour)
+    sleep_onset_data |> dplyr::rename(hour = "sleep_onset_hour"),
+    wakeup_data |> dplyr::rename(hour = "wakeup_hour")
   )
 
   circle_outline <- data.frame(
@@ -31,10 +34,10 @@ plot_sleep_clock <- function(sessions) {
     y = 1
   )
 
-  ggplot2::ggplot(plot_data, ggplot2::aes(x = hour, y = 1, color = type)) +
-    ggplot2::geom_path(data = circle_outline, ggplot2::aes(x = hour, y = y), inherit.aes = FALSE, color = "grey", linewidth = 0.5) +
-    ggplot2::geom_segment(ggplot2::aes(xend = hour, yend = 0), linewidth = 1) +
-    ggplot2::geom_point(ggplot2::aes(x = hour, y = 1), size = 3) +
+  ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$hour, y = 1, color = .data$type)) +
+    ggplot2::geom_path(data = circle_outline, ggplot2::aes(x = .data$hour, y = .data$y), inherit.aes = FALSE, color = "grey", linewidth = 0.5) +
+    ggplot2::geom_segment(ggplot2::aes(xend = .data$hour, yend = 0), linewidth = 1) +
+    ggplot2::geom_point(ggplot2::aes(x = .data$hour, y = 1), size = 3) +
     ggplot2::scale_x_continuous(
       limits = c(0, 24),
       breaks = seq(0, 24, by = 1),

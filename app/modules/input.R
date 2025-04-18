@@ -17,7 +17,7 @@ input_folder_server <- function(id, session) {
       folder_path(shinyFiles::parseDirPath(volumes, input$folder))
     })
 
-    return(folder_path)
+    folder_path
   })
 }
 
@@ -58,8 +58,8 @@ input_data_files_server <- function(id, folder_path) {
 
     # Clear selected_file whenever folder_path changes
     shiny::observeEvent(folder_path(), {
-      selected_file(NULL)  # Reset the selected file
-      shiny::updateSelectInput(session, "file_selector", selected = NULL)  # Clear the UI selection
+      selected_file(NULL)
+      shiny::updateSelectInput(session, "file_selector", selected = NULL)
     })
 
     # Update selected_file when a new file is selected
@@ -67,14 +67,14 @@ input_data_files_server <- function(id, folder_path) {
       selected_file(input$file_selector)
     })
 
-    return(selected_file)
+    selected_file
   })
 }
 
 
 load_data_module_server <- function(id, folder_path, selected_file) {
   shiny::moduleServer(id, function(input, output, session) {
-    data <- shiny::reactive({
+    shiny::reactive({
       shiny::req(folder_path(), selected_file())
       sessions_path <- paste0(folder_path(), "/", selected_file(), "_sessions_reports.csv")
       epochs_path <- paste0(folder_path(), "/", selected_file(), "_epoch_data.csv")

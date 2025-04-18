@@ -113,21 +113,22 @@ server <- function(input, output, session) {
 
   # Filtering and compliance module
   filtered_sessions <- filtering_server("filtering", sessions)
+  filtered_epochs <- shiny::reactive(filter_epochs_from_sessions(epochs(), filtered_sessions()))
   compliance_server("compliance", filtered_sessions)
 
   # Summary table module
   summary_server("summary", filtered_sessions)
 
   # Export data module
-  export_data_server("export_data", filtered_sessions, epochs)
+  export_data_server("export_data", filtered_sessions, filtered_epochs)
 
   # Plotting modules
-  sleep_spiral_module_server("sleep_spiral", epochs, filtered_sessions)
+  sleep_spiral_module_server("sleep_spiral", filtered_epochs, filtered_sessions)
   sleep_clock_module_server("sleep_clock", filtered_sessions)
   sleep_bubbles_module_server("sleep_bubbles", filtered_sessions)
-  sleep_stages_module_server("sleep_stages", epochs, filtered_sessions)
+  sleep_stages_module_server("sleep_stages", filtered_epochs, filtered_sessions)
   timeseries_sessions_module_server("timeseries_sessions", filtered_sessions)
-  timeseries_module_server("timeseries", epochs, filtered_sessions)
+  timeseries_module_server("timeseries", filtered_epochs, filtered_sessions)
 
 }
 

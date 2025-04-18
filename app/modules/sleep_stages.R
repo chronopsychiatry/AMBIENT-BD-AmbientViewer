@@ -18,25 +18,16 @@ sleep_stages_module_ui <- function(id) {
 sleep_stages_module_server <- function(id, epochs, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    # Filter epochs based on sessions
-    filtered_epochs <- shiny::reactive({
-      shiny::req(epochs(), sessions())
-      filter_epochs_from_sessions(epochs(), sessions())
-    })
-
-    # Reactive expression to store the plot
     sleep_stages_plot <- shiny::reactive({
-      shiny::req(filtered_epochs())
-      plot_sleep_stages(epochs = filtered_epochs())
+      shiny::req(epochs())
+      plot_sleep_stages(epochs = epochs())
     })
 
-    # Render the plot
     output$sleep_stages_plot <- shiny::renderPlot({
       shiny::req(sleep_stages_plot())
       sleep_stages_plot()
     })
 
-    # Download handler for the plot
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = sleep_stages_plot,

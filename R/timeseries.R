@@ -4,6 +4,7 @@
 #' @param variable The variable to plot (e.g., "temperature_ambient_mean")
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
+#' @importFrom rlang .data
 #' @export
 #' @family epoch plots
 #' @seealso [plot_timeseries_sessions()] to plot session data.
@@ -16,10 +17,10 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   p <- ggplot2::ggplot(
     epochs,
     ggplot2::aes(
-      x = adjusted_time,
+      x = .data$adjusted_time,
       y = .data[[variable]],
-      color = as.factor(night),
-      group = night
+      color = as.factor(.data$night),
+      group = .data$night
     )
   ) +
     ggplot2::geom_point() +
@@ -72,8 +73,8 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   p <- ggplot2::ggplot(
     sessions,
     ggplot2::aes(
-      x = night,
-      y = plot_var
+      x = .data$night,
+      y = .data$plot_var
     )
   ) +
     ggplot2::geom_point() +

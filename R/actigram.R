@@ -3,30 +3,31 @@
 #' Generate an actigram from the Somnofy epoch data.
 #' @param epochs The epochs data frame
 #' @return A ggplot object representing the actigram
+#' @importFrom rlang .data
 #' @export
 plot_actigram <- function(epochs) {
   epochs <- epochs |>
     dplyr::mutate(
-      timestamp = lubridate::ymd_hms(timestamp, tz = "UTC"),
-      date = as.Date(timestamp),
-      time = as.numeric(difftime(timestamp, as.Date(timestamp), units = "secs")) / 3600, # Time in hours
-      sleep_value = ifelse(sleep_stage %in% c(2, 3, 4), signal_quality_mean, 0)
+      timestamp = lubridate::ymd_hms(.data$timestamp, tz = "UTC"),
+      date = as.Date(.data$timestamp),
+      time = as.numeric(difftime(.data$timestamp, as.Date(.data$timestamp), units = "secs")) / 3600, # Time in hours
+      sleep_value = ifelse(.data$sleep_stage %in% c(2, 3, 4), .data$signal_quality_mean, 0)
     )
 
   epochs_duplicated <- dplyr::bind_rows(
     epochs |>
       dplyr::mutate(
         day_label = paste0(date, " - ", date + 1), # Current day and next day
-        time_48h = time # Keep original time (0–24)
+        time_48h = .data$time # Keep original time (0–24)
       ),
     epochs |>
       dplyr::mutate(
         day_label = paste0(date - 1, " - ", date), # Previous day and current day
-        time_48h = time + 24 # Shift time by +24 (24–48)
+        time_48h = .data$time + 24 # Shift time by +24 (24–48)
       )
   )
 
-  ggplot2::ggplot(epochs_duplicated, ggplot2::aes(x = time_48h, y = sleep_value)) +
+  ggplot2::ggplot(epochs_duplicated, ggplot2::aes(x = .data$time_48h, y = .data$sleep_value)) +
     ggplot2::geom_col(fill = "black") +
     ggplot2::geom_hline(yintercept = 0, color = "gray", linetype = "solid") +
     ggplot2::facet_wrap(~day_label, ncol = 1, strip.position = "left") +
