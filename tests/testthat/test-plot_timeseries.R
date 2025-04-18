@@ -9,8 +9,7 @@ mock_epochs <- data.frame(
     "2025-03-02", "2025-03-03",
     "2025-03-03", "2025-03-03",
     "2025-03-04", "2025-03-04"
-  )),
-  adjusted_time = c(23, 11, 13, 23, 1, 11)
+  ))
 )
 
 test_that("plot_timeseries returns a ggplot object", {
@@ -29,6 +28,6 @@ test_that("plot_timeseries uses the correct x and y mappings", {
   plot_data <- ggplot2::ggplot_build(plot)$data[[1]]
 
   # Check that the x and y mappings are correct
-  expect_equal(plot_data$x, mock_epochs$adjusted_time)
+  expect_equal(plot_data$x, shift_times_by_12h(mock_epochs$timestamp))
   expect_equal(plot_data$y, mock_epochs$temperature_ambient_mean)
 })

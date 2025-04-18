@@ -68,6 +68,35 @@ convert_angle_to_time <- function(angle, unit = "second") {
   if (time >= 0) time else time + conversion_factor
 }
 
+#' Shift times to break at 12 pm
+#'
+#' This function shifts times so that the day starts at 12 PM.
+#' This is useful for plotting night data
+#' @param times A vector of times in POSIXct format (or character convertible to POSIXct).
+#' @return A numerical vector of times (in hours) shifted to start at 12 PM
+#' @export
+#' @examples
+#' # Shift sessions start times to start at 12 PM
+#' shifted_times <- shift_times_by_12h(example_sessions$session_start)
+#'
+#' # Use dplyr::mutate to dicrectly add the shifted times to a dataframe
+#' epochs <- example_epochs |>
+#'   dplyr::mutate(shifted_time = shift_times_by_12h(timestamp))
+shift_times_by_12h <- function(times) {
+  if (length(times) == 0) {
+    return(NA_real_)
+  }
+
+  times <- times[!is.na(times)]
+  if (!inherits(times, "POSIXct")) {
+    times <- lubridate::ymd_hms(times, tz = "UTC")
+  }
+
+  hour <- as.numeric(format(times, "%H", tz = "UTC")) +
+    as.numeric(format(times, "%M", tz = "UTC")) / 60
+  ifelse(hour < 12, hour + 24, hour) - 12
+}
+
 get_time_per_day <- function(unit = "second") {
   switch(unit,
     second = 86400,
@@ -80,5 +109,5 @@ get_time_per_day <- function(unit = "second") {
 is_iso8601_datetime <- function(column) {
   column <- column[!is.na(column) & column != ""]
   parsed <- suppressWarnings(lubridate::ymd_hms(column, quiet = TRUE, tz = "UTC"))
-  return(all(!is.na(parsed)))
+  all(!is.na(parsed))
 }

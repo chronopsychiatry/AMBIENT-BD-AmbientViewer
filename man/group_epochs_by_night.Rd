@@ -16,8 +16,7 @@ The epochs dataframe with the \code{night} column added
 Create a grouping by night for epoch data
 }
 \details{
-The function creates a new column \code{night} that groups the epochs by night,
-and an \code{adjusted_time} column to facilitate plotting from 12PM to 12PM.
+The function creates a new column \code{night} that groups the epochs by night.
 Timepoints before 12 PM are considered part of the previous night.
 }
 \seealso{

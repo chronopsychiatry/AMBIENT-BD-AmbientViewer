@@ -34,9 +34,6 @@ test_that("group_epochs_by_night correctly groups epochs by night", {
 
   # Check that the night column is created correctly
   expect_equal(grouped_epochs$night, as.Date(c("2025-03-02", "2025-03-03", "2025-03-03", "2025-03-03")))
-
-  # Check that the adjusted_time column is calculated correctly
-  expect_equal(grouped_epochs$adjusted_time, c(23, 11, 13, 23))
 })
 
 test_that("group_sessions_by_night correctly groups sessions by night", {

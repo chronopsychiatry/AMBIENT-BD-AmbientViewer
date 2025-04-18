@@ -45,8 +45,8 @@ timeseries_module_server <- function(id, epochs, sessions) {
         return()
       }
 
-      excluded_vars <- c("timestamp", "motion_data_count", "hour", "date",
-                         "night", "adjusted_time", "session_id", "sleep_stage", "epoch_duration")
+      excluded_vars <- c("timestamp", "motion_data_count",
+                         "night", "session_id", "sleep_stage", "epoch_duration")
       available_vars <- setdiff(names(epochs()), excluded_vars)
 
       # Update the dropdown, but preserve the selected variable if possible
@@ -71,7 +71,6 @@ timeseries_module_server <- function(id, epochs, sessions) {
       plot_options$variable <- input$variable
     })
 
-    # Reactive expression to store the plot
     timeseries_plot <- shiny::reactive({
       shiny::req(input$variable, epochs())
       plot_timeseries(
@@ -81,13 +80,11 @@ timeseries_module_server <- function(id, epochs, sessions) {
       )
     })
 
-    # Render the timeseries plot
     output$timeseries_plot <- shiny::renderPlot({
       shiny::req(timeseries_plot())
       timeseries_plot()
     })
 
-    # Download handler for the plot
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = timeseries_plot,

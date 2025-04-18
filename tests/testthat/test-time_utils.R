@@ -42,6 +42,20 @@ test_that("convert_angle_to_time works correctly", {
   expect_equal(time, 21600)
 })
 
+test_that("shift_times_by_12h shifts times correctly", {
+  times <- c("2025-04-08 00:00:00", "2025-04-08 12:00:00", "2025-04-08 15:30:00")
+  shifted_times <- shift_times_by_12h(times)
+  expected_times <- c(12, 0, 3.5)
+  expect_equal(shifted_times, expected_times)
+})
+
+test_that("shift_times_by_12h works with POSIXct data", {
+  times <- as.POSIXct(c("2025-04-08 00:00:00", "2025-04-08 12:00:00", "2025-04-08 15:30:00"), tz = "UTC")
+  shifted_times <- shift_times_by_12h(times)
+  expected_times <- c(12, 0, 3.5)
+  expect_equal(shifted_times, expected_times)
+})
+
 test_that("get_time_per_day works correctly", {
   expect_equal(get_time_per_day("second"), 86400)
   expect_equal(get_time_per_day("minute"), 1440)

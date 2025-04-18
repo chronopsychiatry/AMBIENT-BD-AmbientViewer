@@ -17,7 +17,7 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   p <- ggplot2::ggplot(
     epochs,
     ggplot2::aes(
-      x = .data$adjusted_time,
+      x = shift_times_by_12h(.data$timestamp),
       y = .data[[variable]],
       color = as.factor(.data$night),
       group = .data$night

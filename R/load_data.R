@@ -47,8 +47,7 @@ load_data <- function(folder, basename) {
 #'
 #' @param epochs The epochs dataframe
 #' @returns The epochs dataframe with the `night` column added
-#' @details The function creates a new column `night` that groups the epochs by night,
-#' and an `adjusted_time` column to facilitate plotting from 12PM to 12PM.
+#' @details The function creates a new column `night` that groups the epochs by night.
 #' Timepoints before 12 PM are considered part of the previous night.
 #' @importFrom rlang .data
 #' @export
@@ -59,10 +58,9 @@ group_epochs_by_night <- function(epochs) {
       timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       date = as.Date(.data$timestamp, tz = "UTC"),
       hour = as.numeric(format(.data$timestamp, "%H", tz = "UTC")) + as.numeric(format(.data$timestamp, "%M", tz = "UTC")) / 60,
-      # Adjust time to always go from 12 PM to 12 PM (for plotting)
-      adjusted_time = ifelse(.data$hour < 12, .data$hour + 24, .data$hour) - 12,
       night = as.Date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
-    )
+    ) |>
+    dplyr::select(-"date", -"hour")
 }
 
 #' Create a grouping by night for session data
