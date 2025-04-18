@@ -97,6 +97,46 @@ shift_times_by_12h <- function(times) {
   ifelse(hour < 12, hour + 24, hour) - 12
 }
 
+#' Create a grouping by night for epoch data
+#'
+#' @param epochs The epochs dataframe
+#' @returns The epochs dataframe with the `night` column added
+#' @details The function creates a new column `night` that groups the epochs by night.
+#' Timepoints before 12 PM are considered part of the previous night.
+#' @importFrom rlang .data
+#' @export
+#' @seealso [group_sessions_by_night()] to group session data by night.
+group_epochs_by_night <- function(epochs) {
+  epochs |>
+    dplyr::mutate(
+      timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      date = as.Date(.data$timestamp, tz = "UTC"),
+      hour = as.numeric(format(.data$timestamp, "%H", tz = "UTC")) + as.numeric(format(.data$timestamp, "%M", tz = "UTC")) / 60,
+      night = as.Date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
+    ) |>
+    dplyr::select(-"date", -"hour")
+}
+
+#' Create a grouping by night for session data
+#'
+#' @param sessions The sessions dataframe
+#' @returns The sessions dataframe with the `night` column added
+#' @details The function creates a new column `night` that groups the sessions by night depending on their start time.
+#' Sessions that start before 12 PM are considered part of the previous night.
+#' @export
+#' @seealso [group_epochs_by_night()] to group epoch data by night.
+group_sessions_by_night <- function(sessions) {
+  sessions |>
+    dplyr::mutate(
+      start_time = as.POSIXct(.data$session_start, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      date = as.Date(.data$start_time, tz = "UTC"),
+      start_hour = as.numeric(format(.data$start_time, "%H", tz = "UTC")) +
+        as.numeric(format(.data$start_time, "%M", tz = "UTC")) / 60,
+      night = as.Date(ifelse(.data$start_hour < 12, date - 1, date))
+    ) |>
+    dplyr::select(-"start_time", -"date", -"start_hour")
+}
+
 get_time_per_day <- function(unit = "second") {
   switch(unit,
     second = 86400,

@@ -71,21 +71,31 @@ input_data_files_server <- function(id, folder_path) {
   })
 }
 
-
-load_data_module_server <- function(id, folder_path, selected_file) {
+load_sessions_module_server <- function(id, folder_path, selected_file) {
   shiny::moduleServer(id, function(input, output, session) {
     shiny::reactive({
       shiny::req(folder_path(), selected_file())
       sessions_path <- paste0(folder_path(), "/", selected_file(), "_sessions_reports.csv")
-      epochs_path <- paste0(folder_path(), "/", selected_file(), "_epoch_data.csv")
       if (!file.exists(sessions_path)) {
         logging::logerror(paste0("Sessions file not found: ", sessions_path))
         NULL
-      } else if (!file.exists(epochs_path)) {
+      } else {
+        load_sessions(sessions_path)
+      }
+    })
+  })
+}
+
+load_epochs_module_server <- function(id, folder_path, selected_file) {
+  shiny::moduleServer(id, function(input, output, session) {
+    shiny::reactive({
+      shiny::req(folder_path(), selected_file())
+      epochs_path <- paste0(folder_path(), "/", selected_file(), "_epoch_data.csv")
+      if (!file.exists(epochs_path)) {
         logging::logerror(paste0("Epochs file not found: ", epochs_path))
         NULL
       } else {
-        load_data(folder_path(), selected_file())
+        load_epochs(epochs_path)
       }
     })
   })

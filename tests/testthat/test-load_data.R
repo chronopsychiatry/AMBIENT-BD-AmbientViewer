@@ -12,33 +12,20 @@ mock_epochs <- data.frame(
   value = c(10, 20, 15, 25)
 )
 
-# Write mock CSV files for testing
 test_folder <- tempdir()
 write.csv(mock_sessions, file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv"), row.names = FALSE)
 write.csv(mock_epochs, file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv"), row.names = FALSE)
 
-test_that("load_data loads sessions and epochs correctly", {
-  result <- load_data(test_folder, "2025-03-03_2025-03-04")
+test_that("load_sessions loads sessions correctly", {
+  sessions <- load_sessions(file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv"))
 
-  # Check that sessions are loaded correctly
-  expect_equal(nrow(result$sessions), 3)
-  expect_equal(result$sessions$session_id, c(1, 2, 3))
-
-  # Check that epochs are loaded correctly
-  expect_equal(nrow(result$epochs), 4)
-  expect_equal(result$epochs$value, c(10, 20, 15, 25))
+  expect_equal(nrow(sessions), 3)
+  expect_equal(sessions$session_id, c(1, 2, 3))
 })
 
-test_that("group_epochs_by_night correctly groups epochs by night", {
-  grouped_epochs <- group_epochs_by_night(mock_epochs)
+test_that("load_epochs loads epochs correctly", {
+  epochs <- load_epochs(file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv"))
 
-  # Check that the night column is created correctly
-  expect_equal(grouped_epochs$night, as.Date(c("2025-03-02", "2025-03-03", "2025-03-03", "2025-03-03")))
-})
-
-test_that("group_sessions_by_night correctly groups sessions by night", {
-  grouped_sessions <- group_sessions_by_night(mock_sessions)
-
-  # Check that the night column is created correctly
-  expect_equal(grouped_sessions$night, as.Date(c("2025-03-02", "2025-03-03", "2025-03-04")))
+  expect_equal(nrow(epochs), 4)
+  expect_equal(epochs$value, c(10, 20, 15, 25))
 })

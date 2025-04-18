@@ -102,9 +102,8 @@ server <- function(input, output, session) {
   # Data loading module
   folder_path <- input_folder_server("folder_selector", session)
   selected_file <- input_data_files_server("file_selector", folder_path)
-  data <- load_data_module_server("load_data", folder_path, selected_file)
-  sessions <- shiny::reactive(data()$sessions)
-  epochs <- shiny::reactive(data()$epochs)
+  sessions <- load_sessions_module_server("load_sessions", folder_path, selected_file)
+  epochs <- load_epochs_module_server("load_epochs", folder_path, selected_file)
   shiny::observe({
     shiny::req(sessions(), epochs())
     logging::loginfo(paste0("Loaded sessions ", selected_file(), " (", nrow(sessions()), " rows)"))
