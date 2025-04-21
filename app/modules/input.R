@@ -65,7 +65,7 @@ input_sessions_files_server <- function(id, folder_path) {
   })
 }
 
-input_epochs_files_server <- function(id, folder_path) {
+input_epochs_files_server <- function(id, folder_path, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
     files <- list_files(folder_path)
 
@@ -79,6 +79,12 @@ input_epochs_files_server <- function(id, folder_path) {
     shiny::observeEvent(folder_path(), {
       selected_epochs(NULL)
       shiny::updateSelectInput(session, "epochs_selector", selected = "")
+      shinyjs::disable("epochs_selector")
+    })
+
+    shiny::observe({
+      shiny::req(sessions())
+      shinyjs::enable("epochs_selector")
     })
 
     shiny::observeEvent(input$epochs_selector, {

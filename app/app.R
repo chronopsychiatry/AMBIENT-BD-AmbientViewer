@@ -110,7 +110,7 @@ server <- function(input, output, session) {
     }
   })
   selected_sessions <- input_sessions_files_server("file_selector", folder_path)
-  selected_epochs <- input_epochs_files_server("file_selector", folder_path)
+  selected_epochs <- input_epochs_files_server("file_selector", folder_path, sessions)
   sessions <- load_sessions_module_server("load_sessions", folder_path, selected_sessions)
   epochs <- load_epochs_module_server("load_epochs", folder_path, selected_epochs)
   shiny::observe({
