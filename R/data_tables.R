@@ -1,6 +1,6 @@
 #' Make a summary of session information
 #'
-#' This function summarizes session information, including the number of sessions, mean session length,
+#' This function summarises session information, including the number of sessions, mean session length,
 #' mean time at sleep onset and wakeup, subject and device ID.
 #' @param sessions The sessions dataframe.
 #' @returns A single-row dataframe summarizing session information.
@@ -24,5 +24,27 @@ get_sessions_summary <- function(sessions) {
       mean_sleep_onset = mean_time(.data$sleep_onset),
       mean_wakeup_time = mean_time(.data$wakeup_time),
       mean_session_length = mean(.data$session_duration_hours, na.rm = TRUE)
+    )
+}
+
+#' Summarise epoch information
+#'
+#' This function displays the number of sessions in the epoch data, as well as the start and end dates of the epoch data
+#' @param epochs The epochs dataframe
+#' @returns A single-row dataframe summarising epoch information
+#' @importFrom rlang .data
+#' @export
+#' @examples
+#' get_epochs_summary(example_epochs)
+get_epochs_summary <- function(epochs) {
+  if (nrow(epochs) == 0) {
+    return(data.frame(total_sessions = 0, start_date = NA, end_date = NA))
+  }
+  epochs |>
+    dplyr::mutate(timestamp = lubridate::ymd_hms(.data$timestamp, tz = "UTC")) |>
+    dplyr::summarise(
+      total_sessions = dplyr::n_distinct(.data$session_id),
+      start_date = format(min(.data$timestamp, na.rm = TRUE), "%Y-%m-%d"),
+      end_date = format(max(.data$timestamp, na.rm = TRUE), "%Y-%m-%d")
     )
 }

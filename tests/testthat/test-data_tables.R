@@ -34,3 +34,29 @@ test_that("get_sessions_summary handles empty input", {
   expect_equal(result$total_sessions, 0)
   expect_true(is.na(result$mean_session_length))
 })
+
+test_that("get_epochs_summary works correctly with valid input", {
+  epochs <- data.frame(
+    timestamp = c("2025-04-01T10:00:00", "2025-04-10T14:00:00"),
+    session_id = c("VEhDQRkDAwsBEAAA", "VEhDQRkDAwsBEAAB")
+  )
+
+  result <- get_epochs_summary(epochs)
+
+  expect_equal(result$total_sessions, 2)
+  expect_equal(result$start_date, "2025-04-01")
+  expect_equal(result$end_date, "2025-04-10")
+})
+
+test_that("get_epochs_summary handles empty input", {
+  epochs <- data.frame(
+    timestamp = character(),
+    session_id = character()
+  )
+
+  result <- get_epochs_summary(epochs)
+
+  expect_equal(result$total_sessions, 0)
+  expect_true(is.na(result$start_date))
+  expect_true(is.na(result$end_date))
+})

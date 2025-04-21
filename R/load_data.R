@@ -9,8 +9,13 @@ load_sessions <- function(sessions_file) {
   if (file.info(sessions_file)$size < 10) {
     return(NULL)
   }
-  utils::read.csv(sessions_file) |>
-    group_sessions_by_night()
+  df <- utils::read.csv(sessions_file)
+  if ("session_start" %in% names(df)) {
+    df |>
+      group_sessions_by_night()
+  } else {
+    NULL
+  }
 }
 
 #' Load epoch data
@@ -24,6 +29,11 @@ load_epochs <- function(epochs_file) {
   if (file.info(epochs_file)$size < 10) {
     return(NULL)
   }
-  utils::read.csv(epochs_file) |>
-    group_epochs_by_night()
+  df <- utils::read.csv(epochs_file)
+  if ("timestamp" %in% names(df)) {
+    df |>
+      group_epochs_by_night()
+  } else {
+    NULL
+  }
 }

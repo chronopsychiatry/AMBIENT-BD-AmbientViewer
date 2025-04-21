@@ -1,23 +1,34 @@
 summary_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::tableOutput(ns("summary_table"))
+    shiny::h5(shiny::strong("Sessions")),
+    shiny::uiOutput(ns("sessions_summary_table")),
+    shiny::h5(shiny::strong("Epochs")),
+    shiny::uiOutput(ns("epochs_summary_table"))
   )
 }
 
-summary_server <- function(id, sessions) {
+summary_server <- function(id, sessions, epochs) {
   shiny::moduleServer(id, function(input, output, session) {
-    summary_table <- shiny::reactive({
+
+    sessions_summary_table <- shiny::reactive({
       shiny::req(sessions())
       get_sessions_summary(sessions())
     })
 
-    output$summary_table <- shiny::renderTable({
-      shiny::req(summary_table())
-      shiny::validate(
-        shiny::need(summary_table()$total_sessions > 0, "No Session data found.")
-      )
-      summary_table()
+    epochs_summary_table <- shiny::reactive({
+      shiny::req(epochs())
+      get_epochs_summary(epochs())
+    })
+
+    output$sessions_summary_table <- shiny::renderTable({
+      shiny::req(sessions_summary_table())
+      sessions_summary_table()
+    })
+
+    output$epochs_summary_table <- shiny::renderTable({
+      shiny::req(epochs_summary_table())
+      epochs_summary_table()
     })
   })
 }
