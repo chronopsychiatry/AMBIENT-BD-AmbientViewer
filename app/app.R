@@ -29,11 +29,7 @@ ui <- fluidPage(
 
       # Data input, filtering and export ----
       h4("Data Input"),
-      input_folder_module("folder_selector"),
-      br(),
-      br(),
-      input_data_files_module("file_selector"),
-      br(),
+      input_ui("input"),
       h4("Filtering"),
       filtering_module("filtering"),
       br(),
@@ -102,25 +98,9 @@ server <- function(input, output, session) {
   })
 
   # Data loading module
-  folder_path <- input_folder_server("folder_selector", session)
-  shiny::observe({
-    shiny::req(folder_path())
-    if (folder_path() != "") {
-      logging::loginfo(paste0("Loading files from: ", folder_path()))
-    }
-  })
-  selected_sessions <- input_sessions_files_server("file_selector", folder_path)
-  selected_epochs <- input_epochs_files_server("file_selector", folder_path, sessions)
-  sessions <- load_sessions_module_server("load_sessions", folder_path, selected_sessions)
-  epochs <- load_epochs_module_server("load_epochs", folder_path, selected_epochs)
-  shiny::observe({
-    shiny::req(sessions())
-    logging::loginfo(paste0("Loaded sessions ", selected_sessions(), " (", nrow(sessions()), " rows)"))
-  })
-  shiny::observe({
-    shiny::req(sessions(), epochs())
-    logging::loginfo(paste0("Loaded epochs ", selected_epochs(), " (", nrow(epochs()), " rows)"))
-  })
+  data <- input_server("input", session)
+  sessions <- data$sessions
+  epochs <- data$epochs
 
   # Filtering and compliance module
   filtered_sessions <- filtering_server("filtering", sessions)
