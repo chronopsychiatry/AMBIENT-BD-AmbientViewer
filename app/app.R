@@ -30,6 +30,8 @@ ui <- fluidPage(
       # Data input, filtering and export ----
       h4("Data Input"),
       input_folder_module("folder_selector"),
+      br(),
+      br(),
       input_data_files_module("file_selector"),
       br(),
       h4("Filtering"),
@@ -101,13 +103,23 @@ server <- function(input, output, session) {
 
   # Data loading module
   folder_path <- input_folder_server("folder_selector", session)
-  selected_file <- input_data_files_server("file_selector", folder_path)
-  sessions <- load_sessions_module_server("load_sessions", folder_path, selected_file)
-  epochs <- load_epochs_module_server("load_epochs", folder_path, selected_file)
+  shiny::observe({
+    shiny::req(folder_path())
+    if (folder_path() != "") {
+      logging::loginfo(paste0("Loading files from: ", folder_path()))
+    }
+  })
+  selected_sessions <- input_sessions_files_server("file_selector", folder_path)
+  selected_epochs <- input_epochs_files_server("file_selector", folder_path)
+  sessions <- load_sessions_module_server("load_sessions", folder_path, selected_sessions)
+  epochs <- load_epochs_module_server("load_epochs", folder_path, selected_epochs)
+  shiny::observe({
+    shiny::req(sessions())
+    logging::loginfo(paste0("Loaded sessions ", selected_sessions(), " (", nrow(sessions()), " rows)"))
+  })
   shiny::observe({
     shiny::req(sessions(), epochs())
-    logging::loginfo(paste0("Loaded sessions ", selected_file(), " (", nrow(sessions()), " rows)"))
-    logging::loginfo(paste0("Loaded epochs ", selected_file(), " (", nrow(epochs()), " rows)"))
+    logging::loginfo(paste0("Loaded epochs ", selected_epochs(), " (", nrow(epochs()), " rows)"))
   })
 
   # Filtering and compliance module
@@ -116,7 +128,7 @@ server <- function(input, output, session) {
   compliance_server("compliance", filtered_sessions)
 
   # Summary table module
-  summary_server("summary", filtered_sessions)
+  summary_server("summary", filtered_sessions, filtered_epochs)
 
   # Export data module
   export_data_server("export_data", filtered_sessions, filtered_epochs)
