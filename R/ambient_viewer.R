@@ -83,14 +83,14 @@ ambient_viewer <- function(...) {
     observe({
       ip <- user_ip()$ip
       if (!is.null(ip)) {
-        logging::loginfo(paste0("Started Ambient Viewer ", packageVersion("AmbientViewer"), " - ", ip))
+        logging::loginfo(paste0("Started Ambient Viewer ", utils::packageVersion("AmbientViewer"), " - ", ip))
       }
     })
 
     # Footer text
     output$footer_text <- renderText({
       paste0(
-        "Ambient Viewer version ", packageVersion("AmbientViewer"), ". ",
+        "Ambient Viewer version ", utils::packageVersion("AmbientViewer"), ". ",
         "Developed at the University of Edinburgh as part of the Ambient-BD project."
       )
     })

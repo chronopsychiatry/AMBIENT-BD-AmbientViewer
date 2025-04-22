@@ -50,18 +50,26 @@ compliance_server <- function(id, filtered_sessions) {
   })
 }
 
+#' @importFrom rlang .data
 make_compliance_table <- function(sessions) {
   get_non_complying_sessions(sessions) |>
     dplyr::mutate(
-      start_time = substr(session_start, 12, 16),
-      sleep_onset = substr(time_at_sleep_onset, 12, 16),
-      wakeup_time = substr(time_at_wakeup, 12, 16),
-      end_time = substr(session_end, 12, 16),
-      session_duration_h = difftime(lubridate::ymd_hms(session_end),
-                                    lubridate::ymd_hms(session_start),
+      start_time = substr(.data$session_start, 12, 16),
+      sleep_onset = substr(.data$time_at_sleep_onset, 12, 16),
+      wakeup_time = substr(.data$time_at_wakeup, 12, 16),
+      end_time = substr(.data$session_end, 12, 16),
+      session_duration_h = difftime(lubridate::ymd_hms(.data$session_end),
+                                    lubridate::ymd_hms(.data$session_start),
                                     units = "hours"),
-      night = format(night, "%Y-%m-%d"),
-      time_in_bed_h = time_in_bed / 60 / 60
+      night = format(.data$night, "%Y-%m-%d"),
+      time_in_bed_h = .data$time_in_bed / 60 / 60
     ) |>
-    dplyr::select(id, night, start_time, sleep_onset, wakeup_time, end_time, session_duration_h, time_in_bed_h)
+    dplyr::select(.data$id,
+                  .data$night,
+                  .data$start_time,
+                  .data$sleep_onset,
+                  .data$wakeup_time,
+                  .data$end_time,
+                  .data$session_duration_h,
+                  .data$time_in_bed_h)
 }
