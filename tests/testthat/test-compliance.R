@@ -29,9 +29,19 @@ test_that("set_time_in_bed works", {
   expect_equal(nrow(filtered_sessions), 3)
 })
 
+test_that("set_session_start_time_range works for times before midnight", {
+  filtered_sessions <- set_session_start_time_range(sessions, "19:00", "23:00")
+  expect_equal(nrow(filtered_sessions), 1)
+})
+
 test_that("set_session_start_time_range works for midnight spanning range", {
   filtered_sessions <- set_session_start_time_range(sessions, "19:00", "02:00")
   expect_equal(nrow(filtered_sessions), 3)
+})
+
+test_that("set_session_sleep_onset_range works for times before midnight", {
+  filtered_sessions <- set_session_sleep_onset_range(sessions, "19:00", "23:00")
+  expect_equal(nrow(filtered_sessions), 1)
 })
 
 test_that("set_session_sleep_onset_range works for midnight spanning range", {

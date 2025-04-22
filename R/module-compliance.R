@@ -64,12 +64,5 @@ make_compliance_table <- function(sessions) {
       night = format(.data$night, "%Y-%m-%d"),
       time_in_bed_h = .data$time_in_bed / 60 / 60
     ) |>
-    dplyr::select(.data$id,
-                  .data$night,
-                  .data$start_time,
-                  .data$sleep_onset,
-                  .data$wakeup_time,
-                  .data$end_time,
-                  .data$session_duration_h,
-                  .data$time_in_bed_h)
+    dplyr::select("id", "night", "start_time", "sleep_onset", "wakeup_time", "end_time", "session_duration_h", "time_in_bed_h")
 }
