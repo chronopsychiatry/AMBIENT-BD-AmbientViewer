@@ -10,11 +10,11 @@ compliance_module <- function(id) {
   )
 }
 
-compliance_server <- function(id, filtered_sessions) {
+compliance_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
-      shiny::req(filtered_sessions())
-      make_compliance_table(filtered_sessions())
+      shiny::req(sessions())
+      make_compliance_table(sessions())
     })
 
     output$compliance_table <- shiny::renderTable({

@@ -28,7 +28,7 @@ plot_sleep_bubbles <- function(sessions) {
   ggplot2::ggplot(sessions, ggplot2::aes(x = .data$night, y = .data$sleep_duration, color = .data$color)) +
     ggplot2::annotate(
       "rect",
-      xmin = min(sessions$night)-1, xmax = max(sessions$night)+1,
+      xmin = min(sessions$night) - 1, xmax = max(sessions$night) + 1,
       ymin = 6, ymax = 9,
       fill = "lightgrey", alpha = 0.5
     ) +

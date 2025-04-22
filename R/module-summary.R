@@ -2,9 +2,9 @@ summary_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::h5(shiny::strong("Sessions")),
-    shiny::uiOutput(ns("sessions_summary_table")),
+    shiny::tableOutput(ns("sessions_summary_table")),
     shiny::h5(shiny::strong("Epochs")),
-    shiny::uiOutput(ns("epochs_summary_table"))
+    shiny::tableOutput(ns("epochs_summary_table"))
   )
 }
 
