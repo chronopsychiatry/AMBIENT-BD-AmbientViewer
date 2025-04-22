@@ -1,4 +1,5 @@
 #' @import shiny
+#' @export
 ambient_viewer <- function(...) {
 
   options(shiny.maxRequestSize = 50 * 1024^2)
