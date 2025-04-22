@@ -1,6 +1,8 @@
 #' @import shiny
 ambient_viewer <- function(...) {
 
+  options(shiny.maxRequestSize = 50 * 1024^2)
+
   addResourcePath(prefix = "www", directoryPath = "./www")
 
   log_file <- "logs/AmbientViewer.log"
