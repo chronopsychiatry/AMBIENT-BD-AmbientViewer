@@ -4,7 +4,12 @@ ambient_viewer <- function(...) {
 
   options(shiny.maxRequestSize = 50 * 1024^2)
 
-  addResourcePath(prefix = "www", directoryPath = "./www")
+  www_path <- system.file("www", package = "AmbientViewer")
+  if (nzchar(www_path)) {
+    addResourcePath(prefix = "www", directoryPath = www_path)
+  } else {
+    warning("The 'www' directory could not be found. Static resources may not load correctly.")
+  }
 
   log_file <- "logs/AmbientViewer.log"
   if (!dir.exists("logs")) {
