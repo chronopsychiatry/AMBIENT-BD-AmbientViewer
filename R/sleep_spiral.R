@@ -4,7 +4,7 @@
 #' @returns A ggplot object showing the sleep spiral
 #' @importFrom rlang .data
 #' @export
-#' @family epoch plots
+#' @family plot epochs
 plot_sleep_spiral <- function(epochs) {
   sleep_stage_colors <- c(
     "1" = "orange",  # Awake

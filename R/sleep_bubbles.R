@@ -5,7 +5,7 @@
 #' @returns A ggplot object containing the sleep bubbles graph.
 #' @importFrom rlang .data
 #' @export
-#' @family session plots
+#' @family plot sessions
 plot_sleep_bubbles <- function(sessions) {
   sessions <- sessions |>
     dplyr::filter(sessions$time_at_sleep_onset != "" &

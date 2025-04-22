@@ -6,7 +6,7 @@
 #' @returns A ggplot object
 #' @importFrom rlang .data
 #' @export
-#' @family epoch plots
+#' @family plot epochs
 #' @seealso [plot_timeseries_sessions()] to plot session data.
 plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   if (exclude_zero) {
@@ -49,7 +49,7 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @returns A ggplot object
 #' @export
-#' @family session plots
+#' @family plot sessions
 #' @seealso [plot_timeseries()] to plot epoch data.
 plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   sessions <- sessions |>

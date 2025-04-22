@@ -19,4 +19,14 @@ Select subjects by ID
 }
 \seealso{
 \code{\link[=select_devices]{select_devices()}} to select sessions by device ID.
+
+Other filtering: 
+\code{\link{filter_by_night_range}()},
+\code{\link{filter_epochs_from_sessions}()},
+\code{\link{remove_sessions_no_sleep}()},
+\code{\link{select_devices}()},
+\code{\link{set_min_time_in_bed}()},
+\code{\link{set_session_sleep_onset_range}()},
+\code{\link{set_session_start_time_range}()}
 }
+\concept{filtering}

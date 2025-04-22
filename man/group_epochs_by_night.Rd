@@ -21,4 +21,12 @@ Timepoints before 12 PM are considered part of the previous night.
 }
 \seealso{
 \code{\link[=group_sessions_by_night]{group_sessions_by_night()}} to group session data by night.
+
+Other time processing: 
+\code{\link{convert_angle_to_time}()},
+\code{\link{convert_times_to_mean_angle}()},
+\code{\link{group_sessions_by_night}()},
+\code{\link{mean_time}()},
+\code{\link{shift_times_by_12h}()}
 }
+\concept{time processing}

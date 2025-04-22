@@ -10,6 +10,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
     devtools,
+    mockery,
     testthat,
     tibble
 Config/testthat/edition: 3
@@ -23,7 +24,6 @@ Imports:
     rlang,
     scales,
     shiny,
-    shinyFiles,
     shinyjs,
     shinyWidgets,
     tidyr

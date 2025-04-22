@@ -4,7 +4,7 @@
 #' @returns A ggplot object showing the proportion of sleep stages for each night
 #' @importFrom rlang .data
 #' @export
-#' @family epoch plots
+#' @family plot epochs
 plot_sleep_stages <- function(epochs) {
   sleep_stage_labels <- c(
     "1" = "Awake",

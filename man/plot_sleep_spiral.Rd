@@ -16,8 +16,8 @@ A ggplot object showing the sleep spiral
 Plot Sleep Spiral
 }
 \seealso{
-Other epoch plots: 
+Other plot epochs: 
 \code{\link{plot_sleep_stages}()},
 \code{\link{plot_timeseries}()}
 }
-\concept{epoch plots}
+\concept{plot epochs}

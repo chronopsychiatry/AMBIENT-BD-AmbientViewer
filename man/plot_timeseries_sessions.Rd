@@ -22,8 +22,8 @@ Plot session time series data for a given variable
 \seealso{
 \code{\link[=plot_timeseries]{plot_timeseries()}} to plot epoch data.
 
-Other session plots: 
+Other plot sessions: 
 \code{\link{plot_sleep_bubbles}()},
 \code{\link{plot_sleep_clock}()}
 }
-\concept{session plots}
+\concept{plot sessions}

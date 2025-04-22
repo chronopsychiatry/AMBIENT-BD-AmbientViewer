@@ -16,8 +16,8 @@ A ggplot object showing the proportion of sleep stages for each night
 Plot Sleep Stages
 }
 \seealso{
-Other epoch plots: 
+Other plot epochs: 
 \code{\link{plot_sleep_spiral}()},
 \code{\link{plot_timeseries}()}
 }
-\concept{epoch plots}
+\concept{plot epochs}

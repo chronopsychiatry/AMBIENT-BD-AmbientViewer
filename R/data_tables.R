@@ -6,6 +6,7 @@
 #' @returns A single-row dataframe summarizing session information.
 #' @importFrom rlang .data
 #' @export
+#' @family data tables
 #' @examples
 #' get_sessions_summary(example_sessions)
 get_sessions_summary <- function(sessions) {
@@ -34,6 +35,7 @@ get_sessions_summary <- function(sessions) {
 #' @returns A single-row dataframe summarising epoch information
 #' @importFrom rlang .data
 #' @export
+#' @family data tables
 #' @examples
 #' get_epochs_summary(example_epochs)
 get_epochs_summary <- function(epochs) {

@@ -4,6 +4,7 @@
 #' @param time_vector A vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
 #' @returns A string representing the mean time in the format "HH:MM".
 #' @export
+#' @family time processing
 #' @examples
 #' # Use on a vector of time strings
 #' time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
@@ -41,6 +42,7 @@ mean_time <- function(time_vector) {
 #' @param unit A string indicating the unit of time. Can be "second", "minute", or "hour".
 #' @returns A numeric value representing the mean angle in radians.
 #' @export
+#' @family time processing
 #' @seealso [convert_angle_to_time()] to convert the mean angle back to time format.
 convert_times_to_mean_angle <- function(times, unit = "second") {
   if (!is.numeric(times) || any(times < 0)) {
@@ -58,6 +60,7 @@ convert_times_to_mean_angle <- function(times, unit = "second") {
 #' @param unit A string indicating the unit of time. Can be "second", "minute", or "hour".
 #' @returns A numeric value representing the time in the specified unit.
 #' @export
+#' @family time processing
 #' @seealso [convert_times_to_mean_angle()] to calculate the average angle from a vector of time values.
 convert_angle_to_time <- function(angle, unit = "second") {
   if (!is.numeric(angle)) {
@@ -75,6 +78,7 @@ convert_angle_to_time <- function(angle, unit = "second") {
 #' @param times A vector of times in POSIXct format (or character convertible to POSIXct).
 #' @return A numerical vector of times (in hours) shifted to start at 12 PM
 #' @export
+#' @family time processing
 #' @examples
 #' # Shift sessions start times to start at 12 PM
 #' shifted_times <- shift_times_by_12h(example_sessions$session_start)
@@ -106,6 +110,7 @@ shift_times_by_12h <- function(times) {
 #' @importFrom rlang .data
 #' @export
 #' @seealso [group_sessions_by_night()] to group session data by night.
+#' @family time processing
 group_epochs_by_night <- function(epochs) {
   epochs |>
     dplyr::mutate(
@@ -124,6 +129,7 @@ group_epochs_by_night <- function(epochs) {
 #' @details The function creates a new column `night` that groups the sessions by night depending on their start time.
 #' Sessions that start before 12 PM are considered part of the previous night.
 #' @export
+#' @family time processing
 #' @seealso [group_epochs_by_night()] to group epoch data by night.
 group_sessions_by_night <- function(sessions) {
   sessions |>

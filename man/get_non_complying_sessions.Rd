@@ -18,3 +18,9 @@ Get non-complying sessions (i.e. where there is more than one session on the sam
 \examples{
 duplicate_sessions <- get_non_complying_sessions(example_sessions)
 }
+\seealso{
+Other data tables: 
+\code{\link{get_epochs_summary}()},
+\code{\link{get_sessions_summary}()}
+}
+\concept{data tables}

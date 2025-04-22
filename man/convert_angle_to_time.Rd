@@ -19,4 +19,12 @@ This function converts an angle in radians to time in the provided unit (can be 
 }
 \seealso{
 \code{\link[=convert_times_to_mean_angle]{convert_times_to_mean_angle()}} to calculate the average angle from a vector of time values.
+
+Other time processing: 
+\code{\link{convert_times_to_mean_angle}()},
+\code{\link{group_epochs_by_night}()},
+\code{\link{group_sessions_by_night}()},
+\code{\link{mean_time}()},
+\code{\link{shift_times_by_12h}()}
 }
+\concept{time processing}

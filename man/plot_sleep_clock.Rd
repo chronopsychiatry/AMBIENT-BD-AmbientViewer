@@ -16,8 +16,8 @@ A ggplot object showing the sleep clock
 Plot Sleep Clock
 }
 \seealso{
-Other session plots: 
+Other plot sessions: 
 \code{\link{plot_sleep_bubbles}()},
 \code{\link{plot_timeseries_sessions}()}
 }
-\concept{session plots}
+\concept{plot sessions}

@@ -19,3 +19,9 @@ mean time at sleep onset and wakeup, subject and device ID.
 \examples{
 get_sessions_summary(example_sessions)
 }
+\seealso{
+Other data tables: 
+\code{\link{get_epochs_summary}()},
+\code{\link{get_non_complying_sessions}()}
+}
+\concept{data tables}

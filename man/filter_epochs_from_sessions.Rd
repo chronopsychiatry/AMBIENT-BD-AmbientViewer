@@ -25,4 +25,14 @@ filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions
 }
 \seealso{
 \code{\link[=filter_by_night_range]{filter_by_night_range()}} to filter sessions by night range.
+
+Other filtering: 
+\code{\link{filter_by_night_range}()},
+\code{\link{remove_sessions_no_sleep}()},
+\code{\link{select_devices}()},
+\code{\link{select_subjects}()},
+\code{\link{set_min_time_in_bed}()},
+\code{\link{set_session_sleep_onset_range}()},
+\code{\link{set_session_start_time_range}()}
 }
+\concept{filtering}

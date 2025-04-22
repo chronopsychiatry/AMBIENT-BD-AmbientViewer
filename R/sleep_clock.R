@@ -4,7 +4,7 @@
 #' @returns A ggplot object showing the sleep clock
 #' @importFrom rlang .data
 #' @export
-#' @family session plots
+#' @family plot sessions
 plot_sleep_clock <- function(sessions) {
   # Parse times into numeric hours (0-24)
   sessions <- sessions |>

@@ -10,6 +10,7 @@
 #' filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions)
 #'
 #' @seealso [filter_by_night_range()] to filter sessions by night range.
+#' @family filtering
 filter_epochs_from_sessions <- function(epochs, sessions) {
   epochs[epochs$session_id %in% unique(sessions$id), ]
 }
@@ -22,6 +23,7 @@ filter_epochs_from_sessions <- function(epochs, sessions) {
 #' @returns The sessions dataframe with only the sessions that fall within the specified night range
 #' @importFrom rlang .data
 #' @export
+#' @family filtering
 #' @examples
 #' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
 filter_by_night_range <- function(sessions, from_night, to_night) {
@@ -38,6 +40,7 @@ filter_by_night_range <- function(sessions, from_night, to_night) {
 #' @param subject_ids The subject IDs to select
 #' @returns The sessions dataframe with only the sessions that belong to the specified subjects
 #' @export
+#' @family filtering
 #' @seealso [select_devices()] to select sessions by device ID.
 select_subjects <- function(sessions, subject_ids) {
   sessions[sessions$subject_id %in% subject_ids, ]
@@ -49,6 +52,7 @@ select_subjects <- function(sessions, subject_ids) {
 #' @param device_ids The device IDs to select
 #' @returns The sessions dataframe with only the sessions recorded by the specified devices
 #' @export
+#' @family filtering
 #' @seealso [select_subjects()] to select sessions by subject ID.
 select_devices <- function(sessions, device_ids) {
   sessions[sessions$device_id %in% device_ids, ]

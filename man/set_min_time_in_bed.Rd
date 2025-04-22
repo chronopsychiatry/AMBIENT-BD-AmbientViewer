@@ -20,3 +20,14 @@ Set minimum time in bed
 \examples{
 filtered_sessions <- set_min_time_in_bed(example_sessions, 2)
 }
+\seealso{
+Other filtering: 
+\code{\link{filter_by_night_range}()},
+\code{\link{filter_epochs_from_sessions}()},
+\code{\link{remove_sessions_no_sleep}()},
+\code{\link{select_devices}()},
+\code{\link{select_subjects}()},
+\code{\link{set_session_sleep_onset_range}()},
+\code{\link{set_session_start_time_range}()}
+}
+\concept{filtering}

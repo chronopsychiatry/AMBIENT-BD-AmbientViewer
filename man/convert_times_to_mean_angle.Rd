@@ -20,4 +20,12 @@ It is useful to calculate average times spanning midnight
 }
 \seealso{
 \code{\link[=convert_angle_to_time]{convert_angle_to_time()}} to convert the mean angle back to time format.
+
+Other time processing: 
+\code{\link{convert_angle_to_time}()},
+\code{\link{group_epochs_by_night}()},
+\code{\link{group_sessions_by_night}()},
+\code{\link{mean_time}()},
+\code{\link{shift_times_by_12h}()}
 }
+\concept{time processing}
