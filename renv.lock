@@ -2077,7 +2077,7 @@
     "logging": {
       "Package": "logging",
       "Version": "0.10-108",
-      "Source": "GitHub",
+      "Source": "Repository",
       "Title": "R Logging Package",
       "Authors@R": "c( person(\"Mario\", \"Frasca\", email = \"mariotomo@gmail.com\", role = c(\"aut\")), person(\"Walerian\", \"Sokolowski\", email = \"r-logging@wlogsolutions.com\", role = c(\"cre\")) )",
       "Description": "Pure R implementation of the ubiquitous log4j package. It offers hierarchic  loggers, multiple handlers per logger, level based filtering, space handling in messages  and custom formatting.",
@@ -2097,16 +2097,10 @@
         "crayon"
       ],
       "RoxygenNote": "6.1.1",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "r-logging",
-      "RemoteUsername": "WLOGSolutions",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "f8ca2471cdb6d8c762439d9cd5a671891e621ada",
-      "RemoteSubdir": "pkg",
       "NeedsCompilation": "no",
       "Author": "Mario Frasca [aut], Walerian Sokolowski [cre]",
-      "Maintainer": "Walerian Sokolowski <r-logging@wlogsolutions.com>"
+      "Maintainer": "Walerian Sokolowski <r-logging@wlogsolutions.com>",
+      "Repository": "CRAN"
     },
     "lubridate": {
       "Package": "lubridate",
