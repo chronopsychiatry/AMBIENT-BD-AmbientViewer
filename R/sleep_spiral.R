@@ -13,7 +13,10 @@ plot_sleep_spiral <- function(epochs) {
     "4" = "#A074C4" # REM sleep (medium purple)
   )
 
-  reference_time <- lubridate::floor_date(min(epochs$timestamp, na.rm = TRUE), unit = "day")
+  reference_time <- epochs$timestamp |>
+    as.POSIXct(format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC") |>
+    min() |>
+    lubridate::floor_date(unit = "day")
 
   epochs <- epochs |>
     dplyr::mutate(

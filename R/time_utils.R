@@ -114,12 +114,12 @@ shift_times_by_12h <- function(times) {
 group_epochs_by_night <- function(epochs) {
   epochs |>
     dplyr::mutate(
-      timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
-      date = as.Date(.data$timestamp, tz = "UTC"),
-      hour = as.numeric(format(.data$timestamp, "%H", tz = "UTC")) + as.numeric(format(.data$timestamp, "%M", tz = "UTC")) / 60,
+      time_stamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      date = as.Date(.data$time_stamp, tz = "UTC"),
+      hour = as.numeric(format(.data$time_stamp, "%H", tz = "UTC")) + as.numeric(format(.data$time_stamp, "%M", tz = "UTC")) / 60,
       night = as.Date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
     ) |>
-    dplyr::select(-"date", -"hour")
+    dplyr::select(-"time_stamp", -"date", -"hour")
 }
 
 #' Create a grouping by night for session data
