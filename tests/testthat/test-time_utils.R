@@ -35,11 +35,21 @@ test_that("convert_times_to_mean_angle works correctly", {
   expect_true(angle >= 0 && angle <= 2 * pi)
 })
 
+test_that("convert_times_to_mean_angle throws error for invalid input", {
+  expect_error(convert_times_to_mean_angle(c(-1, 43200), unit = "second"),
+               "times must be a numeric vector with non-negative values")
+})
+
 test_that("convert_angle_to_time works correctly", {
   angle <- pi / 2
   time <- convert_angle_to_time(angle, unit = "second")
   expect_true(is.numeric(time))
   expect_equal(time, 21600)
+})
+
+test_that("convert_angle_to_time throws error for invalid input", {
+  expect_error(convert_angle_to_time("pi", unit = "second"),
+               "angle must be a numeric value")
 })
 
 test_that("shift_times_by_12h shifts times correctly", {
@@ -61,8 +71,8 @@ test_that("get_time_per_day works correctly", {
   expect_equal(get_time_per_day("minute"), 1440)
   expect_equal(get_time_per_day("hour"), 24)
 
-  expect_error(get_time_per_day("invalid_unit"),
-               "Invalid unit. Use 'second', 'minute', or 'hour'.")
+  expect_error(get_time_per_day("blarghs"),
+               "unit must be one of 'second', 'minute', or 'hour'")
 })
 
 test_that("is_iso8601_datetime correctly identifies ISO 8601 datetime strings", {

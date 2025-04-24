@@ -8,6 +8,11 @@
 #' @examples
 #' filtered_sessions <- set_min_time_in_bed(example_sessions, 2)
 set_min_time_in_bed <- function(sessions, min_time_in_bed) {
+  if (!(class(min_time_in_bed) %in% c("numeric", "integer"))) {
+    cli::cli_abort(c(
+      "!" = "min_time_in_bed must be a numeric value (hours)."
+    ))
+  }
   sessions[sessions$time_in_bed >= min_time_in_bed * 60 * 60, ]
 }
 

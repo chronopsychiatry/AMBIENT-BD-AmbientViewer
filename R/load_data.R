@@ -14,7 +14,10 @@ load_sessions <- function(sessions_file) {
     df |>
       group_sessions_by_night()
   } else {
-    NULL
+    cli::cli_abort(c(
+      "!" = "Can't find a 'session_start' column.",
+      "i" = "Please check the csv file contains session data."
+    ))
   }
 }
 
@@ -34,6 +37,9 @@ load_epochs <- function(epochs_file) {
     df |>
       group_epochs_by_night()
   } else {
-    NULL
+    cli::cli_abort(c(
+      "!" = "Can't find a 'timestamp' column.",
+      "i" = "Please check the csv file contains epoch data."
+    ))
   }
 }

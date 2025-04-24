@@ -7,6 +7,8 @@ get_plot_download_handler <- function(session, output_plot, format) {
       shiny::req(output_plot())
       plot <- output_plot()
 
+      logging::loginfo(paste0("Exporting plot in ", format(), " format."))
+
       if (format() == "png") {
         grDevices::png(file, width = 1600, height = 1200, res = 300)
         print(plot)

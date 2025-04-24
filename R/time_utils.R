@@ -46,7 +46,7 @@ mean_time <- function(time_vector) {
 #' @seealso [convert_angle_to_time()] to convert the mean angle back to time format.
 convert_times_to_mean_angle <- function(times, unit = "second") {
   if (!is.numeric(times) || any(times < 0)) {
-    stop("`times` must be a numeric vector with non-negative values.", call. = FALSE)
+    cli::cli_abort(c("!" = "times must be a numeric vector with non-negative values."))
   }
   conversion_factor <- get_time_per_day(unit = unit)
   atan2(mean(sin(2 * pi * times / conversion_factor)),
@@ -64,7 +64,7 @@ convert_times_to_mean_angle <- function(times, unit = "second") {
 #' @seealso [convert_times_to_mean_angle()] to calculate the average angle from a vector of time values.
 convert_angle_to_time <- function(angle, unit = "second") {
   if (!is.numeric(angle)) {
-    stop("`angle` must be a numeric value.", call. = FALSE)
+    cli::cli_abort(c("!" = "angle must be a numeric value."))
   }
   conversion_factor <- get_time_per_day(unit = unit)
   time <- (angle / (2 * pi)) * conversion_factor
@@ -148,7 +148,8 @@ get_time_per_day <- function(unit = "second") {
     second = 86400,
     minute = 1440,
     hour = 24,
-    stop("Invalid unit. Use 'second', 'minute', or 'hour'.", call = FALSE)
+    cli::cli_abort(c("!" = "unit must be one of 'second', 'minute', or 'hour'.",
+                     "x" = "You supplied {unit}."))
   )
 }
 

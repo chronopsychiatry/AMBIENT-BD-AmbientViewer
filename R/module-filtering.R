@@ -4,9 +4,9 @@ filtering_module <- function(id) {
     shiny::sliderInput(
       inputId = ns("date_range"),
       label = "Date Range:",
-      min = Sys.Date(),
-      max = Sys.Date(),
-      value = c(Sys.Date(), Sys.Date()),
+      min = Sys.Date() + 1,
+      max = Sys.Date() + 1,
+      value = c(Sys.Date() + 1, Sys.Date() + 1),
       timeFormat = "%Y-%m-%d"
     ),
     shinyWidgets::sliderTextInput(
@@ -37,13 +37,12 @@ filtering_server <- function(id, sessions) {
     shiny::observe({
       shiny::req(sessions())
       if (nrow(sessions()) == 0) {
-        # Handle empty dataframe: set placeholder values
         shiny::updateSliderInput(
           session,
           inputId = "date_range",
-          min = Sys.Date(),
-          max = Sys.Date(),
-          value = c(Sys.Date(), Sys.Date())
+          min = Sys.Date() + 1,
+          max = Sys.Date() + 1,
+          value = c(Sys.Date() + 1, Sys.Date() + 1)
         )
       }
 
@@ -64,6 +63,13 @@ filtering_server <- function(id, sessions) {
 
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
+
+      if (as.Date(input$date_range[1], format = "%Y-%m-%d") != Sys.Date() + 1) {
+        logging::loginfo(paste0("Filtering:",
+                                " date_range: ", input$date_range[1], "-", input$date_range[2],
+                                " sleep_onset_range: ", from_time, "-", to_time,
+                                " min_time_in_bed: ", input$min_time_in_bed))
+      }
 
       sessions() |>
         remove_sessions_no_sleep() |>

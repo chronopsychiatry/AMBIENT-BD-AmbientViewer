@@ -12,6 +12,10 @@
 #' @seealso [filter_by_night_range()] to filter sessions by night range.
 #' @family filtering
 filter_epochs_from_sessions <- function(epochs, sessions) {
+  if (sum(epochs$session_id %in% unique(sessions$id)) == 0) {
+    cli::cli_warn(c("!" = "None of the epochs match the selected sessions.",
+                    "i" = "Returning an empty epoch table."))
+  }
   epochs[epochs$session_id %in% unique(sessions$id), ]
 }
 
@@ -27,6 +31,9 @@ filter_epochs_from_sessions <- function(epochs, sessions) {
 #' @examples
 #' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
 filter_by_night_range <- function(sessions, from_night, to_night) {
+  if (from_night > to_night) {
+    cli::cli_abort(c("!" = "from_night must be before to_night."))
+  }
   from_night <- if (is.null(from_night)) min(sessions$night) else from_night
   to_night <- if (is.null(to_night)) min(sessions$night) else to_night
   sessions |>
@@ -43,6 +50,11 @@ filter_by_night_range <- function(sessions, from_night, to_night) {
 #' @family filtering
 #' @seealso [select_devices()] to select sessions by device ID.
 select_subjects <- function(sessions, subject_ids) {
+  if (sum(sessions$subject_id %in% subject_ids) == 0) {
+    cli::cli_warn(c("!" = "None of the subject IDs were found in the sessions table.",
+                    "i" = "Available subject IDs: {unique(sessions$subject_id)}",
+                    "i" = "Returning an empty sessions table."))
+  }
   sessions[sessions$subject_id %in% subject_ids, ]
 }
 
@@ -55,5 +67,10 @@ select_subjects <- function(sessions, subject_ids) {
 #' @family filtering
 #' @seealso [select_subjects()] to select sessions by subject ID.
 select_devices <- function(sessions, device_ids) {
-  sessions[sessions$device_id %in% device_ids, ]
+  if (sum(sessions$device_serial_number %in% device_ids) == 0) {
+    cli::cli_warn(c("!" = "None of the device IDs were found in the sessions table.",
+                    "i" = "Available device IDs: {unique(sessions$device_serial_number)}",
+                    "i" = "Returning an empty sessions table."))
+  }
+  sessions[sessions$device_serial_number %in% device_ids, ]
 }

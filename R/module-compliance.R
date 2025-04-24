@@ -19,6 +19,9 @@ compliance_server <- function(id, sessions) {
 
     output$compliance_table <- shiny::renderTable({
       shiny::req(compliance_table())
+      if (nrow(compliance_table()) == 0) {
+        logging::loginfo("Compliance table is empty (there are no duplicate sessions on the same night).")
+      }
       shiny::validate(
         shiny::need(nrow(compliance_table()) > 0, "There are no duplicate sessions on the same night.")
       )

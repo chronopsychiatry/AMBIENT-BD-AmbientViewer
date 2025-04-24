@@ -1,7 +1,7 @@
 sessions <- data.frame(
   id = c("A", "B", "C", "D", "E"),
   subject_id = c("sub_A", "sub_A", "sub_A", "sub_B", "sub_C"),
-  device_id = c("VT_001", "VT_001", "VT_001", "VT_002", "VT_003"),
+  device_serial_number = c("VT_001", "VT_001", "VT_001", "VT_002", "VT_003"),
   session_start = c(
     "2025-03-10T19:30:00.000000+00:00",
     "2025-03-11T23:45:00.000000+00:00",
@@ -30,6 +30,13 @@ test_that("filter_epochs_from_sessions works", {
   expect_equal(nrow(filtered_epochs), 7)
 })
 
+test_that("filter_epochs_from_sessions shows warning if tables don't overlap", {
+  expect_warning(
+    filter_epochs_from_sessions(epochs, data.frame(id = c("X", "Y", "Z"))),
+    "None of the epochs match the selected sessions"
+  )
+})
+
 test_that("filter_by_night_range works", {
   filtered_sessions <- filter_by_night_range(sessions, "2025-03-11", "2025-03-12")
   expect_equal(nrow(filtered_sessions), 3)
@@ -40,7 +47,21 @@ test_that("select_subjects works", {
   expect_equal(nrow(selected_sessions), 4)
 })
 
+test_that("select_subjects shows warning if no subjects are found", {
+  expect_warning(
+    select_subjects(sessions, c("X", "Y", "Z")),
+    "None of the subject IDs were found"
+  )
+})
+
 test_that("select_devices works", {
   selected_sessions <- select_devices(sessions, c("VT_001", "VT_003"))
   expect_equal(nrow(selected_sessions), 4)
+})
+
+test_that("select_devices shows warning if no devices are found", {
+  expect_warning(
+    select_devices(sessions, c("X", "Y", "Z")),
+    "None of the device IDs were found"
+  )
 })

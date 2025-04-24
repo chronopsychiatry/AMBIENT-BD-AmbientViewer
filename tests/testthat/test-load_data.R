@@ -23,9 +23,23 @@ test_that("load_sessions loads sessions correctly", {
   expect_equal(sessions$session_id, c(1, 2, 3))
 })
 
+test_that("load_sessions throws error for missing session_start column", {
+  expect_error(
+    load_sessions(file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv")),
+    "Can't find a 'session_start' column"
+  )
+})
+
 test_that("load_epochs loads epochs correctly", {
   epochs <- load_epochs(file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv"))
 
   expect_equal(nrow(epochs), 4)
   expect_equal(epochs$value, c(10, 20, 15, 25))
+})
+
+test_that("load_epochs throws error for missing timestamp column", {
+  expect_error(
+    load_epochs(file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv")),
+    "Can't find a 'timestamp' column"
+  )
 })
