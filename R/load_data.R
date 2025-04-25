@@ -6,10 +6,22 @@
 #' @export
 #' @family data loading
 load_sessions <- function(sessions_file) {
-  if (file.info(sessions_file)$size < 10) {
+  if (!file.exists(sessions_file)) {
+    cli::cli_abort(c(
+      "!" = "Sessions file not found: {.file {sessions_file}}",
+      "i" = "Please check the file path."
+    ))
+  }
+
+  df <- utils::read.csv(sessions_file)
+
+  if (nrow(df) == 0) {
+    cli::cli_warn(c(
+      "!" = "Sessions table is empty",
+      "i" = "Returning NULL"
+    ))
     return(NULL)
   }
-  df <- utils::read.csv(sessions_file)
   if ("session_start" %in% names(df)) {
     df |>
       group_sessions_by_night()
@@ -29,10 +41,22 @@ load_sessions <- function(sessions_file) {
 #' @export
 #' @family data loading
 load_epochs <- function(epochs_file) {
-  if (file.info(epochs_file)$size < 10) {
+  if (!file.exists(epochs_file)) {
+    cli::cli_abort(c(
+      "!" = "Epochs file not found: {.file {epochs_file}}",
+      "i" = "Please check the file path."
+    ))
+  }
+
+  df <- utils::read.csv(epochs_file)
+
+  if (nrow(df) == 0) {
+    cli::cli_warn(c(
+      "!" = "Epochs table is empty",
+      "i" = "Returning NULL"
+    ))
     return(NULL)
   }
-  df <- utils::read.csv(epochs_file)
   if ("timestamp" %in% names(df)) {
     df |>
       group_epochs_by_night()

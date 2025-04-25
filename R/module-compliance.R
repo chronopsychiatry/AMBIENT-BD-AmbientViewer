@@ -14,7 +14,7 @@ compliance_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
       shiny::req(sessions())
-      make_compliance_table(sessions())
+      get_compliance_table(sessions())
     })
 
     output$compliance_table <- shiny::renderTable({
@@ -46,7 +46,7 @@ compliance_server <- function(id, sessions) {
 
     output$download_compliance <- get_table_download_handler(
       session = session,
-      output_table = compliance_table,
+      output_table = shiny::reactive(get_non_complying_sessions(sessions())),
       output_name = "compliance"
     )
 
@@ -54,8 +54,14 @@ compliance_server <- function(id, sessions) {
 }
 
 #' @importFrom rlang .data
-make_compliance_table <- function(sessions) {
+get_compliance_table <- function(sessions) {
   get_non_complying_sessions(sessions) |>
+    make_sessions_display_table()
+}
+
+#' @importFrom rlang .data
+make_sessions_display_table <- function(sessions) {
+  sessions |>
     dplyr::mutate(
       start_time = substr(.data$session_start, 12, 16),
       sleep_onset = substr(.data$time_at_sleep_onset, 12, 16),

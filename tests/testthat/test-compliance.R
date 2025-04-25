@@ -1,4 +1,5 @@
 sessions <- data.frame(
+  id = 1:5,
   session_start = c(
     "2025-03-10T19:30:00.000000+00:00",
     "2025-03-11T23:45:00.000000+00:00",
@@ -6,11 +7,25 @@ sessions <- data.frame(
     "2025-03-12T03:00:00.000000+00:00",
     "2025-03-12T18:00:00.000000+00:00"
   ),
+  session_end = c(
+    "2025-03-11T06:30:00.000000+00:00",
+    "2025-03-12T06:30:00.000000+00:00",
+    "2025-03-12T07:30:00.000000+00:00",
+    "2025-03-12T07:30:00.000000+00:00",
+    "2025-03-13T06:30:00.000000+00:00"
+  ),
   time_at_sleep_onset = c(
     "2025-03-10T22:30:00.000000+00:00",
     "",
     "",
     "2025-03-12T05:00:00.000000+00:00",
+    ""
+  ),
+  time_at_wakeup = c(
+    "2025-03-11T06:30:00.000000+00:00",
+    "",
+    "",
+    "2025-03-12T07:00:00.000000+00:00",
     ""
   ),
   night = c(
@@ -61,4 +76,15 @@ test_that("remove_sessions_no_sleep works", {
 test_that("get_non_complying_sessions works", {
   non_complying_sessions <- get_non_complying_sessions(sessions)
   expect_equal(nrow(non_complying_sessions), 3)
+})
+
+test_that("get_removed_sessions_table works", {
+  filtered_sessions <- set_session_sleep_onset_range(sessions, "19:00", "02:00")
+  removed_sessions <- get_removed_sessions(sessions, filtered_sessions)
+  expect_equal(nrow(removed_sessions), 1)
+})
+
+test_that("get_removed_sessions handles reverse input", {
+  filtered_sessions <- set_session_sleep_onset_range(sessions, "19:00", "02:00")
+  expect_error(get_removed_sessions(filtered_sessions, sessions), "There are more rows in filtered sessions than in sessions")
 })

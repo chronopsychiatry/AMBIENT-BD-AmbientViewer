@@ -23,6 +23,24 @@ test_that("load_sessions loads sessions correctly", {
   expect_equal(sessions$session_id, c(1, 2, 3))
 })
 
+test_that("load_sessions throws error for missing sessions file", {
+  expect_error(
+    load_sessions(file.path(test_folder, "non_existent_file.csv")),
+    "Sessions file not found"
+  )
+})
+
+test_that("load_sessions gives warning and returns NULL for empty sessions file", {
+  empty_file <- file.path(test_folder, "empty_sessions.csv")
+  write.csv(example_sessions[0, ], empty_file, row.names = FALSE)
+
+  expect_warning(
+    result <- load_sessions(empty_file),
+    "Sessions table is empty"
+  )
+  expect_null(result)
+})
+
 test_that("load_sessions throws error for missing session_start column", {
   expect_error(
     load_sessions(file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv")),
@@ -35,6 +53,24 @@ test_that("load_epochs loads epochs correctly", {
 
   expect_equal(nrow(epochs), 4)
   expect_equal(epochs$value, c(10, 20, 15, 25))
+})
+
+test_that("load_epochs throws error for missing epochs file", {
+  expect_error(
+    load_epochs(file.path(test_folder, "non_existent_file.csv")),
+    "Epochs file not found"
+  )
+})
+
+test_that("load_epochs gives warning and returns NULL for empty epochs file", {
+  empty_file <- file.path(test_folder, "empty_epochs.csv")
+  write.csv(example_epochs[0, ], empty_file, row.names = FALSE)
+
+  expect_warning(
+    result <- load_epochs(empty_file),
+    "Epochs table is empty"
+  )
+  expect_null(result)
 })
 
 test_that("load_epochs throws error for missing timestamp column", {

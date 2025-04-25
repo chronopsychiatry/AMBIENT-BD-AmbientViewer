@@ -17,11 +17,7 @@ mean_time <- function(time_vector) {
     return(NA_character_)
   }
 
-  time_vector <- time_vector[!is.na(time_vector)]
-  if (!inherits(time_vector, "POSIXct")) {
-    time_vector <- time_vector[time_vector != ""]
-    time_vector <- lubridate::ymd_hms(time_vector, tz = "UTC")
-  }
+  time_vector <- char_to_posixct(time_vector, na_rm = TRUE)
 
   ref_day <- lubridate::floor_date(time_vector, unit = "day")
 
@@ -30,7 +26,43 @@ mean_time <- function(time_vector) {
     as.numeric() |>
     convert_times_to_mean_angle(unit = "second") |>
     convert_angle_to_time(unit = "second") |>
-    as.POSIXct(x = _, origin = "1970-01-01", tz = "UTC") |>
+    as.POSIXct(origin = "1970-01-01", tz = "UTC") |>
+    format("%H:%M")
+}
+
+#' Calculate the minimum time from 12pm to 12pm
+#'
+#' This function calculates the minimum time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
+#' It considers a time window from 12pm to 12pm the next day, so 11:00 is considered later than 13:00.
+#' @param time_vector A vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
+#' @returns A string representing the minimum time in the format "HH:MM".
+#' @export
+#' @family time processing
+min_time <- function(time_vector) {
+  time_vector |>
+    char_to_posixct(na_rm = TRUE) |>
+    shift_times_by_12h() |>
+    min(na.rm = TRUE) |>
+    (\(x) (x + 12) * 3600)() |>
+    as.POSIXct(tz = "UTC") |>
+    format("%H:%M")
+}
+
+#' Calculate the maximum time from 12pm to 12pm
+#'
+#' This function calculates the maximum time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
+#' It considers a time window from 12pm to 12pm the next day, so 11:00 is considered later than 13:00.
+#' @param time_vector A vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
+#' @returns A string representing the maximum time in the format "HH:MM".
+#' @export
+#' @family time processing
+max_time <- function(time_vector) {
+  time_vector |>
+    char_to_posixct(na_rm = TRUE) |>
+    shift_times_by_12h() |>
+    max(na.rm = TRUE) |>
+    (\(x) (x + 12) * 3600)() |>
+    as.POSIXct(tz = "UTC") |>
     format("%H:%M")
 }
 
@@ -91,13 +123,9 @@ shift_times_by_12h <- function(times) {
     return(NA_real_)
   }
 
-  times <- times[!is.na(times)]
-  if (!inherits(times, "POSIXct")) {
-    times <- lubridate::ymd_hms(times, tz = "UTC")
-  }
+  hour <- char_to_posixct(times, na_rm = TRUE) |>
+    posixct_to_hours()
 
-  hour <- as.numeric(format(times, "%H", tz = "UTC")) +
-    as.numeric(format(times, "%M", tz = "UTC")) / 60
   ifelse(hour < 12, hour + 24, hour) - 12
 }
 
@@ -116,7 +144,7 @@ group_epochs_by_night <- function(epochs) {
     dplyr::mutate(
       time_stamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       date = as.Date(.data$time_stamp, tz = "UTC"),
-      hour = as.numeric(format(.data$time_stamp, "%H", tz = "UTC")) + as.numeric(format(.data$time_stamp, "%M", tz = "UTC")) / 60,
+      hour = posixct_to_hours(.data$time_stamp),
       night = as.Date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
     ) |>
     dplyr::select(-"time_stamp", -"date", -"hour")
@@ -136,8 +164,7 @@ group_sessions_by_night <- function(sessions) {
     dplyr::mutate(
       start_time = as.POSIXct(.data$session_start, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       date = as.Date(.data$start_time, tz = "UTC"),
-      start_hour = as.numeric(format(.data$start_time, "%H", tz = "UTC")) +
-        as.numeric(format(.data$start_time, "%M", tz = "UTC")) / 60,
+      start_hour = posixct_to_hours(.data$start_time),
       night = as.Date(ifelse(.data$start_hour < 12, date - 1, date))
     ) |>
     dplyr::select(-"start_time", -"date", -"start_hour")
@@ -157,4 +184,22 @@ is_iso8601_datetime <- function(column) {
   column <- column[!is.na(column) & column != ""]
   parsed <- suppressWarnings(lubridate::ymd_hms(column, quiet = TRUE, tz = "UTC"))
   all(!is.na(parsed))
+}
+
+char_to_posixct <- function(time_vector, na_rm = TRUE) {
+  time_vector <- if (na_rm) time_vector[!is.na(time_vector)] else time_vector
+  if (!inherits(time_vector, "POSIXct")) {
+    time_vector <- time_vector[time_vector != ""]
+    time_vector <- lubridate::ymd_hms(time_vector, tz = "UTC")
+  }
+  time_vector
+}
+
+posixct_to_hours <- function(time_vector) {
+  if (!(inherits(time_vector, "POSIXct") || inherits(time_vector, "POSIXt"))) {
+    cli::cli_abort(c("!" = "input must be a POSIXct or POSIXt object.",
+                     "x" = "You supplied {class(time_vector)}.",
+                     "i" = "Use char_to_posixct() to convert character strings to POSIXct."))
+  }
+  lubridate::hour(time_vector) + lubridate::minute(time_vector) / 60
 }

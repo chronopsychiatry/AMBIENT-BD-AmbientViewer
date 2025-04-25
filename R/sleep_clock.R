@@ -6,7 +6,6 @@
 #' @export
 #' @family plot sessions
 plot_sleep_clock <- function(sessions) {
-  # Parse times into numeric hours (0-24)
   sessions <- sessions |>
     dplyr::filter(!is.na(.data$time_at_sleep_onset) & !is.na(.data$time_at_wakeup)) |>
     dplyr::mutate(

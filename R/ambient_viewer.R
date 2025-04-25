@@ -53,7 +53,8 @@ ambient_viewer <- function(...) {
             id = "main_tabs_tables",
             type = "tabs",
             tabPanel("Summary", summary_module_ui("summary")),
-            tabPanel("Compliance", compliance_module("compliance"), value = "compliance_tab")
+            tabPanel("Compliance", compliance_module("compliance"), value = "compliance_tab"),
+            tabPanel("Filtering", filtering_tab("filtering"), value = "filtering_tab")
           ),
         ),
 

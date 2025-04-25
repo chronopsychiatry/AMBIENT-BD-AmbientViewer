@@ -9,6 +9,7 @@
 #' @family data tables
 #' @examples
 #' get_sessions_summary(example_sessions)
+#' @seealso [get_epochs_summary()] to summarise epoch information.
 get_sessions_summary <- function(sessions) {
   sessions |>
     dplyr::mutate(
@@ -38,6 +39,7 @@ get_sessions_summary <- function(sessions) {
 #' @family data tables
 #' @examples
 #' get_epochs_summary(example_epochs)
+#' @seealso [get_sessions_summary()] to summarise session information.
 get_epochs_summary <- function(epochs) {
   if (nrow(epochs) == 0) {
     return(data.frame(total_sessions = 0, start_date = NA, end_date = NA))

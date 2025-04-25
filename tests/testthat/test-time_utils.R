@@ -28,6 +28,18 @@ test_that("mean_time handles single time input", {
   expect_equal(result, "12:00")
 })
 
+test_that("min_time calculates the correct minimum time", {
+  time_vector <- c("2025-04-08 11:00:00", "2025-04-05 13:00:00")
+  result <- min_time(time_vector)
+  expect_equal(result, "13:00")
+})
+
+test_that("max_time calculates the correct maximum time", {
+  time_vector <- c("2025-04-08 11:00:00", "2025-04-05 13:00:00")
+  result <- max_time(time_vector)
+  expect_equal(result, "11:00")
+})
+
 test_that("convert_times_to_mean_angle works correctly", {
   times <- c(0, 43200, 86400)
   angle <- convert_times_to_mean_angle(times, unit = "second")
@@ -111,4 +123,27 @@ test_that("group_sessions_by_night correctly groups sessions by night", {
 test_that("group_epochs_by_night correctly groups epochs by night", {
   grouped_epochs <- group_epochs_by_night(mock_epochs)
   expect_equal(grouped_epochs$night, as.Date(c("2025-03-02", "2025-03-03", "2025-03-03", "2025-03-03")))
+})
+
+test_that("char_to_posixct correctly converts character time strings to POSIXct", {
+  time_vector <- c("2025-03-03 09:00:00", "2025-03-03 20:00:00")
+  posixct_vector <- char_to_posixct(time_vector)
+  expect_equal(posixct_vector, as.POSIXct(c("2025-03-03 09:00:00", "2025-03-03 20:00:00"), tz = "UTC"))
+})
+
+test_that("char_to_posixct handles POSIXct inputs", {
+  time_vector <- as.POSIXct(c("2025-03-03 09:00:00", "2025-03-03 20:00:00"), tz = "UTC")
+  posixct_vector <- char_to_posixct(time_vector)
+  expect_equal(posixct_vector, as.POSIXct(c("2025-03-03 09:00:00", "2025-03-03 20:00:00"), tz = "UTC"))
+})
+
+test_that("posixct_to_hours correctly converts POSIXct to hours", {
+  time_vector <- as.POSIXct(c("2025-03-03 09:30:00", "2025-03-03 20:00:00"), tz = "UTC")
+  hours_vector <- posixct_to_hours(time_vector)
+  expect_equal(hours_vector, c(9.5, 20))
+})
+
+test_that("posixct_to_hours errors on non-POSIXct input", {
+  time_vector <- c("2025-03-03 09:30:00", "2025-03-03 20:00:00")
+  expect_error(posixct_to_hours(time_vector), "input must be a POSIXct or POSIXt object")
 })

@@ -30,6 +30,18 @@ filtering_module <- function(id) {
   )
 }
 
+filtering_tab <- function(id) {
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::uiOutput(ns("removed_sessions_text")),
+    shiny::tableOutput(ns("removed_sessions")),
+    shiny::downloadButton(
+      outputId = ns("download_removed_sessions"),
+      label = ""
+    )
+  )
+}
+
 filtering_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
 
@@ -58,7 +70,13 @@ filtering_server <- function(id, sessions) {
       )
     })
 
-    shiny::reactive({
+    selected_sessions <- shiny::reactive({
+      shiny::req(sessions())
+      sessions() |>
+        filter_by_night_range(input$date_range[1], input$date_range[2])
+    })
+
+    filtered_sessions <- shiny::reactive({
       shiny::req(sessions())
 
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
@@ -71,11 +89,52 @@ filtering_server <- function(id, sessions) {
                                 " min_time_in_bed: ", input$min_time_in_bed))
       }
 
-      sessions() |>
+      selected_sessions() |>
         remove_sessions_no_sleep() |>
         set_min_time_in_bed(input$min_time_in_bed) |>
-        set_session_sleep_onset_range(from_time, to_time) |>
-        filter_by_night_range(input$date_range[1], input$date_range[2])
+        set_session_sleep_onset_range(from_time, to_time)
     })
+
+    removed_sessions <- shiny::reactive({
+      shiny::req(selected_sessions(), filtered_sessions())
+      get_removed_sessions_table(selected_sessions(), filtered_sessions())
+    })
+
+    output$removed_sessions <- shiny::renderTable({
+      shiny::req(removed_sessions())
+      shiny::validate(
+        shiny::need(nrow(removed_sessions()) > 0, "No sessions have been removed.")
+      )
+      removed_sessions()
+    })
+
+    shiny::observe({
+      shiny::req(removed_sessions(), filtered_sessions())
+      logging::loginfo(paste0("Removed sessions: ", nrow(removed_sessions()), ". Remaining sessions: ", nrow(filtered_sessions())))
+    })
+
+    output$removed_sessions_text <- shiny::renderUI({
+      shiny::req(removed_sessions())
+      if (nrow(removed_sessions()) > 0) {
+        shiny::HTML(paste0(
+          "<br/><p>The filtering table below shows sessions that were removed by filtering.</p>",
+          "<p>", nrow(removed_sessions()), " sessions have been removed between ", input$date_range[1], " and ", input$date_range[2], ".</p>"
+        ))
+      }
+    })
+
+    output$download_removed_sessions <- get_table_download_handler(
+      session = session,
+      output_table = shiny::reactive(get_removed_sessions(sessions(), filtered_sessions())),
+      output_name = "removed_sessions"
+    )
+
+    filtered_sessions
   })
+}
+
+#' @importFrom rlang .data
+get_removed_sessions_table <- function(sessions, filtered_sessions) {
+  get_removed_sessions(sessions, filtered_sessions) |>
+    make_sessions_display_table()
 }

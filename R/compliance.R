@@ -90,3 +90,26 @@ remove_sessions_no_sleep <- function(sessions) {
 get_non_complying_sessions <- function(sessions) {
   sessions[sessions$night %in% sessions$night[duplicated(sessions$night)], ]
 }
+
+#' Get a table of sessions that were removed during filtering
+#'
+#' @param sessions The original sessions dataframe
+#' @param filtered_sessions The filtered sessions dataframe
+#' @returns The sessions dataframe with only the sessions that were removed during filtering
+#' @export
+#' @family data tables
+#' @examples
+#' filtered_sessions <- set_session_start_time_range(example_sessions, "22:00", "06:00")
+#' removed_sessions <- get_removed_sessions(example_sessions, filtered_sessions)
+get_removed_sessions <- function(sessions, filtered_sessions) {
+  if (nrow(filtered_sessions) > nrow(sessions)) {
+    cli::cli_abort(c(
+      "!" = "There are more rows in filtered sessions than in sessions.",
+      "i" = "Have you accidentally swapped the function arguments?",
+      "i" = "get_removed_sessions(sessions, filtered_sessions)"
+    ))
+  }
+  sessions |>
+    dplyr::anti_join(filtered_sessions, by = "id") |>
+    remove_sessions_no_sleep()
+}
