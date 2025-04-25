@@ -21,6 +21,7 @@ duplicate_sessions <- get_non_complying_sessions(example_sessions)
 \seealso{
 Other data tables: 
 \code{\link{get_epochs_summary}()},
+\code{\link{get_removed_sessions}()},
 \code{\link{get_sessions_summary}()}
 }
 \concept{data tables}

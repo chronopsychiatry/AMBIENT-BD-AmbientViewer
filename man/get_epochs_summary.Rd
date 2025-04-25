@@ -19,8 +19,11 @@ This function displays the number of sessions in the epoch data, as well as the 
 get_epochs_summary(example_epochs)
 }
 \seealso{
+\code{\link[=get_sessions_summary]{get_sessions_summary()}} to summarise session information.
+
 Other data tables: 
 \code{\link{get_non_complying_sessions}()},
+\code{\link{get_removed_sessions}()},
 \code{\link{get_sessions_summary}()}
 }
 \concept{data tables}
