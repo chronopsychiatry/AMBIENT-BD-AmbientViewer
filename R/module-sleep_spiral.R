@@ -15,7 +15,7 @@ sleep_spiral_module_ui <- function(id) {
   )
 }
 
-sleep_spiral_module_server <- function(id, epochs, sessions) {
+sleep_spiral_module_server <- function(id, epochs) {
   shiny::moduleServer(id, function(input, output, session) {
 
     sleep_spiral_plot <- shiny::reactive({

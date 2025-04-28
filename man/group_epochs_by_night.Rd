@@ -19,6 +19,9 @@ Create a grouping by night for epoch data
 The function creates a new column \code{night} that groups the epochs by night.
 Timepoints before 12 PM are considered part of the previous night.
 }
+\examples{
+epochs <- group_epochs_by_night(example_epochs)
+}
 \seealso{
 \code{\link[=group_sessions_by_night]{group_sessions_by_night()}} to group session data by night.
 

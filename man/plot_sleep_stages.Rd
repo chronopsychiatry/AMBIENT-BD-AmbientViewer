@@ -16,7 +16,10 @@ A ggplot object showing the proportion of sleep stages for each night
 Plot Sleep Stages
 }
 \seealso{
+\code{\link[=plot_hypnogram]{plot_hypnogram()}} to show the detailed sleep stages over time
+
 Other plot epochs: 
+\code{\link{plot_hypnogram}()},
 \code{\link{plot_sleep_spiral}()},
 \code{\link{plot_timeseries}()}
 }

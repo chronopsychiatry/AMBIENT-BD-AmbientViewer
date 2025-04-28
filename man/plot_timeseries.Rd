@@ -23,6 +23,7 @@ Plot epoch time series data for a given variable
 \code{\link[=plot_timeseries_sessions]{plot_timeseries_sessions()}} to plot session data.
 
 Other plot epochs: 
+\code{\link{plot_hypnogram}()},
 \code{\link{plot_sleep_spiral}()},
 \code{\link{plot_sleep_stages}()}
 }

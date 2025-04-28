@@ -1,7 +1,7 @@
-sleep_stages_module_ui <- function(id) {
+hypnogram_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::plotOutput(ns("sleep_stages_plot")),
+    shiny::plotOutput(ns("hypnogram_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
       label = NULL
@@ -15,22 +15,22 @@ sleep_stages_module_ui <- function(id) {
   )
 }
 
-sleep_stages_module_server <- function(id, epochs) {
+hypnogram_module_server <- function(id, epochs) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    sleep_stages_plot <- shiny::reactive({
+    hypnogram_plot <- shiny::reactive({
       shiny::req(epochs())
-      plot_sleep_stages(epochs = epochs())
+      plot_hypnogram(epochs = epochs())
     })
 
-    output$sleep_stages_plot <- shiny::renderPlot({
-      shiny::req(sleep_stages_plot())
-      sleep_stages_plot()
+    output$hypnogram_plot <- shiny::renderPlot({
+      shiny::req(hypnogram_plot())
+      hypnogram_plot()
     })
 
     output$download_plot <- get_plot_download_handler(
       session = session,
-      output_plot = sleep_stages_plot,
+      output_plot = hypnogram_plot,
       format = shiny::reactive(input$download_format)
     )
 

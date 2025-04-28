@@ -5,12 +5,13 @@
 #' @importFrom rlang .data
 #' @export
 #' @family plot epochs
+#' @seealso [plot_hypnogram()] to show the detailed sleep stages over time
 plot_sleep_stages <- function(epochs) {
   sleep_stage_labels <- c(
-    "1" = "Awake",
+    "1" = "Deep",
     "2" = "Light",
-    "3" = "Deep",
-    "4" = "REM",
+    "3" = "REM",
+    "4" = "Awake",
     "5" = "No presence"
   )
   sleep_stage_colors <- c(  # Colors picked from the VT website

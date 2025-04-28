@@ -103,7 +103,8 @@ filtering_server <- function(id, sessions) {
     output$removed_sessions <- shiny::renderTable({
       shiny::req(removed_sessions())
       shiny::validate(
-        shiny::need(nrow(removed_sessions()) > 0, "No sessions have been removed.")
+        shiny::need(nrow(removed_sessions()) > 0,
+                    paste0("No sessions have been removed between ", input$date_range[1], " and ", input$date_range[2], "."))
       )
       removed_sessions()
     })

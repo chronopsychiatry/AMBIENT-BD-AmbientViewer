@@ -68,6 +68,7 @@ ambient_viewer <- function(...) {
             tabPanel("Sleep Clock", sleep_clock_module_ui("sleep_clock")),
             tabPanel("Sleep Bubbles", sleep_bubbles_module_ui("sleep_bubbles")),
             tabPanel("Sleep Stages", sleep_stages_module_ui("sleep_stages")),
+            tabPanel("Hypnogram", hypnogram_module_ui("hypnogram")),
             tabPanel("Session Timeseries", timeseries_sessions_module_ui("timeseries_sessions")),
             tabPanel("Epoch Timeseries", timeseries_module_ui("timeseries"))
           )
@@ -121,12 +122,13 @@ ambient_viewer <- function(...) {
     export_data_server("export_data", filtered_sessions, filtered_epochs)
 
     # Plotting modules
-    sleep_spiral_module_server("sleep_spiral", filtered_epochs, filtered_sessions)
+    sleep_spiral_module_server("sleep_spiral", filtered_epochs)
     sleep_clock_module_server("sleep_clock", filtered_sessions)
     sleep_bubbles_module_server("sleep_bubbles", filtered_sessions)
-    sleep_stages_module_server("sleep_stages", filtered_epochs, filtered_sessions)
+    sleep_stages_module_server("sleep_stages", filtered_epochs)
+    hypnogram_module_server("hypnogram", filtered_epochs)
     timeseries_sessions_module_server("timeseries_sessions", filtered_sessions)
-    timeseries_module_server("timeseries", filtered_epochs, filtered_sessions)
+    timeseries_module_server("timeseries", filtered_epochs)
 
   }
 

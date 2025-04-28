@@ -16,7 +16,12 @@ A string representing the maximum time in the format "HH:MM".
 This function calculates the maximum time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
 It considers a time window from 12pm to 12pm the next day, so 11:00 is considered later than 13:00.
 }
+\examples{
+max_time(c("2025-04-08 23:00:00", "2025-04-09 01:00:00", "2025-04-09 02:30:00"))
+}
 \seealso{
+\code{\link[=min_time]{min_time()}} to calculate the minimum time in the same format.
+
 Other time processing: 
 \code{\link{convert_angle_to_time}()},
 \code{\link{convert_times_to_mean_angle}()},

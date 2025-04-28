@@ -17,6 +17,9 @@ A numeric value representing the time in the specified unit.
 \description{
 This function converts an angle in radians to time in the provided unit (can be "second", "minute" or "hour").
 }
+\examples{
+convert_angle_to_time(pi/2, unit = "hour")
+}
 \seealso{
 \code{\link[=convert_times_to_mean_angle]{convert_times_to_mean_angle()}} to calculate the average angle from a vector of time values.
 

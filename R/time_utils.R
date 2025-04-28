@@ -38,6 +38,9 @@ mean_time <- function(time_vector) {
 #' @returns A string representing the minimum time in the format "HH:MM".
 #' @export
 #' @family time processing
+#' @seealso [max_time()] to calculate the maximum time in the same format.
+#' @examples
+#' min_time(c("2025-04-08 23:00:00", "2025-04-09 01:00:00", "2025-04-09 02:30:00"))
 min_time <- function(time_vector) {
   time_vector |>
     char_to_posixct(na_rm = TRUE) |>
@@ -56,6 +59,9 @@ min_time <- function(time_vector) {
 #' @returns A string representing the maximum time in the format "HH:MM".
 #' @export
 #' @family time processing
+#' @seealso [min_time()] to calculate the minimum time in the same format.
+#' @examples
+#' max_time(c("2025-04-08 23:00:00", "2025-04-09 01:00:00", "2025-04-09 02:30:00"))
 max_time <- function(time_vector) {
   time_vector |>
     char_to_posixct(na_rm = TRUE) |>
@@ -76,6 +82,8 @@ max_time <- function(time_vector) {
 #' @export
 #' @family time processing
 #' @seealso [convert_angle_to_time()] to convert the mean angle back to time format.
+#' @examples
+#' convert_times_to_mean_angle(c(23, 10, 0), unit = "hour")
 convert_times_to_mean_angle <- function(times, unit = "second") {
   if (!is.numeric(times) || any(times < 0)) {
     cli::cli_abort(c("!" = "times must be a numeric vector with non-negative values."))
@@ -94,6 +102,8 @@ convert_times_to_mean_angle <- function(times, unit = "second") {
 #' @export
 #' @family time processing
 #' @seealso [convert_times_to_mean_angle()] to calculate the average angle from a vector of time values.
+#' @examples
+#' convert_angle_to_time(pi/2, unit = "hour")
 convert_angle_to_time <- function(angle, unit = "second") {
   if (!is.numeric(angle)) {
     cli::cli_abort(c("!" = "angle must be a numeric value."))
@@ -139,6 +149,8 @@ shift_times_by_12h <- function(times) {
 #' @export
 #' @seealso [group_sessions_by_night()] to group session data by night.
 #' @family time processing
+#' @examples
+#' epochs <- group_epochs_by_night(example_epochs)
 group_epochs_by_night <- function(epochs) {
   epochs |>
     dplyr::mutate(
@@ -159,6 +171,8 @@ group_epochs_by_night <- function(epochs) {
 #' @export
 #' @family time processing
 #' @seealso [group_epochs_by_night()] to group epoch data by night.
+#' @examples
+#' sessions <- group_sessions_by_night(example_sessions)
 group_sessions_by_night <- function(sessions) {
   sessions |>
     dplyr::mutate(

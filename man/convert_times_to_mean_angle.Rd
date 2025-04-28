@@ -18,6 +18,9 @@ A numeric value representing the mean angle in radians.
 This function converts a vector of times to a mean angle in radians.
 It is useful to calculate average times spanning midnight
 }
+\examples{
+convert_times_to_mean_angle(c(23, 10, 0), unit = "hour")
+}
 \seealso{
 \code{\link[=convert_angle_to_time]{convert_angle_to_time()}} to convert the mean angle back to time format.
 
