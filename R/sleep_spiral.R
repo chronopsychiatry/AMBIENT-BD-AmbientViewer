@@ -7,10 +7,10 @@
 #' @family plot epochs
 plot_sleep_spiral <- function(epochs) {
   sleep_stage_colors <- c(
-    "1" = "orange",  # Awake
+    "1" = "#6A3A9A", # Deep sleep (dark purple)
     "2" = "#D3B9E6", # Light sleep (light purple)
-    "3" = "#6A3A9A", # Deep sleep (dark purple)
-    "4" = "#A074C4" # REM sleep (medium purple)
+    "3" = "#A074C4", # REM sleep (medium purple)
+    "4" = "orange"  # Awake
   )
 
   reference_time <- epochs$timestamp |>
@@ -22,11 +22,11 @@ plot_sleep_spiral <- function(epochs) {
     dplyr::mutate(
       timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
       sleep_stage = as.character(.data$sleep_stage),  # Convert sleep_stage to character for mapping
-      sleep_stage = dplyr::if_else(.data$sleep_stage == "5", "1", .data$sleep_stage)  # Consider "no presence" as "awake"
+      sleep_stage = dplyr::if_else(.data$sleep_stage == "5", "4", .data$sleep_stage)  # Consider "no presence" as "awake"
     ) |>
     tidyr::complete(
       timestamp = seq(min(.data$timestamp), max(.data$timestamp), by = "1 min"),  # Fill gaps with 5-minute intervals
-      fill = list(sleep_stage = "1")  # Mark missing data as "awake"
+      fill = list(sleep_stage = "4")  # Mark missing data as "awake"
     ) |>
     dplyr::mutate(
       time_in_days = as.numeric(difftime(.data$timestamp, reference_time, units = "days")),
@@ -39,10 +39,10 @@ plot_sleep_spiral <- function(epochs) {
     ggplot2::geom_point(size = 1, shape = 16) +
     ggplot2::scale_color_manual(values = sleep_stage_colors,
       labels = c(
-        "1" = "Awake",
+        "1" = "Deep Sleep",
         "2" = "Light Sleep",
-        "3" = "Deep Sleep",
-        "4" = "REM Sleep"
+        "3" = "REM Sleep",
+        "4" = "Awake"
       )
     ) +
     ggplot2::coord_polar(theta = "x") +
