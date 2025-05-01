@@ -56,7 +56,8 @@ plot_hypnogram <- function(epochs) {
     ) +
     ggplot2::scale_y_continuous(
       breaks = sleep_stage_numeric,
-      labels = names(sleep_stage_numeric)
+      labels = names(sleep_stage_numeric),
+      limits = c(0, max(sleep_stage_numeric) + 2)
     ) +
     ggplot2::scale_fill_manual(values = sleep_stage_colors) +
     ggplot2::labs(
