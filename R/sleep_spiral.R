@@ -14,13 +14,13 @@ plot_sleep_spiral <- function(epochs) {
   )
 
   reference_time <- epochs$timestamp |>
-    as.POSIXct(format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC") |>
+    lubridate::ymd_hms(tz = "UTC") |>
     min() |>
     lubridate::floor_date(unit = "day")
 
   epochs <- epochs |>
     dplyr::mutate(
-      timestamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      timestamp = lubridate::ymd_hms(.data$timestamp, tz = "UTC"),
       sleep_stage = as.character(.data$sleep_stage),  # Convert sleep_stage to character for mapping
       sleep_stage = dplyr::if_else(.data$sleep_stage == "5", "4", .data$sleep_stage)  # Consider "no presence" as "awake"
     ) |>

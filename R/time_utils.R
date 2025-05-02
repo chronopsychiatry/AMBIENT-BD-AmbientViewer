@@ -154,7 +154,7 @@ shift_times_by_12h <- function(times) {
 group_epochs_by_night <- function(epochs) {
   epochs |>
     dplyr::mutate(
-      time_stamp = as.POSIXct(.data$timestamp, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      time_stamp = lubridate::ymd_hms(.data$timestamp, tz = "UTC"),
       date = as.Date(.data$time_stamp, tz = "UTC"),
       hour = posixct_to_hours(.data$time_stamp),
       night = as.Date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
@@ -176,7 +176,7 @@ group_epochs_by_night <- function(epochs) {
 group_sessions_by_night <- function(sessions) {
   sessions |>
     dplyr::mutate(
-      start_time = as.POSIXct(.data$session_start, format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC"),
+      start_time = lubridate::ymd_hms(.data$session_start, tz = "UTC"),
       date = as.Date(.data$start_time, tz = "UTC"),
       start_hour = posixct_to_hours(.data$start_time),
       night = as.Date(ifelse(.data$start_hour < 12, date - 1, date))
@@ -212,7 +212,7 @@ char_to_posixct <- function(time_vector, na_rm = TRUE) {
 posixct_to_hours <- function(time_vector) {
   if (!(inherits(time_vector, "POSIXct") || inherits(time_vector, "POSIXt"))) {
     cli::cli_abort(c("!" = "input must be a POSIXct or POSIXt object.",
-                     "x" = "You supplied {class(time_vector)}.",
+                     "x" = "You supplied {.class {time_vector}}.",
                      "i" = "Use char_to_posixct() to convert character strings to POSIXct."))
   }
   lubridate::hour(time_vector) + lubridate::minute(time_vector) / 60

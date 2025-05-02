@@ -63,8 +63,8 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   if (is_iso8601_datetime(sessions[[variable]])) {
     sessions <- sessions |>
       dplyr::mutate(
-        plot_var = lubridate::hour(as.POSIXct(.data[[variable]], format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")) +
-          lubridate::minute(as.POSIXct(.data[[variable]], format = "%Y-%m-%dT%H:%M:%OS", tz = "UTC")) / 60
+        plot_var = lubridate::hour(lubridate::ymd_hms(.data[[variable]], tz = "UTC")) +
+          lubridate::minute(lubridate::ymd_hms(.data[[variable]], tz = "UTC")) / 60
       )
   } else {
     sessions$plot_var <- sessions[[variable]]

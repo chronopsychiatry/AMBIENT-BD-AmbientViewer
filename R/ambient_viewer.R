@@ -8,12 +8,13 @@ ambient_viewer <- function(...) {
   if (nzchar(www_path)) {
     addResourcePath(prefix = "www", directoryPath = www_path)
   } else {
-    warning("The 'www' directory could not be found. Static resources may not load correctly.")
+    cli::cli_warn(c("!" = "The 'www' directory could not be found. Static resources may not load correctly."))
   }
 
   log_file <- "logs/AmbientViewer.log"
   if (!dir.exists("logs")) {
     dir.create("logs")
+    cli::cli_alert_info(c("i" = "Created directory at {getwd()}/logs for logging."))
   }
   logging::basicConfig()
   logging::addHandler(logging::writeToFile, file = log_file, level = "INFO")

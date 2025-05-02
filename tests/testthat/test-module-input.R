@@ -5,10 +5,10 @@ mock_sessions <- data.frame(
 )
 
 mock_epochs <- data.frame(
-  timestamp = as.POSIXct(c(
+  timestamp = c(
     "2025-03-03T11:00:00", "2025-03-03T23:00:00",
     "2025-03-04T01:00:00", "2025-03-04T11:00:00"
-  ), tz = "UTC"),
+  ),
   value = c(10, 20, 15, 25)
 )
 
@@ -37,8 +37,8 @@ test_that("input_module returns correct data", {
 })
 
 test_that("check_csv_column does its job", {
-  showNotification_mock <- mockery::mock()
-  mockery::stub(check_csv_column, "shiny::showNotification", showNotification_mock)
+  show_notification_mock <- mockery::mock()
+  mockery::stub(check_csv_column, "shiny::showNotification", show_notification_mock)
 
   expect_true(check_csv_column(file.path(test_folder, "sessions_reports.csv"), "session_start", "unexpected error"))
   expect_false(check_csv_column(file.path(test_folder, "sessions_reports.csv"), "not_a_column", "expected error"))
