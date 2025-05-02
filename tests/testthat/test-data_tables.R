@@ -10,8 +10,6 @@ test_that("get_sessions_summary works correctly with valid input", {
 
   result <- get_sessions_summary(sessions)
 
-  expect_equal(result$subject_id, "subject1")
-  expect_equal(result$device_id, "device123")
   expect_equal(result$total_sessions, 2)
   expect_equal(result$mean_session_length, 2)
 })
@@ -29,8 +27,6 @@ test_that("get_sessions_summary handles empty input", {
   result <- get_sessions_summary(sessions)
 
   expect_equal(nrow(result), 1)
-  expect_true(result$subject_id == "")
-  expect_true(result$device_id == "")
   expect_equal(result$total_sessions, 0)
   expect_true(is.na(result$mean_session_length))
 })

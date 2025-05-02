@@ -20,8 +20,8 @@ get_sessions_summary <- function(sessions) {
       session_duration_hours = as.numeric(difftime(.data$session_end, .data$session_start, units = "hours"))
     ) |>
     dplyr::summarise(
-      subject_id = paste(unique(.data$subject_id), collapse = ", "),
-      device_id = paste(unique(.data$device_serial_number), collapse = ", "),
+      # subject_id = paste(unique(.data$subject_id), collapse = ", "),
+      # device_id = paste(unique(.data$device_serial_number), collapse = ", "),
       total_sessions = dplyr::n(),
       mean_sleep_onset = mean_time(.data$sleep_onset),
       mean_wakeup_time = mean_time(.data$wakeup_time),

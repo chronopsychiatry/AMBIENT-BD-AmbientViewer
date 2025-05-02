@@ -14,6 +14,7 @@ load_sessions <- function(sessions_file) {
   }
 
   df <- utils::read.csv(sessions_file)
+  df <- convert_old_session_format(df)
 
   if (nrow(df) == 0) {
     cli::cli_warn(c(
@@ -49,6 +50,7 @@ load_epochs <- function(epochs_file) {
   }
 
   df <- utils::read.csv(epochs_file)
+  df <- convert_old_epoch_format(df, epochs_file)
 
   if (nrow(df) == 0) {
     cli::cli_warn(c(
@@ -65,5 +67,23 @@ load_epochs <- function(epochs_file) {
       "!" = "Can't find a 'timestamp' column.",
       "i" = "Please check the csv file contains epoch data."
     ))
+  }
+}
+
+convert_old_session_format <- function(sessions) {
+  if (!"id" %in% colnames(sessions) && "session_id" %in% colnames(sessions)) {
+    sessions |>
+      dplyr::rename(id = "session_id")
+  } else {
+    sessions
+  }
+}
+
+convert_old_epoch_format <- function(epochs, epochs_file) {
+  if (!"session_id" %in% colnames(epochs)) {
+    epochs |>
+      dplyr::mutate(session_id = stringr::str_extract(basename(epochs_file), "^[^.]+"))
+  } else {
+    epochs
   }
 }

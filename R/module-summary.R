@@ -28,6 +28,12 @@ summary_server <- function(id, sessions, epochs) {
 
     output$epochs_summary_table <- shiny::renderTable({
       shiny::req(epochs_summary_table())
+      if (epochs_summary_table()$total_sessions == 0) {
+        logging::loginfo("None of the epochs match the selected sessions.")
+      }
+      shiny::validate(
+        shiny::need(epochs_summary_table()$total_sessions > 0, "None of the epochs match the selected sessions.")
+      )
       epochs_summary_table()
     })
   })

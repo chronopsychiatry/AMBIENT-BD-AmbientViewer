@@ -1,5 +1,5 @@
 mock_sessions <- data.frame(
-  session_id = 1:3,
+  id = 1:3,
   session_start = c("2025-03-03T09:00:00", "2025-03-03T20:00:00", "2025-03-04T20:00:00"),
   session_end = c("2025-03-03T11:59:59", "2025-03-03T23:59:59", "2025-03-05T06:00:00")
 )
@@ -20,7 +20,7 @@ test_that("load_sessions loads sessions correctly", {
   sessions <- load_sessions(file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv"))
 
   expect_equal(nrow(sessions), 3)
-  expect_equal(sessions$session_id, c(1, 2, 3))
+  expect_equal(sessions$id, c(1, 2, 3))
 })
 
 test_that("load_sessions throws error for missing sessions file", {
