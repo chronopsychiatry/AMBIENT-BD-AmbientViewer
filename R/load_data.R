@@ -73,7 +73,8 @@ load_epochs <- function(epochs_file) {
 convert_old_session_format <- function(sessions) {
   if (!"id" %in% colnames(sessions) && "session_id" %in% colnames(sessions)) {
     sessions |>
-      dplyr::rename(id = "session_id")
+      dplyr::rename(id = "session_id") |>
+      dplyr::rename(subject_id = "user_id")
   } else {
     sessions
   }
