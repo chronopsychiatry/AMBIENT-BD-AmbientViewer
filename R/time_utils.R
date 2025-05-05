@@ -1,13 +1,17 @@
 #' Calculate the mean time from a vector of time strings
 #'
 #' This function calculates the mean time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
-#' @param time_vector A vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
+#' @param time_vector A vector of time strings in format "YYYY-MM-DD HH:MM:SS", "HH:MM:SS" or "HH:MM".
 #' @returns A string representing the mean time in the format "HH:MM".
 #' @export
 #' @family time processing
 #' @examples
-#' # Use on a vector of time strings
+#' # Use on a vector of time strings representing full dates
 #' time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
+#' mean_time(time_vector)
+#'
+#' # Use on time-only strings
+#' time_vector <- c("22:56", "01:32")
 #' mean_time(time_vector)
 #'
 #' # Use on a dataframe column
@@ -204,7 +208,7 @@ char_to_posixct <- function(time_vector, na_rm = TRUE) {
   time_vector <- if (na_rm) time_vector[!is.na(time_vector)] else time_vector
   if (!inherits(time_vector, "POSIXct")) {
     time_vector <- time_vector[time_vector != ""]
-    time_vector <- lubridate::ymd_hms(time_vector, tz = "UTC")
+    time_vector <- parse_time(time_vector)
   }
   time_vector
 }
@@ -216,4 +220,9 @@ posixct_to_hours <- function(time_vector) {
                      "i" = "Use char_to_posixct() to convert character strings to POSIXct."))
   }
   lubridate::hour(time_vector) + lubridate::minute(time_vector) / 60
+}
+
+parse_time <- function(time_vector) {
+  time_formats <- c("ymd_HMS", "ymd_HMSz", "HMS", "HM")
+  lubridate::parse_date_time(time_vector, orders = time_formats, tz = "UTC", quiet = TRUE)
 }

@@ -26,6 +26,7 @@ Imports:
     shiny,
     shinyjs,
     shinyWidgets,
+    svglite,
     tidyr
 Depends: 
     R (>= 4.3)

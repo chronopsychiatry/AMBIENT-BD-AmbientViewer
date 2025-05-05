@@ -7,7 +7,7 @@
 mean_time(time_vector)
 }
 \arguments{
-\item{time_vector}{A vector of time strings in the format "YYYY-MM-DD HH:MM:SS".}
+\item{time_vector}{A vector of time strings in format "YYYY-MM-DD HH:MM:SS", "HH:MM:SS" or "HH:MM".}
 }
 \value{
 A string representing the mean time in the format "HH:MM".
@@ -16,8 +16,12 @@ A string representing the mean time in the format "HH:MM".
 This function calculates the mean time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
 }
 \examples{
-# Use on a vector of time strings
+# Use on a vector of time strings representing full dates
 time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
+mean_time(time_vector)
+
+# Use on time-only strings
+time_vector <- c("22:56", "01:32")
 mean_time(time_vector)
 
 # Use on a dataframe column

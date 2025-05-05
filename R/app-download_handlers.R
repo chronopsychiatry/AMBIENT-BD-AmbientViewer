@@ -1,4 +1,4 @@
-get_plot_download_handler <- function(session, output_plot, format) {
+get_plot_download_handler <- function(session, output_plot, format, width = 8, height = 6) {
   shiny::downloadHandler(
     filename = function() {
       paste0("plot_", Sys.Date(), ".", format())
@@ -9,15 +9,7 @@ get_plot_download_handler <- function(session, output_plot, format) {
 
       logging::loginfo(paste0("Exporting plot in ", format(), " format."))
 
-      if (format() == "png") {
-        grDevices::png(file, width = 1600, height = 1000, res = 300)
-        print(plot)
-        grDevices::dev.off()
-      } else if (format() == "svg") {
-        grDevices::svg(file, width = 8, height = 6)
-        print(plot)
-        grDevices::dev.off()
-      }
+      ggplot2::ggsave(filename = file, plot = plot, device = format(), bg = "white", width = width, height = height)
     }
   )
 }

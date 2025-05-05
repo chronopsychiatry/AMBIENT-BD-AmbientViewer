@@ -9,7 +9,7 @@ sleep_clock_module_ui <- function(id) {
     shiny::radioButtons(
       inputId = ns("download_format"),
       label = NULL,
-      choices = c("PNG" = "png", "SVG" = "svg"),
+      choices = c("PNG" = "png", "PDF" = "pdf", "SVG" = "svg"),
       inline = TRUE
     )
   )
@@ -31,7 +31,9 @@ sleep_clock_module_server <- function(id, sessions) {
     output$download_plot <- get_plot_download_handler(
       session = session,
       output_plot = sleep_clock_plot,
-      format = shiny::reactive(input$download_format)
+      format = shiny::reactive(input$download_format),
+      width = 7,
+      height = 7
     )
 
   })

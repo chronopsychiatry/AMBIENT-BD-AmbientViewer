@@ -14,7 +14,7 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
       dplyr::filter(.data[[variable]] != 0)
   }
 
-  p <- ggplot2::ggplot(
+  ggplot2::ggplot(
     epochs,
     ggplot2::aes(
       x = shift_times_by_12h(.data$timestamp),
@@ -38,8 +38,6 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
       breaks = seq(0, 24, by = 2),
       labels = function(x) sprintf("%02d:00", (x + 12) %% 24) # Format as HH:00
     )
-
-  return(p)
 }
 
 #' Plot session time series data for a given variable
@@ -92,6 +90,5 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
       labels = function(x) sprintf("%02d:%02d", floor(x), round((x %% 1) * 60))
     )
   }
-
-  return(p)
+  p
 }
