@@ -50,7 +50,7 @@ input_server <- function(id, session) {
 
 check_csv_column <- function(file_path, column_name, error_msg) {
   colnames <- file_path |>
-    read.csv(nrows = 1) |>
+    utils::read.csv(nrows = 1) |>
     colnames()
   has_column <- column_name %in% colnames
   if (!has_column) {

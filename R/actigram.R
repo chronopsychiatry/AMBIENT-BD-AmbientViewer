@@ -8,9 +8,9 @@
 plot_actigram <- function(epochs) {
   epochs <- epochs |>
     dplyr::mutate(
-      timestamp = lubridate::ymd_hms(.data$timestamp, tz = "UTC"),
-      date = as.Date(.data$timestamp),
-      time = as.numeric(difftime(.data$timestamp, as.Date(.data$timestamp), units = "secs")) / 3600, # Time in hours
+      timestamp = parse_time(.data$timestamp),
+      date = lubridate::as_date(.data$timestamp),
+      time = as.numeric(difftime(.data$timestamp, lubridate::as_date(.data$timestamp), units = "secs")) / 3600, # Time in hours
       sleep_value = ifelse(.data$sleep_stage %in% c(2, 3, 4), .data$signal_quality_mean, 0)
     )
 

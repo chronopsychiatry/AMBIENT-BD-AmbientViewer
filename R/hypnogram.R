@@ -30,7 +30,7 @@ plot_hypnogram <- function(epochs) {
   hypnogram_data <- epochs |>
     dplyr::filter(.data$sleep_stage != "5") |>
     dplyr::mutate(
-      timestamp = char_to_posixct(.data$timestamp),
+      timestamp = parse_time(.data$timestamp),
       sleep_stage = factor(.data$sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels),
       sleep_stage_numeric = as.numeric(sleep_stage_numeric[as.character(.data$sleep_stage)])
     ) |>

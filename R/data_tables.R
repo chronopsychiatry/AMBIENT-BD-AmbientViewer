@@ -12,20 +12,11 @@
 #' @seealso [get_epochs_summary()] to summarise epoch information.
 get_sessions_summary <- function(sessions) {
   sessions |>
-    dplyr::mutate(
-      session_start = lubridate::ymd_hms(.data$session_start, tz = "UTC"),
-      session_end = lubridate::ymd_hms(.data$session_end, tz = "UTC"),
-      sleep_onset = lubridate::ymd_hms(.data$time_at_sleep_onset, tz = "UTC"),
-      wakeup_time = lubridate::ymd_hms(.data$time_at_wakeup, tz = "UTC"),
-      session_duration_hours = as.numeric(difftime(.data$session_end, .data$session_start, units = "hours"))
-    ) |>
     dplyr::summarise(
-      # subject_id = paste(unique(.data$subject_id), collapse = ", "),
-      # device_id = paste(unique(.data$device_serial_number), collapse = ", "),
       total_sessions = dplyr::n(),
-      mean_sleep_onset = mean_time(.data$sleep_onset),
-      mean_wakeup_time = mean_time(.data$wakeup_time),
-      mean_session_length = mean(.data$session_duration_hours, na.rm = TRUE)
+      mean_sleep_onset = mean_time(.data$time_at_sleep_onset),
+      mean_wakeup_time = mean_time(.data$time_at_wakeup),
+      mean_time_in_bed = mean(.data$time_in_bed) / 3600,
     )
 }
 
@@ -44,8 +35,9 @@ get_epochs_summary <- function(epochs) {
   if (nrow(epochs) == 0) {
     return(data.frame(total_sessions = 0, start_date = NA, end_date = NA))
   }
+
   epochs |>
-    dplyr::mutate(timestamp = lubridate::ymd_hms(.data$timestamp, tz = "UTC")) |>
+    dplyr::mutate(timestamp = parse_time(.data$timestamp)) |>
     dplyr::summarise(
       total_sessions = dplyr::n_distinct(.data$session_id),
       start_date = format(min(.data$timestamp, na.rm = TRUE), "%Y-%m-%d"),

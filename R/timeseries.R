@@ -17,7 +17,7 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   ggplot2::ggplot(
     epochs,
     ggplot2::aes(
-      x = shift_times_by_12h(.data$timestamp),
+      x = time_to_hours(shift_times_by_12h(.data$timestamp)),
       y = .data[[variable]],
       color = as.factor(.data$night),
       group = .data$night
@@ -60,10 +60,7 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
 
   if (is_iso8601_datetime(sessions[[variable]])) {
     sessions <- sessions |>
-      dplyr::mutate(
-        plot_var = lubridate::hour(lubridate::ymd_hms(.data[[variable]], tz = "UTC")) +
-          lubridate::minute(lubridate::ymd_hms(.data[[variable]], tz = "UTC")) / 60
-      )
+      dplyr::mutate(plot_var = time_to_hours(.data[[variable]]))
   } else {
     sessions$plot_var <- sessions[[variable]]
   }

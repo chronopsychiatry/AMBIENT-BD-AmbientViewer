@@ -12,8 +12,8 @@ plot_sleep_bubbles <- function(sessions) {
                     sessions$time_at_wakeup != "") |>
     dplyr::mutate(
       sleep_duration = as.numeric(difftime(
-        lubridate::ymd_hms(.data$time_at_wakeup, tz = "UTC"),
-        lubridate::ymd_hms(.data$time_at_sleep_onset, tz = "UTC"),
+        parse_time(.data$time_at_wakeup),
+        parse_time(.data$time_at_sleep_onset),
         units = "hours"
       )),
       color = suppressWarnings(dplyr::case_when(

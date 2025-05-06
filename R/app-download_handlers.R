@@ -9,6 +9,7 @@ get_plot_download_handler <- function(session, output_plot, format, width = 8, h
 
       logging::loginfo(paste0("Exporting plot in ", format(), " format."))
 
+      if (FALSE) svglite::svglite # Adding this for now to keep R CMD check happy
       ggplot2::ggsave(filename = file, plot = plot, device = format(), bg = "white", width = width, height = height)
     }
   )

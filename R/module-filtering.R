@@ -82,7 +82,7 @@ filtering_server <- function(id, sessions) {
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
 
-      if (as.Date(input$date_range[1], format = "%Y-%m-%d") != Sys.Date() + 1) {
+      if (lubridate::as_date(input$date_range[1], format = "%Y-%m-%d") != Sys.Date() + 1) {
         logging::loginfo(paste0("Filtering:",
                                 " date_range: ", input$date_range[1], "-", input$date_range[2],
                                 " sleep_onset_range: ", from_time, "-", to_time,

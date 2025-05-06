@@ -7,16 +7,24 @@
 shift_times_by_12h(times)
 }
 \arguments{
-\item{times}{A vector of times in POSIXct format (or character convertible to POSIXct).}
+\item{times}{A vector of times in POSIXct format, character convertible to POSIXct, or numerical (in hours).}
 }
 \value{
-A numerical vector of times (in hours) shifted to start at 12 PM
+A vector of times in POSIXct format (or numerical if numerical provided as input) shifted to start at 12 PM
 }
 \description{
 This function shifts times so that the day starts at 12 PM.
 This is useful for plotting night data
 }
 \examples{
+# Shift a vector of times in HH:MM format
+shift_times_by_12h(c("02:30", "16:00"))
+#> "14:30" "04:00"
+
+# Shift times in YYYY-MM-DD HH:MM:SS format
+shift_times_by_12h(c("2025-04-08 23:00:00", "2025-04-09 01:00:00"))
+#> "2025-04-08 11:00" "2025-04-09 13:00"
+
 # Shift sessions start times to start at 12 PM
 shifted_times <- shift_times_by_12h(example_sessions$session_start)
 

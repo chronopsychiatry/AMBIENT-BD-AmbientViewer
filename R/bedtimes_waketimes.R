@@ -15,8 +15,8 @@ plot_bedtimes_waketimes <- function(sessions, groupby = "night") {
   plot_data <- sessions |>
     dplyr::filter(!.data$time_at_sleep_onset == "" & !.data$time_at_wakeup == "") |>
     dplyr::mutate(
-      time_at_sleep_onset = lubridate::ymd_hms(.data$time_at_sleep_onset, tz = "UTC"),
-      time_at_wakeup = lubridate::ymd_hms(.data$time_at_wakeup, tz = "UTC")
+      time_at_sleep_onset = parse_time(.data$time_at_sleep_onset),
+      time_at_wakeup = parse_time(.data$time_at_wakeup)
     ) |>
     dplyr::mutate(
       group = switch(
@@ -41,10 +41,10 @@ plot_bedtimes_waketimes <- function(sessions, groupby = "night") {
     ) |>
     dplyr::ungroup() |>
     dplyr::mutate(
-      sleep_start = shift_times_by_12h(.data$sleep_start_labels),
-      sleep_end = shift_times_by_12h(.data$sleep_end_labels),
-      sleep_start_labels = as.POSIXct(.data$sleep_start_labels, format = "%H:%M", tz = "UTC"),
-      sleep_end_labels = as.POSIXct(.data$sleep_end_labels, format = "%H:%M", tz = "UTC"),
+      sleep_start = time_to_hours(shift_times_by_12h(.data$sleep_start_labels)),
+      sleep_end = time_to_hours(shift_times_by_12h(.data$sleep_end_labels)),
+      sleep_start_labels = parse_time(.data$sleep_start_labels),
+      sleep_end_labels = parse_time(.data$sleep_end_labels),
       group_numeric = as.numeric(factor(.data$group))
     )
 

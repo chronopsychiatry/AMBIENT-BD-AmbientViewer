@@ -1,6 +1,9 @@
+#' Ambient Viewer app
+#'
+#' This function launches the Ambient Viewer app, a Shiny application for visualizing and analyzing sleep data.
 #' @import shiny
 #' @export
-ambient_viewer <- function(...) {
+ambient_viewer <- function() {
 
   options(shiny.maxRequestSize = 50 * 1024^2)
 
@@ -135,5 +138,5 @@ ambient_viewer <- function(...) {
 
   }
 
-  shinyApp(ui, server, ...)
+  shinyApp(ui, server)
 }

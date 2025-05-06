@@ -67,8 +67,8 @@ make_sessions_display_table <- function(sessions) {
       sleep_onset = substr(.data$time_at_sleep_onset, 12, 16),
       wakeup_time = substr(.data$time_at_wakeup, 12, 16),
       end_time = substr(.data$session_end, 12, 16),
-      session_duration_h = difftime(lubridate::ymd_hms(.data$session_end),
-                                    lubridate::ymd_hms(.data$session_start),
+      session_duration_h = difftime(parse_time(.data$session_end),
+                                    parse_time(.data$session_start),
                                     units = "hours"),
       night = format(.data$night, "%Y-%m-%d"),
       time_in_bed_h = .data$time_in_bed / 60 / 60

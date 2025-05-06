@@ -37,8 +37,8 @@ filter_by_night_range <- function(sessions, from_night, to_night) {
   from_night <- if (is.null(from_night)) min(sessions$night) else from_night
   to_night <- if (is.null(to_night)) min(sessions$night) else to_night
   sessions |>
-    dplyr::filter(.data$night >= as.Date(from_night) &
-                    .data$night <= as.Date(to_night))
+    dplyr::filter(.data$night >= lubridate::as_date(from_night) &
+                    .data$night <= lubridate::as_date(to_night))
 }
 
 #' Select subjects by ID

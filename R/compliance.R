@@ -30,9 +30,9 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed) {
 set_session_start_time_range <- function(sessions, from_time, to_time) {
   session_times <- substr(sessions$session_start, 12, 16)
 
-  session_times <- as.POSIXct(session_times, format = "%H:%M", tz = "UTC")
-  from_time <- as.POSIXct(from_time, format = "%H:%M", tz = "UTC")
-  to_time <- as.POSIXct(to_time, format = "%H:%M", tz = "UTC")
+  session_times <- parse_time(session_times)
+  from_time <- parse_time(from_time)
+  to_time <- parse_time(to_time)
 
   if (from_time <= to_time) {
     sessions[session_times >= from_time & session_times <= to_time, ]
@@ -56,9 +56,9 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time) {
   sessions <- remove_sessions_no_sleep(sessions)
   session_times <- substr(sessions$time_at_sleep_onset, 12, 16)
 
-  session_times <- as.POSIXct(session_times, format = "%H:%M", tz = "UTC")
-  from_time <- as.POSIXct(from_time, format = "%H:%M", tz = "UTC")
-  to_time <- as.POSIXct(to_time, format = "%H:%M", tz = "UTC")
+  session_times <- parse_time(session_times)
+  from_time <- parse_time(from_time)
+  to_time <- parse_time(to_time)
 
   if (from_time <= to_time) {
     sessions[session_times >= from_time & session_times <= to_time, ]

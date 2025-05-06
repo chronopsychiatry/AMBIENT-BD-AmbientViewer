@@ -9,8 +9,8 @@ plot_sleep_clock <- function(sessions) {
   sessions <- sessions |>
     dplyr::filter(!.data$time_at_sleep_onset == "" & !.data$time_at_wakeup == "") |>
     dplyr::mutate(
-      sleep_onset_hour = shift_times_by_12h(.data$time_at_sleep_onset),
-      wakeup_hour = shift_times_by_12h(.data$time_at_wakeup),
+      sleep_onset_hour = time_to_hours(shift_times_by_12h(.data$time_at_sleep_onset)),
+      wakeup_hour = time_to_hours(shift_times_by_12h(.data$time_at_wakeup)),
       night = as.factor(.data$night)
     )
 
