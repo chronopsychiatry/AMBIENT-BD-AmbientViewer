@@ -63,10 +63,10 @@ get_compliance_table <- function(sessions) {
 make_sessions_display_table <- function(sessions) {
   sessions |>
     dplyr::mutate(
-      start_time = substr(.data$session_start, 12, 16),
-      sleep_onset = substr(.data$time_at_sleep_onset, 12, 16),
-      wakeup_time = substr(.data$time_at_wakeup, 12, 16),
-      end_time = substr(.data$session_end, 12, 16),
+      start_time = parse_time(.data$session_start) |> format("%H:%M"),
+      sleep_onset = parse_time(.data$time_at_sleep_onset) |> format("%H:%M"),
+      wakeup_time = parse_time(.data$time_at_wakeup) |> format("%H:%M"),
+      end_time = parse_time(.data$session_end) |> format("%H:%M"),
       session_duration_h = difftime(parse_time(.data$session_end),
                                     parse_time(.data$session_start),
                                     units = "hours"),
