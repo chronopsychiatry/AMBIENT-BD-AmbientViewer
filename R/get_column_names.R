@@ -8,6 +8,10 @@ get_session_colnames <- function(sessions, col_names) {
     ))
   }
 
+  if (nrow(sessions) == 0) {
+    return(.sessions_col_somnofy_v2)
+  }
+
   default_list <- get(paste0(".sessions_col_", sessions$.data_type[1]))
 
   if (is.null(col_names)) {
@@ -40,6 +44,10 @@ get_epoch_colnames <- function(epochs, col_names) {
       "i" = paste0("Please load epochs with `load_epochs`, or pass column names as arguments to `",
                    calling_function, "`.")
     ))
+  }
+
+  if (nrow(epochs) == 0) {
+    return(.epochs_col_somnofy_v2)
   }
 
   default_list <- get(paste0(".epochs_col_", epochs$.data_type[1]))
