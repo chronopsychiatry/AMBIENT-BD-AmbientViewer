@@ -4,7 +4,12 @@
 \alias{plot_timeseries_sessions}
 \title{Plot session time series data for a given variable}
 \usage{
-plot_timeseries_sessions(sessions, variable, exclude_zero = FALSE)
+plot_timeseries_sessions(
+  sessions,
+  variable,
+  exclude_zero = FALSE,
+  col_names = NULL
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -12,6 +17,11 @@ plot_timeseries_sessions(sessions, variable, exclude_zero = FALSE)
 \item{variable}{The variable to plot (e.g., "time_at_sleep_onset")}
 
 \item{exclude_zero}{Logical, whether to exclude zero values from the plot (default: FALSE)}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{night}
+}}
 }
 \value{
 A ggplot object

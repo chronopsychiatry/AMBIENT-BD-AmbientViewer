@@ -4,12 +4,17 @@
 \alias{select_subjects}
 \title{Select subjects by ID}
 \usage{
-select_subjects(sessions, subject_ids)
+select_subjects(sessions, subject_ids, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{subject_ids}{The subject IDs to select}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{subject_id}
+}}
 }
 \value{
 The sessions dataframe with only the sessions that belong to the specified subjects

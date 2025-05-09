@@ -4,7 +4,7 @@
 \alias{plot_timeseries}
 \title{Plot epoch time series data for a given variable}
 \usage{
-plot_timeseries(epochs, variable, exclude_zero = FALSE)
+plot_timeseries(epochs, variable, exclude_zero = FALSE, col_names = NULL)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
@@ -12,6 +12,12 @@ plot_timeseries(epochs, variable, exclude_zero = FALSE)
 \item{variable}{The variable to plot (e.g., "temperature_ambient_mean")}
 
 \item{exclude_zero}{Logical, whether to exclude zero values from the plot (default: FALSE)}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{timestamp}
+\item \code{night}
+}}
 }
 \value{
 A ggplot object

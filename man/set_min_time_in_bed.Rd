@@ -4,12 +4,17 @@
 \alias{set_min_time_in_bed}
 \title{Set minimum time in bed}
 \usage{
-set_min_time_in_bed(sessions, min_time_in_bed)
+set_min_time_in_bed(sessions, min_time_in_bed, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{min_time_in_bed}{The minimum time in bed in hours}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{time_in_bed}
+}}
 }
 \value{
 The sessions dataframe with only the sessions that meet the minimum time in bed requirement

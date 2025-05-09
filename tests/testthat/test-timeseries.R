@@ -9,13 +9,15 @@ mock_epochs <- data.frame(
     "2025-03-02", "2025-03-03",
     "2025-03-03", "2025-03-03",
     "2025-03-04", "2025-03-04"
-  ))
+  )),
+  .data_type = "somnofy_v2"
 )
 
 mock_sessions <- data.frame(
   session_id = 1:3,
   night = c("2025-03-03", "2025-03-03", "2025-03-04"),
-  temperature_mean = c(23, 15, 18)
+  temperature_mean = c(23, 15, 18),
+  .data_type = "somnofy_v2"
 )
 
 test_that("plot_timeseries returns a ggplot object", {

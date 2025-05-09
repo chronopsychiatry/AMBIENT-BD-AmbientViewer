@@ -2,10 +2,17 @@
 #'
 #' @param sessions The sessions dataframe
 #' @param groupby The grouping variable for the plot. Can be "night", "workday", or "weekday".
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `night`
+#' - `time_at_sleep_onset`
+#' - `time_at_wakeup`
+#' - `is_workday`
 #' @returns A ggplot graph showing the bedtimes and waketimes
 #' @importFrom rlang .data
 #' @export
-plot_bedtimes_waketimes <- function(sessions, groupby = "night") {
+plot_bedtimes_waketimes <- function(sessions, groupby = "night", col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+
   expansion_factor <- switch(
     groupby,
     workday = 1,
@@ -13,24 +20,24 @@ plot_bedtimes_waketimes <- function(sessions, groupby = "night") {
   )
 
   plot_data <- sessions |>
-    dplyr::filter(!.data$time_at_sleep_onset == "" & !.data$time_at_wakeup == "") |>
+    dplyr::filter(!.data[[col$time_at_sleep_onset]] == "" & !.data[[col$time_at_wakeup]] == "") |>
     dplyr::mutate(
-      time_at_sleep_onset = parse_time(.data$time_at_sleep_onset),
-      time_at_wakeup = parse_time(.data$time_at_wakeup)
+      time_at_sleep_onset = parse_time(.data[[col$time_at_sleep_onset]]),
+      time_at_wakeup = parse_time(.data[[col$time_at_wakeup]])
     ) |>
     dplyr::mutate(
       group = switch(
         groupby,
-        night = .data$night,
+        night = .data[[col$night]],
         workday = factor(
-          ifelse(.data$is_workday, "Weekday", "Weekend"),
+          ifelse(.data[[col$is_workday]], "Weekday", "Weekend"),
           levels = c("Weekend", "Weekday")
         ),
         weekday = factor(
           weekdays(.data$time_at_sleep_onset),
           levels = c("Sunday", "Saturday", "Friday", "Thursday", "Wednesday", "Tuesday", "Monday")
         ),
-        .data$night
+        .data[[col$night]]
       )
     ) |>
     dplyr::group_by(.data$group) |>

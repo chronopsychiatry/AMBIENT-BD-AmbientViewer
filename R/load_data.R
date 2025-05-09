@@ -13,18 +13,20 @@ load_sessions <- function(sessions_file) {
     ))
   }
 
-  df <- utils::read.csv(sessions_file)
-  df <- convert_old_session_format(df)
+  sessions <- utils::read.csv(sessions_file)
 
-  if (nrow(df) == 0) {
+  if (nrow(sessions) == 0) {
     cli::cli_warn(c(
       "!" = "Sessions table is empty",
       "i" = "Returning NULL"
     ))
     return(NULL)
   }
-  if ("session_start" %in% names(df)) {
-    df |>
+
+  sessions <- get_sessions_format(sessions)
+
+  if ("session_start" %in% names(sessions)) {
+    sessions |>
       group_sessions_by_night()
   } else {
     cli::cli_abort(c(
@@ -49,18 +51,25 @@ load_epochs <- function(epochs_file) {
     ))
   }
 
-  df <- utils::read.csv(epochs_file)
-  df <- convert_old_epoch_format(df, epochs_file)
+  epochs <- utils::read.csv(epochs_file)
 
-  if (nrow(df) == 0) {
+  if (nrow(epochs) == 0) {
     cli::cli_warn(c(
       "!" = "Epochs table is empty",
       "i" = "Returning NULL"
     ))
     return(NULL)
   }
-  if ("timestamp" %in% names(df)) {
-    df |>
+
+  epochs <- get_epochs_format(epochs)
+
+  if (epochs$.data_type[1] == "somnofy_v1") {
+    epochs <- epochs |>
+      dplyr::mutate(session_id = stringr::str_extract(basename(epochs_file), "^[^.]+"))
+  }
+
+  if ("timestamp" %in% names(epochs)) {
+    epochs |>
       group_epochs_by_night()
   } else {
     cli::cli_abort(c(
@@ -70,21 +79,57 @@ load_epochs <- function(epochs_file) {
   }
 }
 
-convert_old_session_format <- function(sessions) {
-  if (!"id" %in% colnames(sessions) && "session_id" %in% colnames(sessions)) {
-    sessions |>
-      dplyr::rename(id = "session_id") |>
-      dplyr::rename(subject_id = "user_id")
-  } else {
-    sessions
+#' Set the data type for a dataframe
+#'
+#' @param df The dataframe to set the data type for
+#' @param data_type The data type to set. Currently available data types: "somnofy_v1", "somnofy_v2"
+#' @returns The dataframe with the data type set
+#' @details The dataframe type is used by Ambient Viewer functions to determine the correct column names.
+#' Note: you do not need to set the data type if you are using the `load_sessions` or `load_epochs` functions.
+#' @export
+#' @examples
+#' example_sessions <- set_data_type(example_sessions, "somnofy_v2")
+set_data_type <- function(df, data_type) {
+  if (!data_type %in% c("somnofy_v1", "somnofy_v2")) {
+    cli::cli_abort(c(
+      "!" = "Invalid data type: {.val {data_type}}",
+      "i" = "Available data types: somnofy_v1, somnofy_v2."
+    ))
   }
+  df$.data_type <- data_type
+  df
 }
 
-convert_old_epoch_format <- function(epochs, epochs_file) {
-  if (!"session_id" %in% colnames(epochs)) {
-    epochs |>
-      dplyr::mutate(session_id = stringr::str_extract(basename(epochs_file), "^[^.]+"))
+get_sessions_format <- function(sessions) {
+  if (all(c(
+    "id", "subject_id", "device_serial_number", "session_start", "session_end",
+    "time_at_sleep_onset", "time_at_wakeup", "sleep_period", "time_in_bed", "is_workday"
+  ) %in% colnames(sessions))) {
+    sessions <- set_data_type(sessions, "somnofy_v2")
+  } else if (all(c(
+    "session_id", "user_id", "sex", "birth_year", "session_start", "session_end",
+    "time_at_sleep_onset", "time_at_wakeup", "sleep_period", "time_in_bed", "is_workday"
+  ) %in% colnames(sessions))) {
+    sessions <- set_data_type(sessions, "somnofy_v1")
   } else {
-    epochs
+    cli::cli_warn(c(
+      "!" = "Could not infer the Sessions data type.",
+      "i" = "Please check the csv file contains session data."
+    ))
   }
+  sessions
+}
+
+get_epochs_format <- function(epochs) {
+  if (all(c("timestamp", "session_id", "sleep_stage") %in% colnames(epochs))) {
+    epochs <- set_data_type(epochs, "somnofy_v2")
+  } else if (all(c("timestamp", "sleep_stage") %in% colnames(epochs))) {
+    epochs <- set_data_type(epochs, "somnofy_v1")
+  } else {
+    cli::cli_warn(c(
+      "!" = "Could not infer the Epochs data type.",
+      "i" = "Please check the csv file contains epoch data."
+    ))
+  }
+  epochs
 }

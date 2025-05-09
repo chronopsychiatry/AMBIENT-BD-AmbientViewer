@@ -36,12 +36,6 @@ input_server <- function(id, session) {
         return(NULL)
       }
       epochs <- load_epochs(input$epochs_file$datapath)
-      if (epochs$session_id[1] == "0") {
-        epochs |>
-          dplyr::mutate(session_id = stringr::str_extract(input$epochs_file$name, "^[^.]+"))
-      } else {
-        epochs
-      }
     })
 
     list(sessions = sessions, epochs = epochs)

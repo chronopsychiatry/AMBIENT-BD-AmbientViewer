@@ -1,11 +1,16 @@
 #' Plot Sleep Spiral
 #'
 #' @param epochs The epochs dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `timestamp`
+#' - `sleep_stage`
 #' @returns A ggplot object showing the sleep spiral
 #' @importFrom rlang .data
 #' @export
 #' @family plot epochs
-plot_sleep_spiral <- function(epochs) {
+plot_sleep_spiral <- function(epochs, col_names = NULL) {
+  col <- get_epoch_colnames(epochs, col_names)
+
   sleep_stage_colors <- c(
     "1" = "#6A3A9A", # Deep sleep (dark purple)
     "2" = "#D3B9E6", # Light sleep (light purple)
@@ -13,15 +18,15 @@ plot_sleep_spiral <- function(epochs) {
     "4" = "orange"  # Awake
   )
 
-  reference_time <- epochs$timestamp |>
+  reference_time <- epochs[[col$timestamp]] |>
     parse_time() |>
     min() |>
     lubridate::floor_date(unit = "day")
 
   epochs <- epochs |>
     dplyr::mutate(
-      timestamp = parse_time(.data$timestamp),
-      sleep_stage = as.character(.data$sleep_stage),  # Convert sleep_stage to character for mapping
+      timestamp = parse_time(.data[[col$timestamp]]),
+      sleep_stage = as.character(.data[[col$sleep_stage]]),  # Convert sleep_stage to character for mapping
       sleep_stage = dplyr::if_else(.data$sleep_stage == "5", "4", .data$sleep_stage)  # Consider "no presence" as "awake"
     ) |>
     tidyr::complete(

@@ -4,10 +4,17 @@
 \alias{get_sessions_summary}
 \title{Make a summary of session information}
 \usage{
-get_sessions_summary(sessions)
+get_sessions_summary(sessions, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe.}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{time_at_sleep_onset}
+\item \code{time_at_wakeup}
+\item \code{time_in_bed}
+}}
 }
 \value{
 A single-row dataframe summarizing session information.

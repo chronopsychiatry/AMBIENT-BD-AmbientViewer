@@ -2,6 +2,10 @@
 #'
 #' @param epochs The epochs dataframe
 #' @param sessions The sessions dataframe
+#' @param session_col_names A list to override default session column names. This function uses columns:
+#' - `id`
+#' @param epoch_col_names A list to override default epoch column names. This function uses columns:
+#' - `session_id`
 #' @returns The epochs dataframe with only the epochs that belong to the specified sessions
 #' @export
 #' @examples
@@ -11,12 +15,14 @@
 #'
 #' @seealso [filter_by_night_range()] to filter sessions by night range.
 #' @family filtering
-filter_epochs_from_sessions <- function(epochs, sessions) {
-  if (sum(epochs$session_id %in% unique(sessions$id)) == 0) {
+filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NULL, epoch_col_names = NULL) {
+  scol <- get_session_colnames(sessions, session_col_names)
+  ecol <- get_epoch_colnames(epochs, epoch_col_names)
+  if (sum(epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]])) == 0) {
     cli::cli_warn(c("!" = "None of the epochs match the selected sessions.",
                     "i" = "Returning an empty epoch table."))
   }
-  epochs[epochs$session_id %in% unique(sessions$id), ]
+  epochs[epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]]), ]
 }
 
 #' Filter sessions for nights within a night range
@@ -24,53 +30,62 @@ filter_epochs_from_sessions <- function(epochs, sessions) {
 #' @param sessions The sessions dataframe
 #' @param from_night The start night of the range (inclusive) in YYYY-MM-DD format
 #' @param to_night The end night of the range (inclusive) in YYYY-MM-DD format
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `night`
 #' @returns The sessions dataframe with only the sessions that fall within the specified night range
 #' @importFrom rlang .data
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
-filter_by_night_range <- function(sessions, from_night, to_night) {
+filter_by_night_range <- function(sessions, from_night, to_night, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
   if (from_night > to_night) {
     cli::cli_abort(c("!" = "from_night must be before to_night."))
   }
-  from_night <- if (is.null(from_night)) min(sessions$night) else from_night
-  to_night <- if (is.null(to_night)) min(sessions$night) else to_night
+  from_night <- if (is.null(from_night)) min(sessions[[col$night]]) else from_night
+  to_night <- if (is.null(to_night)) min(sessions[[col$night]]) else to_night
   sessions |>
-    dplyr::filter(.data$night >= lubridate::as_date(from_night) &
-                    .data$night <= lubridate::as_date(to_night))
+    dplyr::filter(.data[[col$night]] >= lubridate::as_date(from_night) &
+                    .data[[col$night]] <= lubridate::as_date(to_night))
 }
 
 #' Select subjects by ID
 #'
 #' @param sessions The sessions dataframe
 #' @param subject_ids The subject IDs to select
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `subject_id`
 #' @returns The sessions dataframe with only the sessions that belong to the specified subjects
 #' @export
 #' @family filtering
 #' @seealso [select_devices()] to select sessions by device ID.
-select_subjects <- function(sessions, subject_ids) {
-  if (sum(sessions$subject_id %in% subject_ids) == 0) {
+select_subjects <- function(sessions, subject_ids, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+  if (sum(sessions[[col$subject_id]] %in% subject_ids) == 0) {
     cli::cli_warn(c("!" = "None of the subject IDs were found in the sessions table.",
-                    "i" = "Available subject IDs: {unique(sessions$subject_id)}",
+                    "i" = "Available subject IDs: {unique(sessions[[col$subject_id]])}",
                     "i" = "Returning an empty sessions table."))
   }
-  sessions[sessions$subject_id %in% subject_ids, ]
+  sessions[sessions[[col$subject_id]] %in% subject_ids, ]
 }
 
 #' Select devices by ID
 #'
 #' @param sessions The sessions dataframe
 #' @param device_ids The device IDs to select
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `device_id`
 #' @returns The sessions dataframe with only the sessions recorded by the specified devices
 #' @export
 #' @family filtering
 #' @seealso [select_subjects()] to select sessions by subject ID.
-select_devices <- function(sessions, device_ids) {
-  if (sum(sessions$device_serial_number %in% device_ids) == 0) {
+select_devices <- function(sessions, device_ids, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+  if (sum(sessions[[col$device_id]] %in% device_ids) == 0) {
     cli::cli_warn(c("!" = "None of the device IDs were found in the sessions table.",
-                    "i" = "Available device IDs: {unique(sessions$device_serial_number)}",
+                    "i" = "Available device IDs: {unique(sessions[[col$device_id]])}",
                     "i" = "Returning an empty sessions table."))
   }
-  sessions[sessions$device_serial_number %in% device_ids, ]
+  sessions[sessions[[col$device_id]] %in% device_ids, ]
 }

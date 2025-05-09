@@ -11,7 +11,8 @@ test_that("plot_sleep_clock handles valid input correctly", {
                        "2025-03-03T18:24:11.524000+00:00",
                        "2025-03-03T00:24:11.524000+00:00",
                        "2025-03-03T23:24:11.524000+00:00"),
-    night = c("2025-03-02", "2025-03-03", "2025-03-03", "2025-03-03", "2025-03-03")
+    night = c("2025-03-02", "2025-03-03", "2025-03-03", "2025-03-03", "2025-03-03"),
+    .data_type = "somnofy_v2"
   )
   # Generate the plot
   plot <- plot_sleep_clock(sessions)

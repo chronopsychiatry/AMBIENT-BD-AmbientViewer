@@ -1,12 +1,17 @@
 #' Plot Sleep Stages
 #'
 #' @param epochs The epochs dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `night`
+#' - `sleep_stage`
 #' @returns A ggplot object showing the proportion of sleep stages for each night
 #' @importFrom rlang .data
 #' @export
 #' @family plot epochs
 #' @seealso [plot_hypnogram()] to show the detailed sleep stages over time
-plot_sleep_stages <- function(epochs) {
+plot_sleep_stages <- function(epochs, col_names = NULL) {
+  col <- get_epoch_colnames(epochs, col_names)
+
   sleep_stage_labels <- c(
     "1" = "Deep",
     "2" = "Light",
@@ -23,14 +28,14 @@ plot_sleep_stages <- function(epochs) {
   )
 
   stage_proportions <- epochs |>
-    dplyr::group_by(.data$night, .data$sleep_stage) |>
+    dplyr::group_by(.data[[col$night]], .data[[col$sleep_stage]]) |>
     dplyr::summarise(count = dplyr::n(), .groups = "drop") |>
-    dplyr::group_by(.data$night) |>
+    dplyr::group_by(.data[[col$night]]) |>
     dplyr::mutate(proportion = .data$count / sum(.data$count),
-      sleep_stage = factor(.data$sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels)
+      sleep_stage = factor(.data[[col$sleep_stage]], levels = names(sleep_stage_labels), labels = sleep_stage_labels)
     )
 
-  ggplot2::ggplot(stage_proportions, ggplot2::aes(x = .data$night, y = .data$proportion, fill = factor(.data$sleep_stage))) +
+  ggplot2::ggplot(stage_proportions, ggplot2::aes(x = .data[[col$night]], y = .data$proportion, fill = factor(.data$sleep_stage))) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::scale_y_continuous(labels = scales::percent_format()) +
     ggplot2::scale_fill_manual(values = sleep_stage_colors) +

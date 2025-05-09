@@ -4,12 +4,17 @@
 \alias{select_devices}
 \title{Select devices by ID}
 \usage{
-select_devices(sessions, device_ids)
+select_devices(sessions, device_ids, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{device_ids}{The device IDs to select}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{device_id}
+}}
 }
 \value{
 The sessions dataframe with only the sessions recorded by the specified devices

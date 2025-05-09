@@ -4,12 +4,27 @@
 \alias{filter_epochs_from_sessions}
 \title{Filter epochs based on session IDs}
 \usage{
-filter_epochs_from_sessions(epochs, sessions)
+filter_epochs_from_sessions(
+  epochs,
+  sessions,
+  session_col_names = NULL,
+  epoch_col_names = NULL
+)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
 
 \item{sessions}{The sessions dataframe}
+
+\item{session_col_names}{A list to override default session column names. This function uses columns:
+\itemize{
+\item \code{id}
+}}
+
+\item{epoch_col_names}{A list to override default epoch column names. This function uses columns:
+\itemize{
+\item \code{session_id}
+}}
 }
 \value{
 The epochs dataframe with only the epochs that belong to the specified sessions

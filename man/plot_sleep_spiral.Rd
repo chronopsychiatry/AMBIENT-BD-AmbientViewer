@@ -4,10 +4,16 @@
 \alias{plot_sleep_spiral}
 \title{Plot Sleep Spiral}
 \usage{
-plot_sleep_spiral(epochs)
+plot_sleep_spiral(epochs, col_names = NULL)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{timestamp}
+\item \code{sleep_stage}
+}}
 }
 \value{
 A ggplot object showing the sleep spiral

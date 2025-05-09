@@ -4,10 +4,17 @@
 \alias{plot_sleep_clock}
 \title{Plot Sleep Clock}
 \usage{
-plot_sleep_clock(sessions)
+plot_sleep_clock(sessions, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{time_at_sleep_onset}
+\item \code{time_at_wakeup}
+\item \code{night}
+}}
 }
 \value{
 A ggplot object showing the sleep clock

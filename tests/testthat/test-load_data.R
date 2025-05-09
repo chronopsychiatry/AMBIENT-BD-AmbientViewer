@@ -1,26 +1,13 @@
-mock_sessions <- data.frame(
-  id = 1:3,
-  session_start = c("2025-03-03T09:00:00", "2025-03-03T20:00:00", "2025-03-04T20:00:00"),
-  session_end = c("2025-03-03T11:59:59", "2025-03-03T23:59:59", "2025-03-05T06:00:00")
-)
-
-mock_epochs <- data.frame(
-  timestamp = c(
-    "2025-03-03T11:00:00", "2025-03-03T23:00:00",
-    "2025-03-04T01:00:00", "2025-03-04T11:00:00"
-  ),
-  value = c(10, 20, 15, 25)
-)
-
 test_folder <- tempdir()
-write.csv(mock_sessions, file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv"), row.names = FALSE)
-write.csv(mock_epochs, file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv"), row.names = FALSE)
+write.csv(example_sessions, file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv"), row.names = FALSE)
+write.csv(example_epochs, file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv"), row.names = FALSE)
 
 test_that("load_sessions loads sessions correctly", {
   sessions <- load_sessions(file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv"))
 
-  expect_equal(nrow(sessions), 3)
-  expect_equal(sessions$id, c(1, 2, 3))
+  expect_equal(nrow(sessions), 124)
+  expect_equal(sessions$id[1], "VEhDQRkEEQwuDQAA")
+  expect_equal(sessions$.data_type[1], "somnofy_v2")
 })
 
 test_that("load_sessions throws error for missing sessions file", {
@@ -41,18 +28,11 @@ test_that("load_sessions gives warning and returns NULL for empty sessions file"
   expect_null(result)
 })
 
-test_that("load_sessions throws error for missing session_start column", {
-  expect_error(
-    load_sessions(file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv")),
-    "Can't find a 'session_start' column"
-  )
-})
-
 test_that("load_epochs loads epochs correctly", {
   epochs <- load_epochs(file.path(test_folder, "2025-03-03_2025-03-04_epoch_data.csv"))
 
-  expect_equal(nrow(epochs), 4)
-  expect_equal(epochs$value, c(10, 20, 15, 25))
+  expect_equal(nrow(epochs), 18755)
+  expect_equal(epochs$.data_type[1], "somnofy_v2")
 })
 
 test_that("load_epochs throws error for missing epochs file", {
@@ -73,9 +53,23 @@ test_that("load_epochs gives warning and returns NULL for empty epochs file", {
   expect_null(result)
 })
 
-test_that("load_epochs throws error for missing timestamp column", {
-  expect_error(
-    load_epochs(file.path(test_folder, "2025-03-03_2025-03-04_sessions_reports.csv")),
-    "Can't find a 'timestamp' column"
-  )
+test_that("set_data_type sets the data type correctly", {
+  sessions <- data.frame(id = 1:5)
+  epochs <- data.frame(session_id = 1:5)
+
+  sessions <- set_data_type(sessions, "somnofy_v1")
+  epochs <- set_data_type(epochs, "somnofy_v1")
+
+  expect_equal(sessions$.data_type[1], "somnofy_v1")
+  expect_equal(epochs$.data_type[1], "somnofy_v1")
+})
+
+test_that("get_sessions_format returns the correct format for somnofy_v2", {
+  result <- get_sessions_format(example_sessions)
+  expect_equal(result$.data_type[1], "somnofy_v2")
+})
+
+test_that("get_epochs_format returns the correct format for somnofy_v2", {
+  result <- get_epochs_format(example_epochs)
+  expect_equal(result$.data_type[1], "somnofy_v2")
 })

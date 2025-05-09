@@ -1,17 +1,22 @@
 #' Plot Sleep Clock
 #'
 #' @param sessions The sessions dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `time_at_sleep_onset`
+#' - `time_at_wakeup`
+#' - `night`
 #' @returns A ggplot object showing the sleep clock
 #' @importFrom rlang .data
 #' @export
 #' @family plot sessions
-plot_sleep_clock <- function(sessions) {
+plot_sleep_clock <- function(sessions, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
   sessions <- sessions |>
-    dplyr::filter(!.data$time_at_sleep_onset == "" & !.data$time_at_wakeup == "") |>
+    dplyr::filter(!.data[[col$time_at_sleep_onset]] == "" & !.data[[col$time_at_wakeup]] == "") |>
     dplyr::mutate(
-      sleep_onset_hour = time_to_hours(shift_times_by_12h(.data$time_at_sleep_onset)),
-      wakeup_hour = time_to_hours(shift_times_by_12h(.data$time_at_wakeup)),
-      night = as.factor(.data$night)
+      sleep_onset_hour = time_to_hours(shift_times_by_12h(.data[[col$time_at_sleep_onset]])),
+      wakeup_hour = time_to_hours(shift_times_by_12h(.data[[col$time_at_wakeup]])),
+      night = as.factor(.data[[col$night]])
     )
 
   sleep_onset_data <- sessions |>

@@ -4,12 +4,20 @@
 \alias{plot_bedtimes_waketimes}
 \title{Plot bedtimes and waketimes}
 \usage{
-plot_bedtimes_waketimes(sessions, groupby = "night")
+plot_bedtimes_waketimes(sessions, groupby = "night", col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{groupby}{The grouping variable for the plot. Can be "night", "workday", or "weekday".}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{night}
+\item \code{time_at_sleep_onset}
+\item \code{time_at_wakeup}
+\item \code{is_workday}
+}}
 }
 \value{
 A ggplot graph showing the bedtimes and waketimes

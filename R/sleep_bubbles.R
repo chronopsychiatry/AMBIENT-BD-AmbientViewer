@@ -2,18 +2,23 @@
 #'
 #' @description This function creates a bubble plot of sleep sessions, where the size and colour of the bubbles represents the sleep duration.
 #' @param sessions The sessions dataframe.
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `time_at_sleep_onset`
+#' - `time_at_wakeup`
+#' - `night`
 #' @returns A ggplot object containing the sleep bubbles graph.
 #' @importFrom rlang .data
 #' @export
 #' @family plot sessions
-plot_sleep_bubbles <- function(sessions) {
+plot_sleep_bubbles <- function(sessions, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
   sessions <- sessions |>
-    dplyr::filter(sessions$time_at_sleep_onset != "" &
-                    sessions$time_at_wakeup != "") |>
+    dplyr::filter(sessions[[col$time_at_sleep_onset]] != "" &
+                    sessions[[col$time_at_wakeup]] != "") |>
     dplyr::mutate(
       sleep_duration = as.numeric(difftime(
-        parse_time(.data$time_at_wakeup),
-        parse_time(.data$time_at_sleep_onset),
+        parse_time(.data[[col$time_at_wakeup]]),
+        parse_time(.data[[col$time_at_sleep_onset]]),
         units = "hours"
       )),
       color = suppressWarnings(dplyr::case_when(
@@ -28,7 +33,7 @@ plot_sleep_bubbles <- function(sessions) {
   ggplot2::ggplot(sessions, ggplot2::aes(x = .data$night, y = .data$sleep_duration, color = .data$color)) +
     ggplot2::annotate(
       "rect",
-      xmin = min(sessions$night) - 1, xmax = max(sessions$night) + 1,
+      xmin = min(sessions[[col$night]]) - 1, xmax = max(sessions[[col$night]]) + 1,
       ymin = 6, ymax = 9,
       fill = "lightgrey", alpha = 0.5
     ) +

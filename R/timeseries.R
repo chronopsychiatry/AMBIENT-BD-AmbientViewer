@@ -3,12 +3,17 @@
 #' @param epochs The epochs dataframe
 #' @param variable The variable to plot (e.g., "temperature_ambient_mean")
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `timestamp`
+#' - `night`
 #' @returns A ggplot object
 #' @importFrom rlang .data
 #' @export
 #' @family plot epochs
 #' @seealso [plot_timeseries_sessions()] to plot session data.
-plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
+plot_timeseries <- function(epochs, variable, exclude_zero = FALSE, col_names = NULL) {
+  col <- get_epoch_colnames(epochs, col_names)
+
   if (exclude_zero) {
     epochs <- epochs |>
       dplyr::filter(.data[[variable]] != 0)
@@ -17,10 +22,10 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
   ggplot2::ggplot(
     epochs,
     ggplot2::aes(
-      x = time_to_hours(shift_times_by_12h(.data$timestamp)),
+      x = time_to_hours(shift_times_by_12h(.data[[col$timestamp]])),
       y = .data[[variable]],
-      color = as.factor(.data$night),
-      group = .data$night
+      color = as.factor(.data[[col$night]]),
+      group = .data[[col$night]]
     )
   ) +
     ggplot2::geom_point() +
@@ -45,11 +50,15 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE) {
 #' @param sessions The sessions dataframe
 #' @param variable The variable to plot (e.g., "time_at_sleep_onset")
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `night`
 #' @returns A ggplot object
 #' @export
 #' @family plot sessions
 #' @seealso [plot_timeseries()] to plot epoch data.
-plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
+plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+
   sessions <- sessions |>
     dplyr::filter(!is.na(.data[[variable]]) & .data[[variable]] != "")
 
@@ -68,7 +77,7 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE) {
   p <- ggplot2::ggplot(
     sessions,
     ggplot2::aes(
-      x = .data$night,
+      x = .data[[col$night]],
       y = .data$plot_var
     )
   ) +

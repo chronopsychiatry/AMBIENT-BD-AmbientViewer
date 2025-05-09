@@ -4,7 +4,7 @@
 \alias{get_epochs_summary}
 \title{Summarise epoch information}
 \usage{
-get_epochs_summary(epochs)
+get_epochs_summary(epochs, col_names = NULL)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}

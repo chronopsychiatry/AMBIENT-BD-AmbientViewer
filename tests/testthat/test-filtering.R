@@ -17,12 +17,14 @@ sessions <- data.frame(
     "2025-03-11",
     "2025-03-11",
     "2025-03-13"
-  )
+  ),
+  .data_type = "somnofy_v2"
 )
 
 epochs <- data.frame(
   session_id = c("A", "A", "A", "I", "I", "C", "D", "E", "F", "G", "H", "B", "J"),
-  epoch_data = c(1, 10, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5)
+  epoch_data = c(1, 10, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5),
+  .data_type = "somnofy_v2"
 )
 
 test_that("filter_epochs_from_sessions works", {
@@ -32,7 +34,7 @@ test_that("filter_epochs_from_sessions works", {
 
 test_that("filter_epochs_from_sessions shows warning if tables don't overlap", {
   expect_warning(
-    filter_epochs_from_sessions(epochs, data.frame(id = c("X", "Y", "Z"))),
+    filter_epochs_from_sessions(epochs, data.frame(id = c("X", "Y", "Z"), .data_type = "somnofy_v2")),
     "None of the epochs match the selected sessions"
   )
 })

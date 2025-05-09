@@ -4,7 +4,7 @@
 \alias{set_session_start_time_range}
 \title{Set session start time range}
 \usage{
-set_session_start_time_range(sessions, from_time, to_time)
+set_session_start_time_range(sessions, from_time, to_time, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -12,6 +12,11 @@ set_session_start_time_range(sessions, from_time, to_time)
 \item{from_time}{Include sessions that started after this time (in format HH:MM)}
 
 \item{to_time}{Include sessions that started before this time (in format HH:MM)}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{session_start}
+}}
 }
 \value{
 The sessions dataframe with only the sessions that started within the specified time range

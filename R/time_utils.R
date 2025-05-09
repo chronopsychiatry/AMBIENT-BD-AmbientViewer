@@ -160,6 +160,8 @@ shift_times_by_12h <- function(times) {
 #' Create a grouping by night for epoch data
 #'
 #' @param epochs The epochs dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `timestamp`
 #' @returns The epochs dataframe with the `night` column added
 #' @details The function creates a new column `night` that groups the epochs by night.
 #' Timepoints before 12 PM are considered part of the previous night.
@@ -169,10 +171,11 @@ shift_times_by_12h <- function(times) {
 #' @family time processing
 #' @examples
 #' epochs <- group_epochs_by_night(example_epochs)
-group_epochs_by_night <- function(epochs) {
+group_epochs_by_night <- function(epochs, col_names = NULL) {
+  col <- get_epoch_colnames(epochs, col_names)
   epochs |>
     dplyr::mutate(
-      time_stamp = parse_time(.data$timestamp),
+      time_stamp = parse_time(.data[[col$timestamp]]),
       date = lubridate::as_date(.data$time_stamp),
       hour = time_to_hours(.data$time_stamp),
       night = lubridate::as_date(ifelse(.data$hour < 12, .data$date - 1, .data$date))
@@ -183,6 +186,8 @@ group_epochs_by_night <- function(epochs) {
 #' Create a grouping by night for session data
 #'
 #' @param sessions The sessions dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `session_start`
 #' @returns The sessions dataframe with the `night` column added
 #' @details The function creates a new column `night` that groups the sessions by night depending on their start time.
 #' Sessions that start before 12 PM are considered part of the previous night.
@@ -191,10 +196,11 @@ group_epochs_by_night <- function(epochs) {
 #' @seealso [group_epochs_by_night()] to group epoch data by night.
 #' @examples
 #' sessions <- group_sessions_by_night(example_sessions)
-group_sessions_by_night <- function(sessions) {
+group_sessions_by_night <- function(sessions, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
   sessions |>
     dplyr::mutate(
-      start_time = parse_time(.data$session_start),
+      start_time = parse_time(.data[[col$session_start]]),
       date = lubridate::as_date(.data$start_time),
       start_hour = time_to_hours(.data$start_time),
       night = lubridate::as_date(ifelse(.data$start_hour < 12, date - 1, date))
