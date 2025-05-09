@@ -45,7 +45,9 @@ timeseries_sessions_module_server <- function(id, sessions) {
         return()
       }
 
-      excluded_vars <- c("id", "state", "subject_id", "device_serial_number", "night")
+      col <- get_session_colnames(sessions())
+
+      excluded_vars <- c(col$id, "state", col$subject_id, col$device_id, col$night, ".data_type")
       available_vars <- setdiff(names(sessions()), excluded_vars)
 
       # Update the dropdown, but preserve the selected variable if possible

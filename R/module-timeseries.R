@@ -45,8 +45,10 @@ timeseries_module_server <- function(id, epochs) {
         return()
       }
 
-      excluded_vars <- c("timestamp", "motion_data_count",
-                         "night", "session_id", "sleep_stage", "epoch_duration")
+      col <- get_epoch_colnames(epochs())
+
+      excluded_vars <- c(col$timestamp, "motion_data_count", col$night,
+                         col$session_id, col$sleep_stage, "epoch_duration", ".data_type")
       available_vars <- setdiff(names(epochs()), excluded_vars)
 
       # Update the dropdown, but preserve the selected variable if possible

@@ -61,17 +61,18 @@ get_compliance_table <- function(sessions) {
 
 #' @importFrom rlang .data
 make_sessions_display_table <- function(sessions) {
+  col <- get_session_colnames(sessions, NULL)
   sessions |>
     dplyr::mutate(
-      start_time = parse_time(.data$session_start) |> format("%H:%M"),
-      sleep_onset = parse_time(.data$time_at_sleep_onset) |> format("%H:%M"),
-      wakeup_time = parse_time(.data$time_at_wakeup) |> format("%H:%M"),
-      end_time = parse_time(.data$session_end) |> format("%H:%M"),
-      session_duration_h = difftime(parse_time(.data$session_end),
-                                    parse_time(.data$session_start),
+      start_time = parse_time(.data[[col$session_start]]) |> format("%H:%M"),
+      sleep_onset = parse_time(.data[[col$time_at_sleep_onset]]) |> format("%H:%M"),
+      wakeup_time = parse_time(.data[[col$time_at_wakeup]]) |> format("%H:%M"),
+      end_time = parse_time(.data[[col$session_end]]) |> format("%H:%M"),
+      session_duration_h = difftime(parse_time(.data[[col$session_end]]),
+                                    parse_time(.data[[col$session_start]]),
                                     units = "hours"),
-      night = format(.data$night, "%Y-%m-%d"),
-      time_in_bed_h = .data$time_in_bed / 60 / 60
+      night = format(.data[[col$night]], "%Y-%m-%d"),
+      time_in_bed_h = .data[[col$time_in_bed]] / 60 / 60
     ) |>
-    dplyr::select("id", "night", "start_time", "sleep_onset", "wakeup_time", "end_time", "session_duration_h", "time_in_bed_h")
+    dplyr::select(col$id, col$night, "start_time", "sleep_onset", "wakeup_time", "end_time", "session_duration_h", "time_in_bed_h")
 }

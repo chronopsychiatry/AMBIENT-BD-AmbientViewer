@@ -1,4 +1,4 @@
-get_session_colnames <- function(sessions, col_names) {
+get_session_colnames <- function(sessions, col_names = NULL) {
   calling_function <- as.character(sys.call(-1)[1])
   if (!".data_type" %in% colnames(sessions)) {
     cli::cli_abort(c(
@@ -36,7 +36,7 @@ get_session_colnames <- function(sessions, col_names) {
   result
 }
 
-get_epoch_colnames <- function(epochs, col_names) {
+get_epoch_colnames <- function(epochs, col_names = NULL) {
   calling_function <- as.character(sys.call(-1)[1])
   if (!".data_type" %in% colnames(epochs)) {
     cli::cli_abort(c(

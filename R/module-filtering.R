@@ -58,8 +58,10 @@ filtering_server <- function(id, sessions) {
         )
       }
 
-      min_date <- min(sessions()$night, na.rm = TRUE)
-      max_date <- max(sessions()$night, na.rm = TRUE)
+      col <- get_session_colnames(sessions())
+
+      min_date <- min(sessions()[[col$night]], na.rm = TRUE)
+      max_date <- max(sessions()[[col$night]], na.rm = TRUE)
 
       shiny::updateSliderInput(
         session,
@@ -77,7 +79,7 @@ filtering_server <- function(id, sessions) {
     })
 
     filtered_sessions <- shiny::reactive({
-      shiny::req(sessions())
+      shiny::req(selected_sessions())
 
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
