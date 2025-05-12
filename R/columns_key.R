@@ -40,7 +40,7 @@
 
 .epochs_col_somnofy_v1 <- list(
   timestamp = "timestamp",
-  session_id = NULL,
+  session_id = "session_id",
   signal_quality = "signal_quality_mean",
   sleep_stage = "sleep_stage",
   night = "night"

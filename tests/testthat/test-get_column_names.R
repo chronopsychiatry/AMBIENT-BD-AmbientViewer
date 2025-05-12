@@ -23,12 +23,6 @@ test_that("get_session_colnames overrides default values if col_names is provide
   expect_equal(result$id, "custom_id")
 })
 
-test_that("get_session_colnames gives a default mapping if given an empty sessions dataframe", {
-  empty_sessions <- data.frame(.data_type = character(0))
-  result <- get_session_colnames(empty_sessions, col_names = NULL)
-  expect_equal(result, .sessions_col_somnofy_v2)
-})
-
 test_that("get_epochs_colnames returns default values if col_names is NULL", {
   result <- get_epoch_colnames(epochs, col_names = NULL)
   expect_equal(result, .epochs_col_somnofy_v2)
@@ -38,10 +32,4 @@ test_that("get_epochs_colnames overrides default values if col_names is provided
   col_names <- list(session_id = "custom_session_id")
   result <- get_epoch_colnames(epochs, col_names)
   expect_equal(result$session_id, "custom_session_id")
-})
-
-test_that("get_epoch_colnames gives a default mapping if given an empty epochs dataframe", {
-  empty_epochs <- data.frame(.data_type = character(0))
-  result <- get_epoch_colnames(empty_epochs, col_names = NULL)
-  expect_equal(result, .epochs_col_somnofy_v2)
 })

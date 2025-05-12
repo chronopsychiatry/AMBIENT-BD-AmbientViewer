@@ -26,6 +26,10 @@ input_server <- function(id, session) {
       shiny::req(input$epochs_file)
       logging::loginfo(paste0("Loading epochs file: ", input$epochs_file$name))
       epochs <- load_epochs(input$epochs_file$datapath)
+      if (epochs$.data_type[1] == "somnofy_v1") {
+        epochs$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
+      }
+      epochs
     })
 
     list(sessions = sessions, epochs = epochs)

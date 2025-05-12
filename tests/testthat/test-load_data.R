@@ -66,10 +66,10 @@ test_that("set_data_type sets the data type correctly", {
 
 test_that("get_sessions_format returns the correct format for somnofy_v2", {
   result <- get_sessions_format(example_sessions)
-  expect_equal(result$.data_type[1], "somnofy_v2")
+  expect_equal(result, "somnofy_v2")
 })
 
 test_that("get_epochs_format returns the correct format for somnofy_v2", {
   result <- get_epochs_format(example_epochs)
-  expect_equal(result$.data_type[1], "somnofy_v2")
+  expect_equal(result, "somnofy_v2")
 })

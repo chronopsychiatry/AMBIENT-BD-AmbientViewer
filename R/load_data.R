@@ -23,7 +23,8 @@ load_sessions <- function(sessions_file) {
     return(NULL)
   }
 
-  sessions <- get_sessions_format(sessions)
+  fmt <- get_sessions_format(sessions)
+  sessions <- set_data_type(sessions, fmt)
 
   if ("session_start" %in% names(sessions)) {
     sessions |>
@@ -61,7 +62,8 @@ load_epochs <- function(epochs_file) {
     return(NULL)
   }
 
-  epochs <- get_epochs_format(epochs)
+  fmt <- get_epochs_format(epochs)
+  epochs <- set_data_type(epochs, fmt)
 
   if (epochs$.data_type[1] == "somnofy_v1") {
     epochs <- epochs |>
@@ -105,31 +107,31 @@ get_sessions_format <- function(sessions) {
     "id", "subject_id", "device_serial_number", "session_start", "session_end",
     "time_at_sleep_onset", "time_at_wakeup", "sleep_period", "time_in_bed", "is_workday"
   ) %in% colnames(sessions))) {
-    sessions <- set_data_type(sessions, "somnofy_v2")
+    "somnofy_v2"
   } else if (all(c(
     "session_id", "user_id", "sex", "birth_year", "session_start", "session_end",
     "time_at_sleep_onset", "time_at_wakeup", "sleep_period", "time_in_bed", "is_workday"
   ) %in% colnames(sessions))) {
-    sessions <- set_data_type(sessions, "somnofy_v1")
+    "somnofy_v1"
   } else {
     cli::cli_warn(c(
       "!" = "Could not infer the Sessions data type.",
       "i" = "Please check the csv file contains session data."
     ))
+    NULL
   }
-  sessions
 }
 
 get_epochs_format <- function(epochs) {
   if (all(c("timestamp", "session_id", "sleep_stage") %in% colnames(epochs))) {
-    epochs <- set_data_type(epochs, "somnofy_v2")
+    "somnofy_v2"
   } else if (all(c("timestamp", "sleep_stage") %in% colnames(epochs))) {
-    epochs <- set_data_type(epochs, "somnofy_v1")
+    "somnofy_v1"
   } else {
     cli::cli_warn(c(
       "!" = "Could not infer the Epochs data type.",
       "i" = "Please check the csv file contains epoch data."
     ))
+    NULL
   }
-  epochs
 }

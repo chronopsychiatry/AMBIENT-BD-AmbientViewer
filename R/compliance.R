@@ -118,6 +118,9 @@ get_non_complying_sessions <- function(sessions, col_names = NULL) {
 #' removed_sessions <- get_removed_sessions(example_sessions, filtered_sessions)
 get_removed_sessions <- function(sessions, filtered_sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
+  if (nrow(sessions) == 0 || nrow(filtered_sessions) == 0) {
+    return(sessions)
+  }
   if (nrow(filtered_sessions) > nrow(sessions)) {
     cli::cli_abort(c(
       "!" = "There are more rows in filtered sessions than in sessions.",
