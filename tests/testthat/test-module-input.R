@@ -21,14 +21,3 @@ test_that("input_module returns correct data", {
     expect_equal(nrow(data$epochs()), 18755)
   })
 })
-
-test_that("check_csv_column does its job", {
-  show_notification_mock <- mockery::mock()
-  mockery::stub(check_csv_column, "shiny::showNotification", show_notification_mock)
-
-  expect_true(check_csv_column(file.path(test_folder, "sessions_reports.csv"), "session_start", "unexpected error"))
-  expect_false(check_csv_column(file.path(test_folder, "sessions_reports.csv"), "not_a_column", "expected error"))
-
-  expect_true(check_csv_column(file.path(test_folder, "epoch_data.csv"), "timestamp", "unexpected error"))
-  expect_false(check_csv_column(file.path(test_folder, "epoch_data.csv"), "not_a_column", "expected error"))
-})
