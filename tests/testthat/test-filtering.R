@@ -21,6 +21,29 @@ sessions <- data.frame(
   .data_type = "somnofy_v2"
 )
 
+sessions_v1 <- data.frame(
+  session_id = c("A", "B", "C", "D", "E"),
+  subject_id = c("sub_A", "sub_A", "sub_A", "sub_B", "sub_C"),
+  birth_year = lubridate::year(Sys.Date()) - c(11, 12, 14, 20, 30),
+  session_start = c(
+    "2025-03-10T19:30:00.000000+00:00",
+    "2025-03-11T23:45:00.000000+00:00",
+    "2025-03-12T01:15:00.000000+00:00",
+    "2025-03-12T03:00:00.000000+00:00",
+    "2025-03-13T18:00:00.000000+00:00"
+  ),
+  time_in_bed = c(8 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 0.5 * 60 * 60, 1 * 60 * 60),
+  sleep_period = c(1736, 0, 0, 26364, 0),
+  night = c(
+    "2025-03-10",
+    "2025-03-11",
+    "2025-03-11",
+    "2025-03-11",
+    "2025-03-13"
+  ),
+  .data_type = "somnofy_v1"
+)
+
 epochs <- data.frame(
   session_id = c("A", "A", "A", "I", "I", "C", "D", "E", "F", "G", "H", "B", "J"),
   epoch_data = c(1, 10, 20, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5),
@@ -41,6 +64,11 @@ test_that("filter_epochs_from_sessions shows warning if tables don't overlap", {
 
 test_that("filter_by_night_range works", {
   filtered_sessions <- filter_by_night_range(sessions, "2025-03-11", "2025-03-12")
+  expect_equal(nrow(filtered_sessions), 3)
+})
+
+test_that("filter_by_age_range works", {
+  filtered_sessions <- filter_by_age_range(sessions_v1, 11, 18)
   expect_equal(nrow(filtered_sessions), 3)
 })
 

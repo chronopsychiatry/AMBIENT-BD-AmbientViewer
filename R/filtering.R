@@ -40,15 +40,60 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
 #' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
 filter_by_night_range <- function(sessions, from_night, to_night, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
+
+  if (nrow(sessions) == 0) {
+    return(sessions)
+  }
+
+  from_night <- if (is.null(from_night)) min(sessions[[col$night]]) else from_night
+  to_night <- if (is.null(to_night)) min(sessions[[col$night]]) else to_night
+
   if (from_night > to_night) {
     cli::cli_abort(c("!" = "from_night must be before to_night."))
   }
-  from_night <- if (is.null(from_night)) min(sessions[[col$night]]) else from_night
-  to_night <- if (is.null(to_night)) min(sessions[[col$night]]) else to_night
+
   sessions |>
     dplyr::filter(.data[[col$night]] >= lubridate::as_date(from_night) &
                     .data[[col$night]] <= lubridate::as_date(to_night))
 }
+
+#' Filter sessions by age range
+#'
+#' @param sessions The sessions dataframe
+#' @param min_age The minimum age of the subjects (inclusive)
+#' @param max_age The maximum age of the subjects (inclusive)
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `birth_year`
+#' @returns The sessions dataframe with only the sessions that belong to subjects within the specified age range
+#' @importFrom rlang .data
+#' @export
+#' @family filtering
+#' @examples
+#' filtered_sessions <- filter_by_age_range(example_sessions, min_age = 11, max_age = 18)
+filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+
+  if (nrow(sessions) == 0) {
+    return(sessions)
+  }
+
+  min_age <- if (is.null(min_age)) lubridate::year(Sys.Date()) - max(sessions[[col$birth_year]]) else min_age
+  max_age <- if (is.null(max_age)) lubridate::year(Sys.Date()) - min(sessions[[col$birth_year]]) else max_age
+
+  if (is.null(col$birth_year)) {
+    cli::cli_abort(c("!" = "The sessions table does not contain a birth year column."))
+  }
+  if (min_age > max_age) {
+    cli::cli_abort(c("!" = "min_age must be before max_age."))
+  }
+
+  min_birth_year <- lubridate::year(Sys.Date()) - max_age
+  max_birth_year <- lubridate::year(Sys.Date()) - min_age
+  sessions |>
+    dplyr::filter(.data[[col$birth_year]] >= min_birth_year &
+                    .data[[col$birth_year]] <= max_birth_year)
+}
+
 
 #' Select subjects by ID
 #'

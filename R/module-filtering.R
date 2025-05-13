@@ -9,6 +9,7 @@ filtering_module <- function(id) {
       value = c(Sys.Date() + 1, Sys.Date() + 1),
       timeFormat = "%Y-%m-%d"
     ),
+    shiny::uiOutput(ns("age_range_slider")),
     shinyWidgets::sliderTextInput(
       inputId = ns("time_range"),
       label = "Sleep Onset Time:",
@@ -72,10 +73,37 @@ filtering_server <- function(id, sessions) {
       )
     })
 
+    output$age_range_slider <- shiny::renderUI({
+      shiny::req(sessions())
+      col <- get_session_colnames(sessions())
+      if (!is.null(col$birth_year)) {
+        birth_years <- sessions()[[col$birth_year]]
+        birth_years <- birth_years[!is.na(birth_years)]
+        if (length(birth_years) > 0) {
+          min_age <- lubridate::year(Sys.Date()) - max(birth_years)
+          max_age <- lubridate::year(Sys.Date()) - min(birth_years)
+          shiny::sliderInput(
+            session$ns("age_range"),
+            "Age Range:",
+            min = min_age,
+            max = max_age,
+            value = c(min_age, max_age),
+            step = 1
+          )
+        }
+      }
+    })
+
     selected_sessions <- shiny::reactive({
       shiny::req(sessions())
-      sessions() |>
+      col <- get_session_colnames(sessions())
+      df <- sessions() |>
         filter_by_night_range(input$date_range[1], input$date_range[2])
+      if (!is.null(col$birth_year)) {
+        df <- df |>
+          filter_by_age_range(input$age_range[1], input$age_range[2])
+      }
+      df
     })
 
     filtered_sessions <- shiny::reactive({
