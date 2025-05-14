@@ -25,7 +25,7 @@ The sessions dataframe with only the sessions that belong to subjects within the
 Filter sessions by age range
 }
 \examples{
-filtered_sessions <- filter_by_age_range(example_sessions, min_age = 11, max_age = 18)
+filtered_sessions <- filter_by_age_range(example_sessions_v1, min_age = 11, max_age = 18)
 }
 \seealso{
 Other filtering: 

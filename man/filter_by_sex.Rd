@@ -23,7 +23,7 @@ The sessions dataframe with only the sessions that belong to the specified sex
 Filter by sex
 }
 \examples{
-filtered_sessions <- filter_by_sex(example_sessions, "M")
+filtered_sessions <- filter_by_sex(example_sessions_v1, "M")
 }
 \seealso{
 Other filtering: 

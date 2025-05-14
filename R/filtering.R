@@ -70,7 +70,7 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
 #' @export
 #' @family filtering
 #' @examples
-#' filtered_sessions <- filter_by_age_range(example_sessions, min_age = 11, max_age = 18)
+#' filtered_sessions <- filter_by_age_range(example_sessions_v1, min_age = 11, max_age = 18)
 filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
 
@@ -106,7 +106,7 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
 #' @export
 #' @family filtering
 #' @examples
-#' filtered_sessions <- filter_by_sex(example_sessions, "M")
+#' filtered_sessions <- filter_by_sex(example_sessions_v1, "M")
 filter_by_sex <- function(sessions, sex, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
 
@@ -131,6 +131,8 @@ filter_by_sex <- function(sessions, sex, col_names = NULL) {
 #' @export
 #' @family filtering
 #' @seealso [select_devices()] to select sessions by device ID.
+#' @examples
+#' filtered_sessions <- select_subjects(example_sessions, c("sub_01JNDH3Z5NP0PSV82NFBGPV31X"))
 select_subjects <- function(sessions, subject_ids, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
 
@@ -156,6 +158,8 @@ select_subjects <- function(sessions, subject_ids, col_names = NULL) {
 #' @export
 #' @family filtering
 #' @seealso [select_subjects()] to select sessions by subject ID.
+#' @examples
+#' filtered_sessions <- select_devices(example_sessions, c("VTGVSRTHCA"))
 select_devices <- function(sessions, device_ids, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
 

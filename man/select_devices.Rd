@@ -22,6 +22,9 @@ The sessions dataframe with only the sessions recorded by the specified devices
 \description{
 Select devices by ID
 }
+\examples{
+filtered_sessions <- select_devices(example_sessions, c("VTGVSRTHCA"))
+}
 \seealso{
 \code{\link[=select_subjects]{select_subjects()}} to select sessions by subject ID.
 
