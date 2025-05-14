@@ -1,33 +1,45 @@
 filtering_module <- function(id) {
   ns <- shiny::NS(id)
-  shiny::tagList(
-    shiny::sliderInput(
-      inputId = ns("date_range"),
-      label = "Date Range:",
-      min = Sys.Date() + 1,
-      max = Sys.Date() + 1,
-      value = c(Sys.Date() + 1, Sys.Date() + 1),
-      timeFormat = "%Y-%m-%d"
+  bslib::accordion(
+    bslib::accordion_panel(
+      "Date",
+      shiny::sliderInput(
+        inputId = ns("date_range"),
+        label = "Date Range:",
+        min = Sys.Date() + 1,
+        max = Sys.Date() + 1,
+        value = c(Sys.Date() + 1, Sys.Date() + 1),
+        timeFormat = "%Y-%m-%d"
+      )
     ),
-    shiny::uiOutput(ns("age_range_slider")),
-    shinyWidgets::sliderTextInput(
-      inputId = ns("time_range"),
-      label = "Sleep Onset Time:",
-      choices = c(
-                  "13", "14", "15", "16", "17",
-                  "18", "19", "20", "21", "22", "23",
-                  "00", "01", "02", "03", "04", "05",
-                  "06", "07", "08", "09", "10", "11",
-                  "12"),
-      selected = c("13", "12"),
-      grid = TRUE
+    bslib::accordion_panel(
+      "Subject",
+      shiny::uiOutput(ns("subject_select")),
+      shiny::uiOutput(ns("sex_select")),
+      shiny::uiOutput(ns("age_range_slider"))
     ),
-    shiny::sliderInput(
-      ns("min_time_in_bed"),
-      "Minimum Time in Bed:",
-      min = 0, max = 12, value = 0, step = 1, post = "h",
-      ticks = FALSE
-    )
+    bslib::accordion_panel(
+      "Sleep",
+      shinyWidgets::sliderTextInput(
+        inputId = ns("time_range"),
+        label = "Sleep Onset Time:",
+        choices = c(
+                    "13", "14", "15", "16", "17",
+                    "18", "19", "20", "21", "22", "23",
+                    "00", "01", "02", "03", "04", "05",
+                    "06", "07", "08", "09", "10", "11",
+                    "12"),
+        selected = c("13", "12"),
+        grid = TRUE
+      ),
+      shiny::sliderInput(
+        ns("min_time_in_bed"),
+        "Minimum Time in Bed:",
+        min = 0, max = 12, value = 0, step = 1, post = "h",
+        ticks = FALSE
+      )
+    ),
+    open = NULL
   )
 }
 
@@ -46,9 +58,10 @@ filtering_tab <- function(id) {
 filtering_server <- function(id, sessions) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    # Set the date range slider dynamically
     shiny::observe({
       shiny::req(sessions())
+      col <- get_session_colnames(sessions())
+
       if (nrow(sessions()) == 0) {
         shiny::updateSliderInput(
           session,
@@ -57,20 +70,36 @@ filtering_server <- function(id, sessions) {
           max = Sys.Date() + 1,
           value = c(Sys.Date() + 1, Sys.Date() + 1)
         )
+      } else {
+        min_date <- min(sessions()[[col$night]], na.rm = TRUE)
+        max_date <- max(sessions()[[col$night]], na.rm = TRUE)
+        shiny::updateSliderInput(
+          session,
+          inputId = "date_range",
+          min = min_date,
+          max = max_date,
+          value = c(min_date, max_date)
+        )
       }
+    })
 
+    output$subject_select <- shiny::renderUI({
+      shiny::req(sessions())
       col <- get_session_colnames(sessions())
-
-      min_date <- min(sessions()[[col$night]], na.rm = TRUE)
-      max_date <- max(sessions()[[col$night]], na.rm = TRUE)
-
-      shiny::updateSliderInput(
-        session,
-        inputId = "date_range",
-        min = min_date,
-        max = max_date,
-        value = c(min_date, max_date)
-      )
+      if (!is.null(col$subject_id)) {
+        subject_choices <- unique(sessions()[[col$subject_id]])
+        shinyWidgets::pickerInput(
+          inputId = session$ns("subject_filter"),
+          label = "Subjects:",
+          choices = subject_choices,
+          selected = subject_choices,
+          multiple = TRUE,
+          options = list(
+            `actions-box` = TRUE,
+            `live-search` = FALSE
+          )
+        )
+      }
     })
 
     output$age_range_slider <- shiny::renderUI({
@@ -94,6 +123,25 @@ filtering_server <- function(id, sessions) {
       }
     })
 
+    output$sex_select <- shiny::renderUI({
+      shiny::req(sessions())
+      col <- get_session_colnames(sessions())
+      if (!is.null(col$sex)) {
+        sex_choices <- unique(sessions()[[col$sex]])
+        shinyWidgets::pickerInput(
+          inputId = session$ns("sex_filter"),
+          label = "Sex:",
+          choices = sex_choices,
+          selected = sex_choices,
+          multiple = TRUE,
+          options = list(
+            `actions-box` = TRUE,
+            `live-search` = FALSE
+          )
+        )
+      }
+    })
+
     selected_sessions <- shiny::reactive({
       shiny::req(sessions())
       col <- get_session_colnames(sessions())
@@ -102,6 +150,13 @@ filtering_server <- function(id, sessions) {
       if (!is.null(col$birth_year)) {
         df <- df |>
           filter_by_age_range(input$age_range[1], input$age_range[2])
+      }
+      if (!is.null(col$sex)) {
+        df <- filter_by_sex(df, input$sex_filter)
+      }
+      if (!is.null(col$subject_id)) {
+        df <- df |>
+          select_subjects(input$subject_filter)
       }
       df
     })

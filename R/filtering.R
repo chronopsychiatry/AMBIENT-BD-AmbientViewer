@@ -18,6 +18,7 @@
 filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NULL, epoch_col_names = NULL) {
   scol <- get_session_colnames(sessions, session_col_names)
   ecol <- get_epoch_colnames(epochs, epoch_col_names)
+
   if (sum(epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]])) == 0) {
     cli::cli_warn(c("!" = "None of the epochs match the selected sessions.",
                     "i" = "Returning an empty epoch table."))
@@ -94,6 +95,31 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
                     .data[[col$birth_year]] <= max_birth_year)
 }
 
+#' Filter by sex
+#'
+#' @param sessions The sessions dataframe
+#' @param sex The sex to filter for (M, F, or NULL for both)
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `sex`
+#' @returns The sessions dataframe with only the sessions that belong to the specified sex
+#' @importFrom rlang .data
+#' @export
+#' @family filtering
+#' @examples
+#' filtered_sessions <- filter_by_sex(example_sessions, "M")
+filter_by_sex <- function(sessions, sex, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+
+  if (nrow(sessions) == 0 || is.null(sex)) {
+    return(sessions)
+  }
+
+  if (is.null(col$sex)) {
+    cli::cli_abort(c("!" = "The sessions table must contain a Sex column."))
+  }
+
+  sessions[sessions[[col$sex]] %in% sex, ]
+}
 
 #' Select subjects by ID
 #'
@@ -107,6 +133,11 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
 #' @seealso [select_devices()] to select sessions by device ID.
 select_subjects <- function(sessions, subject_ids, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
+
+  if (nrow(sessions) == 0 || is.null(subject_ids)) {
+    return(sessions)
+  }
+
   if (sum(sessions[[col$subject_id]] %in% subject_ids) == 0) {
     cli::cli_warn(c("!" = "None of the subject IDs were found in the sessions table.",
                     "i" = "Available subject IDs: {unique(sessions[[col$subject_id]])}",
@@ -127,6 +158,11 @@ select_subjects <- function(sessions, subject_ids, col_names = NULL) {
 #' @seealso [select_subjects()] to select sessions by subject ID.
 select_devices <- function(sessions, device_ids, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
+
+  if (nrow(sessions) == 0 || is.null(device_ids)) {
+    return(sessions)
+  }
+
   if (sum(sessions[[col$device_id]] %in% device_ids) == 0) {
     cli::cli_warn(c("!" = "None of the device IDs were found in the sessions table.",
                     "i" = "Available device IDs: {unique(sessions[[col$device_id]])}",

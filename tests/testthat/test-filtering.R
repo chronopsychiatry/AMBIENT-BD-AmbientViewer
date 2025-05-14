@@ -25,6 +25,7 @@ sessions_v1 <- data.frame(
   session_id = c("A", "B", "C", "D", "E"),
   subject_id = c("sub_A", "sub_A", "sub_A", "sub_B", "sub_C"),
   birth_year = lubridate::year(Sys.Date()) - c(11, 12, 14, 20, 30),
+  sex = c("Male", "Female", "Other", "Female", "Male"),
   session_start = c(
     "2025-03-10T19:30:00.000000+00:00",
     "2025-03-11T23:45:00.000000+00:00",
@@ -69,6 +70,16 @@ test_that("filter_by_night_range works", {
 
 test_that("filter_by_age_range works", {
   filtered_sessions <- filter_by_age_range(sessions_v1, 11, 18)
+  expect_equal(nrow(filtered_sessions), 3)
+})
+
+test_that("filter_by_sex works", {
+  filtered_sessions <- filter_by_sex(sessions_v1, "Male")
+  expect_equal(nrow(filtered_sessions), 2)
+})
+
+test_that("filter_by_sex works with multiple inputs", {
+  filtered_sessions <- filter_by_sex(sessions_v1, c("Female", "Other"))
   expect_equal(nrow(filtered_sessions), 3)
 })
 

@@ -10,6 +10,16 @@
 filtered_sessions <- example_sessions |> remove_sessions_no_sleep(col_names = list(sleep_period = "time_asleep"))
 ```
 
+- Added filtering options for:
+  - Age
+  - Sex
+  - Subject ID
+- These sliders are shown dynamically: they will only appear in the app if the relevant column is available in the data
+- The corresponding R filtering functions are:
+  - `filter_by_age_range`
+  - `select_subjects`
+  - `filter_by_sex`
+
 ## 0.0.1 (06/05/2025)
 
 ### New

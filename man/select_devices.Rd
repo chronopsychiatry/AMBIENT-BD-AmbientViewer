@@ -26,7 +26,9 @@ Select devices by ID
 \code{\link[=select_subjects]{select_subjects()}} to select sessions by subject ID.
 
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{filter_epochs_from_sessions}()},
 \code{\link{remove_sessions_no_sleep}()},
 \code{\link{select_subjects}()},

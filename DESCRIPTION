@@ -15,6 +15,7 @@ Suggests:
     tibble
 Config/testthat/edition: 3
 Imports: 
+    bslib,
     cli,
     dplyr,
     ggplot2,

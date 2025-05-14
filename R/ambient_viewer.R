@@ -32,6 +32,15 @@ ambient_viewer <- function() {
 
     tags$h1(class = "custom-title", "Ambient Viewer"),
 
+    theme = bslib::bs_theme(
+      version = 5,
+      "font-size-base" = "0.9rem",
+      "btn-padding-y" = "0.25rem",   # vertical padding (default is 0.375rem)
+      "input-padding-y" = "0.25rem", # input vertical padding
+      "input-padding-x" = "0.5rem",  # input horizontal padding
+      "input-border-radius" = "0.2rem"
+    ),
+
     sidebarLayout(
       # Side panel ----
       sidebarPanel(

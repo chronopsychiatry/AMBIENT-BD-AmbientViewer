@@ -42,7 +42,9 @@ filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions
 \code{\link[=filter_by_night_range]{filter_by_night_range()}} to filter sessions by night range.
 
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{remove_sessions_no_sleep}()},
 \code{\link{select_devices}()},
 \code{\link{select_subjects}()},

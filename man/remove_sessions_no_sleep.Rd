@@ -25,7 +25,9 @@ filtered_sessions <- remove_sessions_no_sleep(example_sessions)
 }
 \seealso{
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{filter_epochs_from_sessions}()},
 \code{\link{select_devices}()},
 \code{\link{select_subjects}()},

@@ -31,7 +31,9 @@ filtered_sessions <- set_session_sleep_onset_range(example_sessions, "22:00", "0
 \code{\link[=set_session_start_time_range]{set_session_start_time_range()}} to filter sessions based on start time.
 
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{filter_epochs_from_sessions}()},
 \code{\link{remove_sessions_no_sleep}()},
 \code{\link{select_devices}()},
