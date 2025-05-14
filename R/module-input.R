@@ -46,8 +46,14 @@ input_server <- function(id, session) {
         colnames_list = colnames(sessions()),
         current_map = sessions_colnames(),
         title = "Set Session Column Names",
-        save_id = "save_session_col_names"
+        save_id = "save_session_col_names",
+        reset_id = "reset_session_col_names"
       )
+    })
+
+    shiny::observeEvent(input$reset_session_col_names, {
+      sessions_colnames(get_session_colnames(sessions()))
+      shiny::removeModal()
     })
 
     shiny::observeEvent(input$save_session_col_names, {
@@ -82,8 +88,14 @@ input_server <- function(id, session) {
         colnames_list = colnames(epochs()),
         current_map = epochs_colnames(),
         title = "Set Epoch Column Names",
-        save_id = "save_epoch_col_names"
+        save_id = "save_epoch_col_names",
+        reset_id = "reset_epoch_col_names"
       )
+    })
+
+    shiny::observeEvent(input$reset_epoch_col_names, {
+      epochs_colnames(get_epoch_colnames(epochs()))
+      shiny::removeModal()
     })
 
     shiny::observeEvent(input$save_epoch_col_names, {
@@ -110,7 +122,8 @@ show_colnames_modal <- function(
   colnames_list,
   current_map,
   title = "Set Session Column Names",
-  save_id = "save_col_names"
+  save_id = "save_col_names",
+  reset_id = "reset_col_names"
 ) {
   inputs <- lapply(names(current_map), function(key) {
     current_value <- as.character(current_map[[key]])
@@ -129,6 +142,7 @@ show_colnames_modal <- function(
       size = "l",
       easyClose = TRUE,
       footer = tagList(
+        shiny::actionButton(ns(reset_id), "Reset"),
         shiny::modalButton("Cancel"),
         shiny::actionButton(ns(save_id), "Save")
       ),
