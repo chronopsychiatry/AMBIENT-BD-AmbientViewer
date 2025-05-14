@@ -75,14 +75,13 @@ get_epoch_colnames <- function(epochs, col_names = NULL) {
 }
 
 override_col_names <- function(data, col_names, default_list) {
-  result <- setNames(vector("list", length(col_names)), col_names)
+  result <- stats::setNames(vector("list", length(col_names)), col_names)
 
   for (name in names(col_names)) {
     val <- col_names[[name]]
     if (is.null(val)) {
       val <- default_list[[name]]
-    }
-    if (!val %in% colnames(data)) {
+    } else if (!val %in% colnames(data)) {
       cli::cli_abort(c(
         "!" = "Column {val} not found."
       ))

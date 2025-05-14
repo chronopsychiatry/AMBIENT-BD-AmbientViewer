@@ -36,6 +36,7 @@ ambient_viewer <- function() {
       version = 5,
       "font-size-base" = "0.9rem",
       "btn-padding-y" = "0.25rem",   # vertical padding (default is 0.375rem)
+      "btn-padding-x" = "0.5rem",   # horizontal padding (default is 0.75rem)
       "input-padding-y" = "0.25rem", # input vertical padding
       "input-padding-x" = "0.5rem",  # input horizontal padding
       "input-border-radius" = "0.2rem"
@@ -49,6 +50,7 @@ ambient_viewer <- function() {
         # Data input, filtering and export ----
         h4("Data Input"),
         input_ui("input"),
+        br(),
         h4("Filtering"),
         filtering_module("filtering"),
         br(),
@@ -123,27 +125,34 @@ ambient_viewer <- function() {
     data <- input_server("input", session)
     sessions <- data$sessions
     epochs <- data$epochs
+    sessions_colnames <- data$sessions_colnames
+    epochs_colnames <- data$epochs_colnames
 
     # Filtering and compliance module
-    filtered_sessions <- filtering_server("filtering", sessions)
-    filtered_epochs <- reactive(filter_epochs_from_sessions(epochs(), filtered_sessions()))
-    compliance_server("compliance", filtered_sessions)
+    filtered_sessions <- filtering_server("filtering", sessions, sessions_colnames)
+    filtered_epochs <- reactive(filter_epochs_from_sessions(
+      epochs(),
+      filtered_sessions(),
+      session_col_names = sessions_colnames(),
+      epoch_col_names = epochs_colnames()
+    ))
+    compliance_server("compliance", filtered_sessions, sessions_colnames)
 
     # Summary table module
-    summary_server("summary", filtered_sessions, filtered_epochs)
+    summary_server("summary", filtered_sessions, filtered_epochs, sessions_colnames, epochs_colnames)
 
     # Export data module
     export_data_server("export_data", filtered_sessions, filtered_epochs)
 
     # Plotting modules
-    sleep_clock_module_server("sleep_clock", filtered_sessions)
-    sleep_spiral_module_server("sleep_spiral", filtered_epochs)
-    bedtimes_waketimes_module_server("bedtimes_waketimes", filtered_sessions)
-    sleep_bubbles_module_server("sleep_bubbles", filtered_sessions)
-    sleep_stages_module_server("sleep_stages", filtered_epochs)
-    hypnogram_module_server("hypnogram", filtered_epochs)
-    timeseries_sessions_module_server("timeseries_sessions", filtered_sessions)
-    timeseries_module_server("timeseries", filtered_epochs)
+    sleep_clock_module_server("sleep_clock", filtered_sessions, sessions_colnames)
+    sleep_spiral_module_server("sleep_spiral", filtered_epochs, epochs_colnames)
+    bedtimes_waketimes_module_server("bedtimes_waketimes", filtered_sessions, sessions_colnames)
+    sleep_bubbles_module_server("sleep_bubbles", filtered_sessions, sessions_colnames)
+    sleep_stages_module_server("sleep_stages", filtered_epochs, epochs_colnames)
+    hypnogram_module_server("hypnogram", filtered_epochs, epochs_colnames)
+    timeseries_sessions_module_server("timeseries_sessions", filtered_sessions, sessions_colnames)
+    timeseries_module_server("timeseries", filtered_epochs, epochs_colnames)
 
   }
 

@@ -25,7 +25,7 @@ timeseries_module_ui <- function(id) {
   )
 }
 
-timeseries_module_server <- function(id, epochs) {
+timeseries_module_server <- function(id, epochs, epochs_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL)
@@ -45,7 +45,7 @@ timeseries_module_server <- function(id, epochs) {
         return()
       }
 
-      col <- get_epoch_colnames(epochs())
+      col <- epochs_colnames()
 
       excluded_vars <- c(col$timestamp, "motion_data_count", col$night,
                          col$session_id, col$sleep_stage, "epoch_duration", ".data_type")
@@ -78,7 +78,8 @@ timeseries_module_server <- function(id, epochs) {
       plot_timeseries(
         epochs = epochs(),
         variable = input$variable,
-        exclude_zero = input$exclude_zero
+        exclude_zero = input$exclude_zero,
+        col_names = epochs_colnames()
       )
     })
 

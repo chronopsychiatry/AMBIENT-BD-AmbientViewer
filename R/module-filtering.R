@@ -55,12 +55,12 @@ filtering_tab <- function(id) {
   )
 }
 
-filtering_server <- function(id, sessions) {
+filtering_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     shiny::observe({
       shiny::req(sessions())
-      col <- get_session_colnames(sessions())
+      col <- sessions_colnames()
 
       if (nrow(sessions()) == 0) {
         shiny::updateSliderInput(
@@ -85,7 +85,7 @@ filtering_server <- function(id, sessions) {
 
     output$subject_select <- shiny::renderUI({
       shiny::req(sessions())
-      col <- get_session_colnames(sessions())
+      col <- sessions_colnames()
       if (!is.null(col$subject_id)) {
         subject_choices <- unique(sessions()[[col$subject_id]])
         shinyWidgets::pickerInput(
@@ -104,7 +104,7 @@ filtering_server <- function(id, sessions) {
 
     output$age_range_slider <- shiny::renderUI({
       shiny::req(sessions())
-      col <- get_session_colnames(sessions())
+      col <- sessions_colnames()
       if (!is.null(col$birth_year)) {
         birth_years <- sessions()[[col$birth_year]]
         birth_years <- birth_years[!is.na(birth_years)]
@@ -125,7 +125,7 @@ filtering_server <- function(id, sessions) {
 
     output$sex_select <- shiny::renderUI({
       shiny::req(sessions())
-      col <- get_session_colnames(sessions())
+      col <- sessions_colnames()
       if (!is.null(col$sex)) {
         sex_choices <- unique(sessions()[[col$sex]])
         shinyWidgets::pickerInput(
@@ -144,25 +144,26 @@ filtering_server <- function(id, sessions) {
 
     selected_sessions <- shiny::reactive({
       shiny::req(sessions())
-      col <- get_session_colnames(sessions())
+      col <- sessions_colnames()
       df <- sessions() |>
-        filter_by_night_range(input$date_range[1], input$date_range[2])
+        filter_by_night_range(input$date_range[1], input$date_range[2], col_names = col)
       if (!is.null(col$birth_year)) {
         df <- df |>
-          filter_by_age_range(input$age_range[1], input$age_range[2])
+          filter_by_age_range(input$age_range[1], input$age_range[2], col_names = col)
       }
       if (!is.null(col$sex)) {
-        df <- filter_by_sex(df, input$sex_filter)
+        df <- filter_by_sex(df, input$sex_filter, col_names = col)
       }
       if (!is.null(col$subject_id)) {
         df <- df |>
-          select_subjects(input$subject_filter)
+          select_subjects(input$subject_filter, col_names = col)
       }
       df
     })
 
     filtered_sessions <- shiny::reactive({
       shiny::req(selected_sessions())
+      col <- sessions_colnames()
 
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
@@ -175,14 +176,14 @@ filtering_server <- function(id, sessions) {
       }
 
       selected_sessions() |>
-        remove_sessions_no_sleep() |>
-        set_min_time_in_bed(input$min_time_in_bed) |>
-        set_session_sleep_onset_range(from_time, to_time)
+        remove_sessions_no_sleep(col_names = col) |>
+        set_min_time_in_bed(input$min_time_in_bed, col_names = col) |>
+        set_session_sleep_onset_range(from_time, to_time, col_names = col)
     })
 
     removed_sessions <- shiny::reactive({
       shiny::req(selected_sessions(), filtered_sessions())
-      get_removed_sessions_table(selected_sessions(), filtered_sessions())
+      get_removed_sessions_table(selected_sessions(), filtered_sessions(), col_names = sessions_colnames())
     })
 
     output$removed_sessions <- shiny::renderTable({
@@ -211,7 +212,7 @@ filtering_server <- function(id, sessions) {
 
     output$download_removed_sessions <- get_table_download_handler(
       session = session,
-      output_table = shiny::reactive(get_removed_sessions(sessions(), filtered_sessions())),
+      output_table = shiny::reactive(get_removed_sessions(sessions(), filtered_sessions(), col_names = sessions_colnames())),
       output_name = "removed_sessions"
     )
 
@@ -220,7 +221,7 @@ filtering_server <- function(id, sessions) {
 }
 
 #' @importFrom rlang .data
-get_removed_sessions_table <- function(sessions, filtered_sessions) {
-  get_removed_sessions(sessions, filtered_sessions) |>
+get_removed_sessions_table <- function(sessions, filtered_sessions, col_names = NULL) {
+  get_removed_sessions(sessions, filtered_sessions, col_names = col_names) |>
     make_sessions_display_table()
 }

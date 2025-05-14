@@ -1,7 +1,7 @@
 test_that("filtering module works", {
   shiny::testServer(
     filtering_server,
-    args = list(sessions = shiny::reactive(example_sessions)),
+    args = list(sessions = shiny::reactive(example_sessions), sessions_colnames = shiny::reactive(get_session_colnames(example_sessions))),
     {
       session$setInputs(date_range = c("2025-04-03", "2025-04-17"), time_range = c("20", "06"), min_time_in_bed = 2)
       session$flushReact()

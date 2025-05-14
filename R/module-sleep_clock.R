@@ -15,7 +15,7 @@ sleep_clock_module_ui <- function(id) {
   )
 }
 
-sleep_clock_module_server <- function(id, sessions) {
+sleep_clock_module_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     sleep_clock_plot <- shiny::reactive({
@@ -23,7 +23,7 @@ sleep_clock_module_server <- function(id, sessions) {
       if (nrow(sessions()) == 0) {
         return(NULL)
       }
-      plot_sleep_clock(sessions = sessions())
+      plot_sleep_clock(sessions = sessions(), col_names = sessions_colnames())
     })
 
     output$sleep_clock_plot <- shiny::renderPlot({

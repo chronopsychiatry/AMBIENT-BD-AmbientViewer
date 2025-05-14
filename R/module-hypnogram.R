@@ -15,12 +15,12 @@ hypnogram_module_ui <- function(id) {
   )
 }
 
-hypnogram_module_server <- function(id, epochs) {
+hypnogram_module_server <- function(id, epochs, epochs_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     hypnogram_plot <- shiny::reactive({
       shiny::req(epochs())
-      plot_hypnogram(epochs = epochs())
+      plot_hypnogram(epochs = epochs(), col_names = epochs_colnames())
     })
 
     output$hypnogram_plot <- shiny::renderPlot({

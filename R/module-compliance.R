@@ -10,11 +10,11 @@ compliance_module <- function(id) {
   )
 }
 
-compliance_server <- function(id, sessions) {
+compliance_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
       shiny::req(sessions())
-      get_compliance_table(sessions())
+      get_compliance_table(sessions(), sessions_colnames())
     })
 
     output$compliance_table <- shiny::renderTable({
@@ -46,7 +46,7 @@ compliance_server <- function(id, sessions) {
 
     output$download_compliance <- get_table_download_handler(
       session = session,
-      output_table = shiny::reactive(get_non_complying_sessions(sessions())),
+      output_table = shiny::reactive(get_non_complying_sessions(sessions(), col_names = sessions_colnames())),
       output_name = "compliance"
     )
 
@@ -54,14 +54,14 @@ compliance_server <- function(id, sessions) {
 }
 
 #' @importFrom rlang .data
-get_compliance_table <- function(sessions) {
-  get_non_complying_sessions(sessions) |>
-    make_sessions_display_table()
+get_compliance_table <- function(sessions, col_names = NULL) {
+  get_non_complying_sessions(sessions, col_names = col_names) |>
+    make_sessions_display_table(col_names = col_names)
 }
 
 #' @importFrom rlang .data
-make_sessions_display_table <- function(sessions) {
-  col <- get_session_colnames(sessions, NULL)
+make_sessions_display_table <- function(sessions, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
   sessions |>
     dplyr::mutate(
       start_time = parse_time(.data[[col$session_start]]) |> format("%H:%M"),

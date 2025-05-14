@@ -34,7 +34,7 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL) {
 #' filtered_sessions <- set_session_start_time_range(example_sessions, "22:00", "06:00")
 set_session_start_time_range <- function(sessions, from_time, to_time, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
-  session_times <- parse_time(sessions[[col$session_start]]) |> update(year = 0, month = 1, day = 1)
+  session_times <- parse_time(sessions[[col$session_start]]) |> stats::update(year = 0, month = 1, day = 1)
   from_time <- parse_time(from_time)
   to_time <- parse_time(to_time)
 
@@ -62,7 +62,7 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
   col <- get_session_colnames(sessions, col_names)
   sessions <- remove_sessions_no_sleep(sessions)
 
-  session_times <- parse_time(sessions[[col$time_at_sleep_onset]]) |> update(year = 0, month = 1, day = 1)
+  session_times <- parse_time(sessions[[col$time_at_sleep_onset]]) |> stats::update(year = 0, month = 1, day = 1)
   from_time <- parse_time(from_time)
   to_time <- parse_time(to_time)
 

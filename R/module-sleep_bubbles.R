@@ -15,12 +15,12 @@ sleep_bubbles_module_ui <- function(id) {
   )
 }
 
-sleep_bubbles_module_server <- function(id, sessions) {
+sleep_bubbles_module_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     sleep_bubbles_plot <- shiny::reactive({
       shiny::req(sessions())
-      plot_sleep_bubbles(sessions = sessions())
+      plot_sleep_bubbles(sessions = sessions(), col_names = sessions_colnames())
     })
 
     output$sleep_bubbles_plot <- shiny::renderPlot({

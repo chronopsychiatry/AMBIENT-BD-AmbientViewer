@@ -20,12 +20,12 @@ bedtimes_waketimes_module_ui <- function(id) {
   )
 }
 
-bedtimes_waketimes_module_server <- function(id, sessions) {
+bedtimes_waketimes_module_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     bedtimes_waketimes_plot <- shiny::reactive({
       shiny::req(sessions())
-      plot_bedtimes_waketimes(sessions = sessions(), groupby = input$groupby)
+      plot_bedtimes_waketimes(sessions = sessions(), groupby = input$groupby, col_names = sessions_colnames())
     })
 
     output$bedtimes_waketimes_plot <- shiny::renderPlot({

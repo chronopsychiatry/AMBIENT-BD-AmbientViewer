@@ -25,7 +25,7 @@ timeseries_sessions_module_ui <- function(id) {
   )
 }
 
-timeseries_sessions_module_server <- function(id, sessions) {
+timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL)
@@ -45,8 +45,7 @@ timeseries_sessions_module_server <- function(id, sessions) {
         return()
       }
 
-      col <- get_session_colnames(sessions())
-
+      col <- sessions_colnames()
       excluded_vars <- c(col$id, "state", col$subject_id, col$device_id, col$night, ".data_type")
       available_vars <- setdiff(names(sessions()), excluded_vars)
 
@@ -77,7 +76,8 @@ timeseries_sessions_module_server <- function(id, sessions) {
       plot_timeseries_sessions(
         sessions = sessions(),
         variable = input$variable,
-        exclude_zero = input$exclude_zero
+        exclude_zero = input$exclude_zero,
+        col_names = sessions_colnames()
       )
     })
 

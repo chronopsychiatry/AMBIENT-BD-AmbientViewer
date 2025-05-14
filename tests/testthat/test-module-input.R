@@ -19,5 +19,7 @@ test_that("input_module returns correct data", {
     expect_equal(ncol(data$epochs()), 17)
     expect_equal(nrow(data$sessions()), 124)
     expect_equal(nrow(data$epochs()), 18755)
+    expect_equal(data$sessions_colnames(), get_session_colnames(data$sessions()))
+    expect_equal(data$epochs_colnames(), get_epoch_colnames(data$epochs()))
   })
 })

@@ -1,7 +1,7 @@
 test_that("compliance module works", {
   shiny::testServer(
     compliance_server,
-    args = list(sessions = shiny::reactive(example_sessions)),
+    args = list(sessions = shiny::reactive(example_sessions), sessions_colnames = shiny::reactive(get_session_colnames(example_sessions))),
     {
       session$flushReact()
       expect_equal(

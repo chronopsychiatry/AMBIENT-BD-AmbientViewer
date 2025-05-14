@@ -33,6 +33,9 @@ get_sessions_summary <- function(sessions, col_names = NULL) {
 #'
 #' This function displays the number of sessions in the epoch data, as well as the start and end dates of the epoch data
 #' @param epochs The epochs dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `timestamp`
+#' - `session_id`
 #' @returns A single-row dataframe summarising epoch information
 #' @importFrom rlang .data
 #' @export
