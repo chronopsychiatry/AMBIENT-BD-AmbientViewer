@@ -4,7 +4,13 @@
 \alias{set_session_start_time_range}
 \title{Set session start time range}
 \usage{
-set_session_start_time_range(sessions, from_time, to_time, col_names = NULL)
+set_session_start_time_range(
+  sessions,
+  from_time,
+  to_time,
+  col_names = NULL,
+  flag_only = FALSE
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -17,6 +23,8 @@ set_session_start_time_range(sessions, from_time, to_time, col_names = NULL)
 \itemize{
 \item \code{session_start}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that started within the specified time range

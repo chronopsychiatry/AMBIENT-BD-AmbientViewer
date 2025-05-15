@@ -4,7 +4,7 @@
 \alias{select_subjects}
 \title{Select subjects by ID}
 \usage{
-select_subjects(sessions, subject_ids, col_names = NULL)
+select_subjects(sessions, subject_ids, col_names = NULL, flag_only = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -15,6 +15,8 @@ select_subjects(sessions, subject_ids, col_names = NULL)
 \itemize{
 \item \code{subject_id}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that belong to the specified subjects

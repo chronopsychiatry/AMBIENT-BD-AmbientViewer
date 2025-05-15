@@ -4,7 +4,7 @@
 \alias{filter_by_sex}
 \title{Filter by sex}
 \usage{
-filter_by_sex(sessions, sex, col_names = NULL)
+filter_by_sex(sessions, sex, col_names = NULL, flag_only = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -15,6 +15,8 @@ filter_by_sex(sessions, sex, col_names = NULL)
 \itemize{
 \item \code{sex}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that belong to the specified sex

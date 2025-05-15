@@ -21,7 +21,7 @@ ambient_viewer <- function() {
   }
   logging::basicConfig()
   logging::addHandler(logging::writeToFile, file = log_file, level = "INFO")
-  schedule_log_clearing(log_file)
+  clear_log_file(log_file)
 
   ui <- fluidPage(
     shinyjs::useShinyjs(),
@@ -69,7 +69,8 @@ ambient_viewer <- function() {
             type = "tabs",
             tabPanel("Summary", summary_module_ui("summary")),
             tabPanel("Compliance", compliance_module("compliance"), value = "compliance_tab"),
-            tabPanel("Filtering", filtering_tab("filtering"), value = "filtering_tab")
+            tabPanel("Filtering", filtering_tab("filtering"), value = "filtering_tab"),
+            tabPanel("Annotation", annotation_module_ui("annotation"), value = "annotation_tab"),
           ),
         ),
 
@@ -140,6 +141,9 @@ ambient_viewer <- function() {
 
     # Summary table module
     summary_server("summary", filtered_sessions, filtered_epochs, sessions_colnames, epochs_colnames)
+
+    # Annotation module
+    updated_sessions <- annotation_server("annotation", filtered_sessions, sessions_colnames)
 
     # Export data module
     export_data_server("export_data", filtered_sessions, filtered_epochs)

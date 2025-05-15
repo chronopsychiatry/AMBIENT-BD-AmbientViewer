@@ -8,7 +8,8 @@ filter_epochs_from_sessions(
   epochs,
   sessions,
   session_col_names = NULL,
-  epoch_col_names = NULL
+  epoch_col_names = NULL,
+  flag_only = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ filter_epochs_from_sessions(
 \itemize{
 \item \code{session_id}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered epochs without removing them from the table}
 }
 \value{
 The epochs dataframe with only the epochs that belong to the specified sessions
@@ -34,7 +37,7 @@ Filter epochs based on session IDs
 }
 \examples{
 # Apply filtering to sessions to keep specific nights, and filter epochs accordingly
-filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")#
+filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
 filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions)
 
 }

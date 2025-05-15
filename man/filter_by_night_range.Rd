@@ -4,7 +4,13 @@
 \alias{filter_by_night_range}
 \title{Filter sessions for nights within a night range}
 \usage{
-filter_by_night_range(sessions, from_night, to_night, col_names = NULL)
+filter_by_night_range(
+  sessions,
+  from_night,
+  to_night,
+  col_names = NULL,
+  flag_only = FALSE
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -17,6 +23,8 @@ filter_by_night_range(sessions, from_night, to_night, col_names = NULL)
 \itemize{
 \item \code{night}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that fall within the specified night range

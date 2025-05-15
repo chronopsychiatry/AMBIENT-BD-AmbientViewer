@@ -6,16 +6,17 @@
 #' - `id`
 #' @param epoch_col_names A list to override default epoch column names. This function uses columns:
 #' - `session_id`
+#' @param flag_only If TRUE, only flags the filtered epochs without removing them from the table
 #' @returns The epochs dataframe with only the epochs that belong to the specified sessions
 #' @export
 #' @examples
 #' # Apply filtering to sessions to keep specific nights, and filter epochs accordingly
-#' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")#
+#' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
 #' filtered_epochs <- filter_epochs_from_sessions(example_epochs, filtered_sessions)
 #'
 #' @seealso [filter_by_night_range()] to filter sessions by night range.
 #' @family filtering
-filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NULL, epoch_col_names = NULL) {
+filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NULL, epoch_col_names = NULL, flag_only = FALSE) {
   scol <- get_session_colnames(sessions, session_col_names)
   ecol <- get_epoch_colnames(epochs, epoch_col_names)
 
@@ -23,7 +24,15 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
     cli::cli_warn(c("!" = "None of the epochs match the selected sessions.",
                     "i" = "Returning an empty epoch table."))
   }
-  epochs[epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]]), ]
+
+  epochs$display <- ifelse(epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]]), TRUE, FALSE)
+
+  if (flag_only) {
+    return(epochs)
+  } else {
+    epochs[epochs$display, ] |>
+      dplyr::select(-"display")
+  }
 }
 
 #' Filter sessions for nights within a night range
@@ -33,13 +42,14 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
 #' @param to_night The end night of the range (inclusive) in YYYY-MM-DD format
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `night`
+#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
 #' @returns The sessions dataframe with only the sessions that fall within the specified night range
 #' @importFrom rlang .data
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")
-filter_by_night_range <- function(sessions, from_night, to_night, col_names = NULL) {
+filter_by_night_range <- function(sessions, from_night, to_night, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0) {
@@ -53,9 +63,16 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
     cli::cli_abort(c("!" = "from_night must be before to_night."))
   }
 
-  sessions |>
-    dplyr::filter(.data[[col$night]] >= lubridate::as_date(from_night) &
-                    .data[[col$night]] <= lubridate::as_date(to_night))
+  sessions$display <- ifelse(sessions[[col$night]] >= lubridate::as_date(from_night) &
+                               sessions[[col$night]] <= lubridate::as_date(to_night), TRUE, FALSE)
+
+  if (flag_only) {
+    return(sessions)
+  } else {
+    sessions |>
+      dplyr::filter(.data$display) |>
+      dplyr::select(-"display")
+  }
 }
 
 #' Filter sessions by age range
@@ -65,13 +82,14 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
 #' @param max_age The maximum age of the subjects (inclusive)
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `birth_year`
+#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
 #' @returns The sessions dataframe with only the sessions that belong to subjects within the specified age range
 #' @importFrom rlang .data
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- filter_by_age_range(example_sessions_v1, min_age = 11, max_age = 18)
-filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
+filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0) {
@@ -88,11 +106,16 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
     cli::cli_abort(c("!" = "min_age must be before max_age."))
   }
 
-  min_birth_year <- lubridate::year(Sys.Date()) - max_age
-  max_birth_year <- lubridate::year(Sys.Date()) - min_age
-  sessions |>
-    dplyr::filter(.data[[col$birth_year]] >= min_birth_year &
-                    .data[[col$birth_year]] <= max_birth_year)
+  sessions$display <- ifelse(sessions[[col$birth_year]] >= (lubridate::year(Sys.Date()) - max_age) &
+                               sessions[[col$birth_year]] <= (lubridate::year(Sys.Date()) - min_age), TRUE, FALSE)
+
+  if (flag_only) {
+    return(sessions)
+  } else {
+    return(sessions |>
+             dplyr::filter(.data$display) |>
+             dplyr::select(-"display"))
+  }
 }
 
 #' Filter by sex
@@ -101,13 +124,14 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL) {
 #' @param sex The sex to filter for (M, F, or NULL for both)
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `sex`
+#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
 #' @returns The sessions dataframe with only the sessions that belong to the specified sex
 #' @importFrom rlang .data
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- filter_by_sex(example_sessions_v1, "M")
-filter_by_sex <- function(sessions, sex, col_names = NULL) {
+filter_by_sex <- function(sessions, sex, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0 || is.null(sex)) {
@@ -118,7 +142,14 @@ filter_by_sex <- function(sessions, sex, col_names = NULL) {
     cli::cli_abort(c("!" = "The sessions table must contain a Sex column."))
   }
 
-  sessions[sessions[[col$sex]] %in% sex, ]
+  sessions$display <- ifelse(sessions[[col$sex]] %in% sex, TRUE, FALSE)
+
+  if (flag_only) {
+    return(sessions)
+  } else {
+    return(sessions[sessions$display, ] |>
+             dplyr::select(-"display"))
+  }
 }
 
 #' Select subjects by ID
@@ -127,13 +158,14 @@ filter_by_sex <- function(sessions, sex, col_names = NULL) {
 #' @param subject_ids The subject IDs to select
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `subject_id`
+#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
 #' @returns The sessions dataframe with only the sessions that belong to the specified subjects
 #' @export
 #' @family filtering
 #' @seealso [select_devices()] to select sessions by device ID.
 #' @examples
 #' filtered_sessions <- select_subjects(example_sessions, c("sub_01JNDH3Z5NP0PSV82NFBGPV31X"))
-select_subjects <- function(sessions, subject_ids, col_names = NULL) {
+select_subjects <- function(sessions, subject_ids, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0 || is.null(subject_ids)) {
@@ -145,7 +177,15 @@ select_subjects <- function(sessions, subject_ids, col_names = NULL) {
                     "i" = "Available subject IDs: {unique(sessions[[col$subject_id]])}",
                     "i" = "Returning an empty sessions table."))
   }
-  sessions[sessions[[col$subject_id]] %in% subject_ids, ]
+
+  sessions$display <- ifelse(sessions[[col$subject_id]] %in% subject_ids, TRUE, FALSE)
+
+  if (flag_only) {
+    return(sessions)
+  } else {
+    return(sessions[sessions$display, ] |>
+             dplyr::select(-"display"))
+  }
 }
 
 #' Select devices by ID
@@ -154,13 +194,14 @@ select_subjects <- function(sessions, subject_ids, col_names = NULL) {
 #' @param device_ids The device IDs to select
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `device_id`
+#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
 #' @returns The sessions dataframe with only the sessions recorded by the specified devices
 #' @export
 #' @family filtering
 #' @seealso [select_subjects()] to select sessions by subject ID.
 #' @examples
 #' filtered_sessions <- select_devices(example_sessions, c("VTGVSRTHCA"))
-select_devices <- function(sessions, device_ids, col_names = NULL) {
+select_devices <- function(sessions, device_ids, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0 || is.null(device_ids)) {
@@ -172,5 +213,13 @@ select_devices <- function(sessions, device_ids, col_names = NULL) {
                     "i" = "Available device IDs: {unique(sessions[[col$device_id]])}",
                     "i" = "Returning an empty sessions table."))
   }
-  sessions[sessions[[col$device_id]] %in% device_ids, ]
+
+  sessions$display <- ifelse(sessions[[col$device_id]] %in% device_ids, TRUE, FALSE)
+
+  if (flag_only) {
+    return(sessions)
+  } else {
+    return(sessions[sessions$display, ] |>
+             dplyr::select(-"display"))
+  }
 }

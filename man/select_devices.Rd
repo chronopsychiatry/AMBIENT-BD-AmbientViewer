@@ -4,7 +4,7 @@
 \alias{select_devices}
 \title{Select devices by ID}
 \usage{
-select_devices(sessions, device_ids, col_names = NULL)
+select_devices(sessions, device_ids, col_names = NULL, flag_only = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -15,6 +15,8 @@ select_devices(sessions, device_ids, col_names = NULL)
 \itemize{
 \item \code{device_id}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions recorded by the specified devices

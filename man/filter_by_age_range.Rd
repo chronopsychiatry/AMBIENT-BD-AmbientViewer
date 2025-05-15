@@ -4,7 +4,13 @@
 \alias{filter_by_age_range}
 \title{Filter sessions by age range}
 \usage{
-filter_by_age_range(sessions, min_age, max_age, col_names = NULL)
+filter_by_age_range(
+  sessions,
+  min_age,
+  max_age,
+  col_names = NULL,
+  flag_only = FALSE
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -17,6 +23,8 @@ filter_by_age_range(sessions, min_age, max_age, col_names = NULL)
 \itemize{
 \item \code{birth_year}
 }}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that belong to subjects within the specified age range
