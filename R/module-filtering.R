@@ -55,7 +55,7 @@ filtering_tab <- function(id) {
   )
 }
 
-filtering_server <- function(id, sessions, sessions_colnames) {
+filtering_server <- function(id, sessions, sessions_colnames, annotations) {
   shiny::moduleServer(id, function(input, output, session) {
 
     shiny::observe({
@@ -178,7 +178,10 @@ filtering_server <- function(id, sessions, sessions_colnames) {
 
     removed_sessions <- shiny::reactive({
       shiny::req(filtered_sessions())
-      get_removed_sessions_table(filtered_sessions(), col_names = sessions_colnames())
+      col <- sessions_colnames()
+      filtered_sessions() |>
+        dplyr::mutate(annotation = annotations()$annotation[match(.data[[col$id]], annotations()$id)]) |>
+        get_removed_sessions_table(col_names = sessions_colnames())
     })
 
     output$removed_sessions <- shiny::renderTable({

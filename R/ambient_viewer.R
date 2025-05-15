@@ -129,8 +129,8 @@ ambient_viewer <- function() {
     sessions_colnames <- data$sessions_colnames
     epochs_colnames <- data$epochs_colnames
 
-    # Filtering and compliance modules
-    filtered_sessions <- filtering_server("filtering", sessions, sessions_colnames)
+    # Filtering module
+    filtered_sessions <- filtering_server("filtering", sessions, sessions_colnames, data$annotations)
     filtered_epochs <- reactive(filter_epochs_from_sessions(
       epochs(),
       filtered_sessions(),
@@ -139,16 +139,17 @@ ambient_viewer <- function() {
       flag_only = TRUE
     ))
 
-    compliance_server("compliance", filtered_sessions, sessions_colnames)
-
     # Annotation module
-    annotated_sessions <- annotation_server("annotation", filtered_sessions, sessions_colnames)
+    annotated_sessions <- annotation_server("annotation", filtered_sessions, sessions_colnames, data$annotations)
     annotated_epochs <- reactive(annotate_epochs_from_sessions(
       annotated_sessions(),
       filtered_epochs(),
       sessions_colnames(),
       epochs_colnames()
     ))
+
+    # Compliance module
+    compliance_server("compliance", annotated_sessions, sessions_colnames)
 
     # Summary table module
     summary_server("summary", annotated_sessions, annotated_epochs, sessions_colnames, epochs_colnames)

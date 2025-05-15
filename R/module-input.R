@@ -30,12 +30,27 @@ input_server <- function(id, session) {
 
     # Sessions ----
     sessions_colnames <- shiny::reactiveVal()
+    annotations <- shiny::reactiveVal()
 
     sessions <- shiny::reactive({
       shiny::req(input$sessions_file)
       logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
       sessions <- load_sessions(input$sessions_file$datapath)
       sessions_colnames(get_session_colnames(sessions))
+      if (!is.null(sessions$annotation)) {
+        annotations(data.frame(
+          id = sessions$id,
+          annotation = as.character(sessions$annotation),
+          stringsAsFactors = FALSE
+        ))
+      } else {
+        sessions$annotation <- ""
+        annotations(data.frame(
+          id = sessions$id,
+          annotation = "",
+          stringsAsFactors = FALSE
+        ))
+      }
       sessions
     })
 
@@ -112,7 +127,8 @@ input_server <- function(id, session) {
       sessions = sessions,
       epochs = epochs,
       sessions_colnames = sessions_colnames,
-      epochs_colnames = epochs_colnames
+      epochs_colnames = epochs_colnames,
+      annotations = annotations
     )
   })
 }

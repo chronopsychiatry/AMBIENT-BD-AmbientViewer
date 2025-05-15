@@ -10,7 +10,7 @@ annotation_module_ui <- function(id) {
   )
 }
 
-annotation_server <- function(id, sessions, sessions_colnames) {
+annotation_server <- function(id, sessions, sessions_colnames, annotations) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$annotations_text <- shiny::renderUI({
@@ -20,19 +20,12 @@ annotation_server <- function(id, sessions, sessions_colnames) {
       ))
     })
 
-    annotations <- shiny::reactiveVal(
-      data.frame(
-        id = character(),
-        annotation = character(),
-        stringsAsFactors = FALSE
-      )
-    )
-
     shiny::observe({
-      req(sessions())
+      shiny::req(sessions())
+      col <- sessions_colnames()
       current_sessions <- sessions()
       ann <- annotations()
-      new_ids <- setdiff(current_sessions$id, ann$id)
+      new_ids <- setdiff(current_sessions[[col$id]], ann$id)
       if (length(new_ids) > 0) {
         ann <- rbind(ann, data.frame(id = new_ids, annotation = "", stringsAsFactors = FALSE))
       }
@@ -41,7 +34,6 @@ annotation_server <- function(id, sessions, sessions_colnames) {
 
     annotation_table <- shiny::reactive({
       shiny::req(sessions(), annotations(), sessions_colnames())
-      logging::loginfo("Creating annotation table")
       make_annotation_table(sessions(), annotations(), sessions_colnames())
     })
 
@@ -55,10 +47,11 @@ annotation_server <- function(id, sessions, sessions_colnames) {
     })
 
     shiny::observeEvent(input$apply_annotation, {
+      col <- sessions_colnames()
       ann <- annotations()
       selected <- input$annotation_table_rows_selected
       if (length(selected) > 0) {
-        selected_ids <- sessions()$id[selected]
+        selected_ids <- sessions()[sessions()$display, ][[col$id]][selected]
         ann$annotation[match(selected_ids, ann$id)] <- input$annotation_text
         annotations(ann)
       }
@@ -66,9 +59,10 @@ annotation_server <- function(id, sessions, sessions_colnames) {
 
     updated_sessions <- shiny::reactive({
       req(sessions(), annotations())
+      col <- sessions_colnames()
       s <- sessions()
       ann <- annotations()
-      s$annotation <- ann$annotation[match(s$id, ann$id)]
+      s$annotation <- ann$annotation[match(s[[col$id]], ann$id)]
       s
     })
 
@@ -77,7 +71,7 @@ annotation_server <- function(id, sessions, sessions_colnames) {
 }
 
 make_annotation_table <- function(sessions, annotations, sessions_colnames) {
-  col <- get_session_colnames(sessions, sessions_colnames)
+  col <- sessions_colnames
   sessions |>
     dplyr::filter(.data$display) |>
     dplyr::mutate(

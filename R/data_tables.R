@@ -16,17 +16,28 @@
 #' @seealso [get_epochs_summary()] to summarise epoch information.
 get_sessions_summary <- function(sessions, col_names = NULL) {
   if (nrow(sessions) == 0) {
-    return(data.frame(total_sessions = 0, mean_sleep_onset = NA, mean_wakeup_time = NA, mean_time_in_bed = NA))
+    return(data.frame(
+      total_sessions = 0,
+      mean_sleep_onset = NA,
+      mean_wakeup_time = NA,
+      mean_time_in_bed = NA
+    ))
   }
   col <- get_session_colnames(sessions, col_names)
 
-  sessions |>
+  summary <- sessions |>
     dplyr::summarise(
       total_sessions = dplyr::n(),
       mean_sleep_onset = mean_time(.data[[col$time_at_sleep_onset]]),
       mean_wakeup_time = mean_time(.data[[col$time_at_wakeup]]),
       mean_time_in_bed = mean(.data[[col$time_in_bed]]) / 3600,
     )
+
+  if ("annotation" %in% colnames(sessions)) {
+    annot <- sessions$annotation[sessions$annotation != ""]
+    summary$annotations <- dplyr::n_distinct(annot)
+  }
+  summary
 }
 
 #' Summarise epoch information

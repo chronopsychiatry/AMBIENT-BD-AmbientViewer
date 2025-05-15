@@ -69,7 +69,7 @@ get_compliance_table <- function(sessions, col_names = NULL) {
 #' @importFrom rlang .data
 make_sessions_display_table <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
-  sessions |>
+  sessions <- sessions |>
     dplyr::mutate(
       start_time = parse_time(.data[[col$session_start]]) |> format("%H:%M"),
       sleep_onset = parse_time(.data[[col$time_at_sleep_onset]]) |> format("%H:%M"),
@@ -81,5 +81,15 @@ make_sessions_display_table <- function(sessions, col_names = NULL) {
       night = format(.data[[col$night]], "%Y-%m-%d"),
       time_in_bed_h = .data[[col$time_in_bed]] / 60 / 60
     ) |>
-    dplyr::select(col$id, col$night, "start_time", "sleep_onset", "wakeup_time", "end_time", "session_duration_h", "time_in_bed_h")
+    dplyr::select(
+      col$id,
+      col$night,
+      "start_time",
+      "sleep_onset",
+      "wakeup_time",
+      "end_time",
+      "session_duration_h",
+      "time_in_bed_h",
+      "annotation"
+    )
 }
