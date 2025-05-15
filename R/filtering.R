@@ -25,13 +25,16 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
                     "i" = "Returning an empty epoch table."))
   }
 
-  epochs$display <- ifelse(epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]]), TRUE, FALSE)
+  if (!"display" %in% colnames(epochs)) {
+    epochs$display <- TRUE
+  }
+
+  epochs$display <- ifelse(epochs$display == FALSE, FALSE, epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]]))
 
   if (flag_only) {
-    return(epochs)
+    epochs
   } else {
-    epochs[epochs$display, ] |>
-      dplyr::select(-"display")
+    epochs[epochs$display, ]
   }
 }
 
@@ -63,15 +66,18 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
     cli::cli_abort(c("!" = "from_night must be before to_night."))
   }
 
-  sessions$display <- ifelse(sessions[[col$night]] >= lubridate::as_date(from_night) &
-                               sessions[[col$night]] <= lubridate::as_date(to_night), TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$night]] >= lubridate::as_date(from_night) &
+                               sessions[[col$night]] <= lubridate::as_date(to_night))
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    sessions |>
-      dplyr::filter(.data$display) |>
-      dplyr::select(-"display")
+    sessions[sessions$display, ]
   }
 }
 
@@ -106,15 +112,18 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL, fl
     cli::cli_abort(c("!" = "min_age must be before max_age."))
   }
 
-  sessions$display <- ifelse(sessions[[col$birth_year]] >= (lubridate::year(Sys.Date()) - max_age) &
-                               sessions[[col$birth_year]] <= (lubridate::year(Sys.Date()) - min_age), TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$birth_year]] >= (lubridate::year(Sys.Date()) - max_age) &
+                               sessions[[col$birth_year]] <= (lubridate::year(Sys.Date()) - min_age))
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions |>
-             dplyr::filter(.data$display) |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
@@ -142,13 +151,17 @@ filter_by_sex <- function(sessions, sex, col_names = NULL, flag_only = FALSE) {
     cli::cli_abort(c("!" = "The sessions table must contain a Sex column."))
   }
 
-  sessions$display <- ifelse(sessions[[col$sex]] %in% sex, TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$sex]] %in% sex)
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
@@ -178,13 +191,17 @@ select_subjects <- function(sessions, subject_ids, col_names = NULL, flag_only =
                     "i" = "Returning an empty sessions table."))
   }
 
-  sessions$display <- ifelse(sessions[[col$subject_id]] %in% subject_ids, TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$subject_id]] %in% subject_ids)
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
@@ -214,12 +231,16 @@ select_devices <- function(sessions, device_ids, col_names = NULL, flag_only = F
                     "i" = "Returning an empty sessions table."))
   }
 
-  sessions$display <- ifelse(sessions[[col$device_id]] %in% device_ids, TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$device_id]] %in% device_ids)
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }

@@ -18,13 +18,17 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, fla
     ))
   }
 
-  sessions$display <- ifelse(sessions[[col$time_in_bed]] >= min_time_in_bed * 60 * 60, TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$time_in_bed]] >= min_time_in_bed * 60 * 60)
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
@@ -48,17 +52,22 @@ set_session_start_time_range <- function(sessions, from_time, to_time, col_names
   from_time <- parse_time(from_time)
   to_time <- parse_time(to_time)
 
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
   if (from_time <= to_time) {
-    sessions$display <- ifelse(session_times >= from_time & session_times <= to_time, TRUE, FALSE)
+    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                               session_times >= from_time & session_times <= to_time)
   } else {
-    sessions$display <- ifelse(session_times >= from_time | session_times <= to_time, TRUE, FALSE)
+    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                               session_times >= from_time | session_times <= to_time)
   }
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
@@ -84,17 +93,22 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
   from_time <- parse_time(from_time)
   to_time <- parse_time(to_time)
 
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
   if (from_time <= to_time) {
-    sessions$display <- ifelse(session_times >= from_time & session_times <= to_time, TRUE, FALSE)
+    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                               session_times >= from_time & session_times <= to_time)
   } else {
-    sessions$display <- ifelse(session_times >= from_time | session_times <= to_time, TRUE, FALSE)
+    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                               session_times >= from_time | session_times <= to_time)
   }
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
@@ -112,13 +126,17 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
 remove_sessions_no_sleep <- function(sessions, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
-  sessions$display <- ifelse(sessions[[col$sleep_period]] > 0, TRUE, FALSE)
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
+  }
+
+  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
+                             sessions[[col$sleep_period]] > 0)
 
   if (flag_only) {
-    return(sessions)
+    sessions
   } else {
-    return(sessions[sessions$display, ] |>
-             dplyr::select(-"display"))
+    sessions[sessions$display, ]
   }
 }
 
