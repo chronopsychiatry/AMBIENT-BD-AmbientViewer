@@ -48,6 +48,7 @@ test_that("set_time_in_bed works", {
 test_that("set_time_in_bed flagging works", {
   filtered_sessions <- set_min_time_in_bed(sessions, 2, flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 3)
+  expect_equal(nrow(filtered_sessions), nrow(sessions))
 })
 
 test_that("set_time_in_bed throws error for invalid input", {
@@ -57,6 +58,7 @@ test_that("set_time_in_bed throws error for invalid input", {
 test_that("set_session_start_time_range flagging works", {
   filtered_sessions <- set_session_start_time_range(sessions, "19:00", "23:00", flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 1)
+  expect_equal(nrow(filtered_sessions), nrow(sessions))
 })
 
 test_that("set_session_start_time_range works for times before midnight", {
@@ -72,6 +74,7 @@ test_that("set_session_start_time_range works for midnight spanning range", {
 test_that("set_session_sleep_onset_range flagging works", {
   filtered_sessions <- set_session_sleep_onset_range(sessions, "19:00", "23:00", flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 1)
+  expect_equal(nrow(filtered_sessions), 2)
 })
 
 test_that("set_session_sleep_onset_range works for times before midnight", {
@@ -87,11 +90,6 @@ test_that("set_session_sleep_onset_range works for midnight spanning range", {
 test_that("remove_sessions_no_sleep works", {
   filtered_sessions <- remove_sessions_no_sleep(sessions)
   expect_equal(nrow(filtered_sessions), 2)
-})
-
-test_that("remove_sessions_no_sleep flagging works", {
-  filtered_sessions <- remove_sessions_no_sleep(sessions, flag_only = TRUE)
-  expect_equal(sum(filtered_sessions$display), 2)
 })
 
 test_that("get_non_complying_sessions works", {

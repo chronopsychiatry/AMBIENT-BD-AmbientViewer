@@ -20,7 +20,11 @@ sleep_bubbles_module_server <- function(id, sessions, sessions_colnames) {
 
     sleep_bubbles_plot <- shiny::reactive({
       shiny::req(sessions())
-      plot_sleep_bubbles(sessions = sessions(), col_names = sessions_colnames())
+      sessions <- sessions()[sessions()$display, ]
+      if (nrow(sessions) == 0) {
+        return(NULL)
+      }
+      plot_sleep_bubbles(sessions = sessions, col_names = sessions_colnames())
     })
 
     output$sleep_bubbles_plot <- shiny::renderPlot({

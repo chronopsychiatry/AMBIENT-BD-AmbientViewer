@@ -8,8 +8,8 @@ test_that("filtering module works", {
       filtered_sessions <- session$getReturned()
       expected_sessions <- example_sessions |>
         remove_sessions_no_sleep() |>
-        set_min_time_in_bed(2) |>
-        set_session_sleep_onset_range("20:00", "06:00")
+        set_min_time_in_bed(2, flag_only = TRUE) |>
+        set_session_sleep_onset_range("20:00", "06:00", flag_only = TRUE)
       expect_equal(filtered_sessions(), expected_sessions)
     }
   )
@@ -18,12 +18,11 @@ test_that("filtering module works", {
 test_that("get_removed_sessions_table output is correct", {
   filtered_sessions <- example_sessions |>
     remove_sessions_no_sleep() |>
-    set_min_time_in_bed(2) |>
-    set_session_sleep_onset_range("20:00", "06:00")
-  result <- get_removed_sessions_table(example_sessions, filtered_sessions)
+    set_min_time_in_bed(2, flag_only = TRUE) |>
+    set_session_sleep_onset_range("20:00", "06:00", flag_only = TRUE)
+  result <- get_removed_sessions_table(filtered_sessions)
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 8)
-  expect_length(unique(result$night), 1)
 })

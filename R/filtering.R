@@ -25,11 +25,15 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
                     "i" = "Returning an empty epoch table."))
   }
 
-  if (!"display" %in% colnames(epochs)) {
-    epochs$display <- TRUE
+  if (!"display" %in% colnames(sessions)) {
+    sessions$display <- TRUE
   }
 
-  epochs$display <- ifelse(epochs$display == FALSE, FALSE, epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]]))
+  display_map <- setNames(sessions$display, sessions[[scol$id]])
+
+  epochs$display <- display_map[as.character(epochs[[ecol$session_id]])]
+  # If there are unmatched session_ids, set display to FALSE
+  epochs$display[is.na(epochs$display)] <- FALSE
 
   if (flag_only) {
     epochs

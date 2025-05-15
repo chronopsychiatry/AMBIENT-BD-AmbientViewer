@@ -20,10 +20,11 @@ sleep_spiral_module_server <- function(id, epochs, epochs_colnames) {
 
     sleep_spiral_plot <- shiny::reactive({
       shiny::req(epochs())
-      if (nrow(epochs()) == 0) {
+      epochs <- epochs()[epochs()$display, ]
+      if (nrow(epochs) == 0) {
         return(NULL)
       }
-      plot_sleep_spiral(epochs = epochs(), col_names = epochs_colnames())
+      plot_sleep_spiral(epochs = epochs, col_names = epochs_colnames())
     })
 
     output$sleep_spiral_plot <- shiny::renderPlot({

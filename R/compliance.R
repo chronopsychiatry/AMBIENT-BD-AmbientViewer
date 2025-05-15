@@ -48,6 +48,7 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, fla
 #' filtered_sessions <- set_session_start_time_range(example_sessions, "22:00", "06:00")
 set_session_start_time_range <- function(sessions, from_time, to_time, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
+
   session_times <- parse_time(sessions[[col$session_start]]) |> stats::update(year = 0, month = 1, day = 1)
   from_time <- parse_time(from_time)
   to_time <- parse_time(to_time)
@@ -117,27 +118,14 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
 #' @param sessions The sessions dataframe
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `sleep_period`
-#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
 #' @returns The sessions dataframe with only the sessions that have a sleep period greater than 0
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- remove_sessions_no_sleep(example_sessions)
-remove_sessions_no_sleep <- function(sessions, col_names = NULL, flag_only = FALSE) {
+remove_sessions_no_sleep <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
-
-  if (!"display" %in% colnames(sessions)) {
-    sessions$display <- TRUE
-  }
-
-  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                             sessions[[col$sleep_period]] > 0)
-
-  if (flag_only) {
-    sessions
-  } else {
-    sessions[sessions$display, ]
-  }
+  sessions[sessions[[col$sleep_period]] > 0, ]
 }
 
 #' Get non-complying sessions (i.e. where there is more than one session on the same day)

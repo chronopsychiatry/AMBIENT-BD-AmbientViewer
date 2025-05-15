@@ -4,7 +4,7 @@
 \alias{remove_sessions_no_sleep}
 \title{Remove sessions with no sleep}
 \usage{
-remove_sessions_no_sleep(sessions, col_names = NULL, flag_only = FALSE)
+remove_sessions_no_sleep(sessions, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -13,8 +13,6 @@ remove_sessions_no_sleep(sessions, col_names = NULL, flag_only = FALSE)
 \itemize{
 \item \code{sleep_period}
 }}
-
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that have a sleep period greater than 0

@@ -20,7 +20,11 @@ sleep_stages_module_server <- function(id, epochs, epochs_colnames) {
 
     sleep_stages_plot <- shiny::reactive({
       shiny::req(epochs())
-      plot_sleep_stages(epochs = epochs(), col_names = epochs_colnames())
+      epochs <- epochs()[epochs()$display, ]
+      if (nrow(epochs) == 0) {
+        return(NULL)
+      }
+      plot_sleep_stages(epochs = epochs, col_names = epochs_colnames())
     })
 
     output$sleep_stages_plot <- shiny::renderPlot({

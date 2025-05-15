@@ -33,7 +33,8 @@ timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
     # Populate the variable dropdown dynamically
     shiny::observe({
       shiny::req(sessions())
-      if (nrow(sessions()) == 0) {
+      df <- sessions()[sessions()$display, ]
+      if (nrow(df) == 0) {
         # Handle empty dataframe: set placeholder values
         shiny::updateSelectInput(
           session,
@@ -47,7 +48,7 @@ timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
 
       col <- sessions_colnames()
       excluded_vars <- c(col$id, "state", col$subject_id, col$device_id, col$night, ".data_type")
-      available_vars <- setdiff(names(sessions()), excluded_vars)
+      available_vars <- setdiff(names(df), excluded_vars)
 
       # Update the dropdown, but preserve the selected variable if possible
       current_variable <- plot_options$variable
@@ -73,8 +74,9 @@ timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
 
     timeseries_sessions_plot <- shiny::reactive({
       shiny::req(input$variable, sessions())
+      sessions <- sessions()[sessions()$display, ]
       plot_timeseries_sessions(
-        sessions = sessions(),
+        sessions = sessions,
         variable = input$variable,
         exclude_zero = input$exclude_zero,
         col_names = sessions_colnames()

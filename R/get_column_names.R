@@ -48,7 +48,7 @@ get_epoch_colnames <- function(epochs, col_names = NULL) {
 
   # If the epochs data frame is empty, try to infer the format from the column names
   if (nrow(epochs) == 0) {
-    fmt <- get_sessions_format(epochs)
+    fmt <- get_epochs_format(epochs)
     if (is.null(fmt)) {
       cli::cli_abort(c(
         "!" = "The epochs data frame is empty and data type could not be inferred.",

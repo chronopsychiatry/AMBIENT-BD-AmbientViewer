@@ -20,10 +20,11 @@ sleep_clock_module_server <- function(id, sessions, sessions_colnames) {
 
     sleep_clock_plot <- shiny::reactive({
       shiny::req(sessions())
-      if (nrow(sessions()) == 0) {
+      sessions <- sessions()[sessions()$display, ]
+      if (nrow(sessions) == 0) {
         return(NULL)
       }
-      plot_sleep_clock(sessions = sessions(), col_names = sessions_colnames())
+      plot_sleep_clock(sessions = sessions, col_names = sessions_colnames())
     })
 
     output$sleep_clock_plot <- shiny::renderPlot({

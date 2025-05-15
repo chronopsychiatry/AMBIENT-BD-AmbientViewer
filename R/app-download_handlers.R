@@ -21,9 +21,8 @@ get_table_download_handler <- function(session, output_table, output_name = "") 
       paste0(output_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
-      shiny::req(output_table())
-      readr::write_csv(output_table(), file)
-      logging::loginfo(paste0("Exporting table: ", output_name, " (", nrow(output_table()), " rows)"))
+      readr::write_csv(output_table, file)
+      logging::loginfo(paste0("Exporting table: ", output_name, " (", nrow(output_table), " rows)"))
     }
   )
 }

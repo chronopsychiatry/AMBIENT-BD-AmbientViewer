@@ -66,6 +66,7 @@ test_that("filter_epochs_from_sessions shows warning if tables don't overlap", {
 test_that("filter_epochs_from_sessions creates flags", {
   filtered_epochs <- filter_epochs_from_sessions(epochs, sessions, flag_only = TRUE)
   expect_equal(sum(filtered_epochs$display), 7)
+  expect_equal(nrow(filtered_epochs), nrow(epochs))
 })
 
 test_that("filter_by_night_range works", {
@@ -76,6 +77,7 @@ test_that("filter_by_night_range works", {
 test_that("filter_by_night_range flagging works", {
   filtered_sessions <- filter_by_night_range(sessions, "2025-03-11", "2025-03-12", flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 3)
+  expect_equal(nrow(filtered_sessions), nrow(sessions))
 })
 
 test_that("filter_by_age_range works", {
@@ -86,6 +88,7 @@ test_that("filter_by_age_range works", {
 test_that("filter_by_age_range flagging works", {
   filtered_sessions <- filter_by_age_range(sessions_v1, 11, 18, flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 3)
+  expect_equal(nrow(filtered_sessions), nrow(sessions_v1))
 })
 
 test_that("filter_by_sex works", {
@@ -96,6 +99,7 @@ test_that("filter_by_sex works", {
 test_that("filter_by_sex flagging works", {
   filtered_sessions <- filter_by_sex(sessions_v1, "Male", flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 2)
+  expect_equal(nrow(filtered_sessions), nrow(sessions_v1))
 })
 
 test_that("filter_by_sex works with multiple inputs", {
@@ -111,6 +115,7 @@ test_that("select_subjects works", {
 test_that("select_subjects flagging works", {
   selected_sessions <- select_subjects(sessions, c("sub_A", "sub_B"), flag_only = TRUE)
   expect_equal(sum(selected_sessions$display), 4)
+  expect_equal(nrow(selected_sessions), nrow(sessions))
 })
 
 test_that("select_subjects shows warning if no subjects are found", {
@@ -128,6 +133,7 @@ test_that("select_devices works", {
 test_that("select_devices flagging works", {
   selected_sessions <- select_devices(sessions, c("VT_001", "VT_003"), flag_only = TRUE)
   expect_equal(sum(selected_sessions$display), 4)
+  expect_equal(nrow(selected_sessions), nrow(sessions))
 })
 
 test_that("select_devices shows warning if no devices are found", {

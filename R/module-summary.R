@@ -13,12 +13,14 @@ summary_server <- function(id, sessions, epochs, sessions_colnames, epochs_colna
 
     sessions_summary_table <- shiny::reactive({
       shiny::req(sessions())
-      get_sessions_summary(sessions(), col_names = sessions_colnames())
+      sessions <- sessions()[sessions()$display, ]
+      get_sessions_summary(sessions, col_names = sessions_colnames())
     })
 
     epochs_summary_table <- shiny::reactive({
       shiny::req(epochs())
-      get_epochs_summary(epochs(), col_names = epochs_colnames())
+      epochs <- epochs()[epochs()$display, ]
+      get_epochs_summary(epochs, col_names = epochs_colnames())
     })
 
     output$sessions_summary_table <- shiny::renderTable({

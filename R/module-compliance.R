@@ -44,18 +44,25 @@ compliance_server <- function(id, sessions, sessions_colnames) {
       }
     })
 
-    output$download_compliance <- get_table_download_handler(
-      session = session,
-      output_table = shiny::reactive(get_non_complying_sessions(sessions(), col_names = sessions_colnames())),
-      output_name = "compliance"
-    )
-
+    shiny::observe({
+      shiny::req(sessions())
+      output_table <- sessions() |>
+        dplyr::filter(.data$display) |>
+        get_non_complying_sessions(col_names = sessions_colnames())
+      output$download_compliance <- get_table_download_handler(
+        session = session,
+        output_table = output_table,
+        output_name = "compliance"
+      )
+    })
   })
 }
 
 #' @importFrom rlang .data
 get_compliance_table <- function(sessions, col_names = NULL) {
-  get_non_complying_sessions(sessions, col_names = col_names) |>
+  sessions |>
+    dplyr::filter(.data$display) |>
+    get_non_complying_sessions(col_names = col_names) |>
     make_sessions_display_table(col_names = col_names)
 }
 

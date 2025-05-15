@@ -1,19 +1,21 @@
+sessions <- shiny::reactive(example_sessions |> dplyr::mutate(display = TRUE))
+
 test_that("compliance module works", {
   shiny::testServer(
     compliance_server,
-    args = list(sessions = shiny::reactive(example_sessions), sessions_colnames = shiny::reactive(get_session_colnames(example_sessions))),
+    args = list(sessions = sessions, sessions_colnames = shiny::reactive(get_session_colnames(sessions()))),
     {
       session$flushReact()
       expect_equal(
         compliance_table(),
-        get_compliance_table(example_sessions)
+        get_compliance_table(sessions())
       )
     }
   )
 })
 
 test_that("get_compliance_table output is correct", {
-  result <- get_compliance_table(example_sessions)
+  result <- get_compliance_table(example_sessions |> dplyr::mutate(display = TRUE))
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 123)
