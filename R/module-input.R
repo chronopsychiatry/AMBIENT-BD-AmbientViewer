@@ -39,14 +39,14 @@ input_server <- function(id, session) {
       sessions_colnames(get_session_colnames(sessions))
       if (!is.null(sessions$annotation)) {
         annotations(data.frame(
-          id = sessions$id,
+          id = sessions[[sessions_colnames()$id]],
           annotation = as.character(sessions$annotation),
           stringsAsFactors = FALSE
         ))
       } else {
         sessions$annotation <- ""
         annotations(data.frame(
-          id = sessions$id,
+          id = sessions[[sessions_colnames()$id]],
           annotation = "",
           stringsAsFactors = FALSE
         ))
