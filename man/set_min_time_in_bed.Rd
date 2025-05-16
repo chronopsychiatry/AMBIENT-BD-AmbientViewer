@@ -4,12 +4,24 @@
 \alias{set_min_time_in_bed}
 \title{Set minimum time in bed}
 \usage{
-set_min_time_in_bed(sessions, min_time_in_bed)
+set_min_time_in_bed(
+  sessions,
+  min_time_in_bed,
+  col_names = NULL,
+  flag_only = FALSE
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{min_time_in_bed}{The minimum time in bed in hours}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{time_in_bed}
+}}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that meet the minimum time in bed requirement
@@ -22,7 +34,9 @@ filtered_sessions <- set_min_time_in_bed(example_sessions, 2)
 }
 \seealso{
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{filter_epochs_from_sessions}()},
 \code{\link{remove_sessions_no_sleep}()},
 \code{\link{select_devices}()},

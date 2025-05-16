@@ -4,7 +4,8 @@ test_that("get_sessions_summary works correctly with valid input", {
     time_at_wakeup = c("2025-04-02T06:00:00", "2025-04-02T07:00:00"),
     time_in_bed = c(28800, 28800),
     subject_id = c("subject1", "subject1"),
-    device_serial_number = c("device123", "device123")
+    device_serial_number = c("device123", "device123"),
+    .data_type = "somnofy_v2"
   )
 
   result <- get_sessions_summary(sessions)
@@ -32,7 +33,8 @@ test_that("get_sessions_summary handles empty input", {
 test_that("get_epochs_summary works correctly with valid input", {
   epochs <- data.frame(
     timestamp = c("2025-04-01T10:00:00", "2025-04-10T14:00:00"),
-    session_id = c("VEhDQRkDAwsBEAAA", "VEhDQRkDAwsBEAAB")
+    session_id = c("VEhDQRkDAwsBEAAA", "VEhDQRkDAwsBEAAB"),
+    .data_type = "somnofy_v2"
   )
 
   result <- get_epochs_summary(epochs)

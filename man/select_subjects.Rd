@@ -4,12 +4,19 @@
 \alias{select_subjects}
 \title{Select subjects by ID}
 \usage{
-select_subjects(sessions, subject_ids)
+select_subjects(sessions, subject_ids, col_names = NULL, flag_only = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{subject_ids}{The subject IDs to select}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{subject_id}
+}}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that belong to the specified subjects
@@ -17,11 +24,16 @@ The sessions dataframe with only the sessions that belong to the specified subje
 \description{
 Select subjects by ID
 }
+\examples{
+filtered_sessions <- select_subjects(example_sessions, c("sub_01JNDH3Z5NP0PSV82NFBGPV31X"))
+}
 \seealso{
 \code{\link[=select_devices]{select_devices()}} to select sessions by device ID.
 
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{filter_epochs_from_sessions}()},
 \code{\link{remove_sessions_no_sleep}()},
 \code{\link{select_devices}()},

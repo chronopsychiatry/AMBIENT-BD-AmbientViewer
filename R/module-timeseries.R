@@ -1,10 +1,21 @@
 timeseries_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::selectInput(
-      inputId = ns("variable"),
-      label = "Select Variable:",
-      choices = NULL
+    shiny::fluidRow(
+      shiny::column(4,
+        shiny::selectInput(
+          inputId = ns("variable"),
+          label = "Select Variable:",
+          choices = NULL
+        )
+      ),
+      shiny::column(4,
+        shiny::selectInput(
+          inputId = ns("colorby"),
+          label = "Colour by:",
+          choices = NULL
+        )
+      )
     ),
     shiny::checkboxInput(
       inputId = ns("exclude_zero"),
@@ -25,58 +36,22 @@ timeseries_module_ui <- function(id) {
   )
 }
 
-timeseries_module_server <- function(id, epochs) {
+timeseries_module_server <- function(id, epochs, epochs_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    plot_options <- shiny::reactiveValues(variable = NULL)
-
-    # Populate the variable dropdown dynamically
-    shiny::observe({
-      shiny::req(epochs())
-      if (nrow(epochs()) == 0) {
-        # Handle empty dataframe: set placeholder values
-        shiny::updateSelectInput(
-          session,
-          inputId = "variable",
-          choices = NULL,
-          selected = NULL
-        )
-        plot_options$variable <- NULL
-        return()
-      }
-
-      excluded_vars <- c("timestamp", "motion_data_count",
-                         "night", "session_id", "sleep_stage", "epoch_duration")
-      available_vars <- setdiff(names(epochs()), excluded_vars)
-
-      # Update the dropdown, but preserve the selected variable if possible
-      current_variable <- plot_options$variable
-      if (!is.null(current_variable) && current_variable %in% available_vars) {
-        selected_variable <- current_variable
-      } else {
-        selected_variable <- available_vars[1]
-      }
-      plot_options$variable <- selected_variable
-
-      shiny::updateSelectInput(
-        session,
-        inputId = "variable",
-        choices = available_vars,
-        selected = selected_variable
-      )
-    })
-
-    # Update the stored plot options when the user changes them
-    shiny::observe({
-      plot_options$variable <- input$variable
-    })
+    plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
+    update_variable_dropdown(epochs, epochs_colnames, plot_options, input, session)
+    update_colorby_dropdown(epochs, epochs_colnames, plot_options, input, session)
 
     timeseries_plot <- shiny::reactive({
       shiny::req(input$variable, epochs())
+      epochs <- epochs()[epochs()$display, ]
       plot_timeseries(
-        epochs = epochs(),
+        epochs = epochs,
         variable = input$variable,
-        exclude_zero = input$exclude_zero
+        color_by = input$colorby,
+        exclude_zero = input$exclude_zero,
+        col_names = epochs_colnames()
       )
     })
 

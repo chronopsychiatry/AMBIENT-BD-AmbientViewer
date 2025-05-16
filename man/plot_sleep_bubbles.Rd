@@ -4,10 +4,19 @@
 \alias{plot_sleep_bubbles}
 \title{Plot Sleep Bubbles}
 \usage{
-plot_sleep_bubbles(sessions)
+plot_sleep_bubbles(sessions, color_by = "default", col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe.}
+
+\item{color_by}{The variable to color the bubbles by. Can be "default" or any other column name in the sessions dataframe.}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{time_at_sleep_onset}
+\item \code{time_at_wakeup}
+\item \code{night}
+}}
 }
 \value{
 A ggplot object containing the sleep bubbles graph.

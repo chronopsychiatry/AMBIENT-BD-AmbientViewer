@@ -1,10 +1,21 @@
 bedtimes_waketimes_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::selectInput(
-      inputId = ns("groupby"),
-      label = "Time grouping:",
-      choices = c("night", "weekday", "workday")
+    shiny::fluidRow(
+      shiny::column(4,
+        shiny::selectInput(
+          inputId = ns("groupby"),
+          label = "Group by:",
+          choices = c("night", "weekday", "workday")
+        )
+      ),
+      shiny::column(4,
+        shiny::selectInput(
+          inputId = ns("colorby"),
+          label = "Colour by:",
+          choices = NULL
+        )
+      )
     ),
     shiny::plotOutput(ns("bedtimes_waketimes_plot")),
     shiny::downloadButton(
@@ -20,12 +31,34 @@ bedtimes_waketimes_module_ui <- function(id) {
   )
 }
 
-bedtimes_waketimes_module_server <- function(id, sessions) {
+bedtimes_waketimes_module_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
+
+    plot_options <- shiny::reactiveValues(colorby = NULL)
+    update_colorby_dropdown(sessions, sessions_colnames, plot_options, input, session)
+
+    shiny::observe({
+      if (!is.null(input$colorby) && input$colorby != "default" && input$groupby != "night") {
+        shiny::updateSelectInput(
+          session,
+          inputId = "groupby",
+          selected = "night"
+        )
+      }
+    })
 
     bedtimes_waketimes_plot <- shiny::reactive({
       shiny::req(sessions())
-      plot_bedtimes_waketimes(sessions = sessions(), groupby = input$groupby)
+      sessions <- sessions()[sessions()$display, ]
+      if (nrow(sessions) == 0) {
+        return(NULL)
+      }
+      plot_bedtimes_waketimes(
+        sessions = sessions,
+        groupby = input$groupby,
+        color_by = input$colorby,
+        col_names = sessions_colnames()
+      )
     })
 
     output$bedtimes_waketimes_plot <- shiny::renderPlot({

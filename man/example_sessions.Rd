@@ -10,8 +10,8 @@
 A data frame with 124 rows and 60 columns.
 Each row represents a session. Columns contain metadata about the session, including:
 \itemize{
-\item start_time: The start time of the session in UTC.
-\item end_time: The end time of the session in UTC.
+\item session_start: The start time of the session in UTC.
+\item session_end: The end time of the session in UTC.
 \item subject_id: The ID of the subject.
 \item device_serial_number: The serial number of the device used.
 \item time_at_sleep_onset: The time at which the subject fell asleep.

@@ -4,10 +4,16 @@
 \alias{get_epochs_summary}
 \title{Summarise epoch information}
 \usage{
-get_epochs_summary(epochs)
+get_epochs_summary(epochs, col_names = NULL)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{timestamp}
+\item \code{session_id}
+}}
 }
 \value{
 A single-row dataframe summarising epoch information

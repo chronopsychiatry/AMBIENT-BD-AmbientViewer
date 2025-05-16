@@ -10,11 +10,11 @@ compliance_module <- function(id) {
   )
 }
 
-compliance_server <- function(id, sessions) {
+compliance_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
       shiny::req(sessions())
-      get_compliance_table(sessions())
+      get_compliance_table(sessions(), sessions_colnames())
     })
 
     output$compliance_table <- shiny::renderTable({
@@ -44,34 +44,52 @@ compliance_server <- function(id, sessions) {
       }
     })
 
-    output$download_compliance <- get_table_download_handler(
-      session = session,
-      output_table = shiny::reactive(get_non_complying_sessions(sessions())),
-      output_name = "compliance"
-    )
-
+    shiny::observe({
+      shiny::req(sessions())
+      output_table <- sessions() |>
+        dplyr::filter(.data$display) |>
+        get_non_complying_sessions(col_names = sessions_colnames())
+      output$download_compliance <- get_table_download_handler(
+        session = session,
+        output_table = output_table,
+        output_name = "compliance"
+      )
+    })
   })
 }
 
 #' @importFrom rlang .data
-get_compliance_table <- function(sessions) {
-  get_non_complying_sessions(sessions) |>
-    make_sessions_display_table()
+get_compliance_table <- function(sessions, col_names = NULL) {
+  sessions |>
+    dplyr::filter(.data$display) |>
+    get_non_complying_sessions(col_names = col_names) |>
+    make_sessions_display_table(col_names = col_names)
 }
 
 #' @importFrom rlang .data
-make_sessions_display_table <- function(sessions) {
-  sessions |>
+make_sessions_display_table <- function(sessions, col_names = NULL) {
+  col <- get_session_colnames(sessions, col_names)
+  sessions <- sessions |>
     dplyr::mutate(
-      start_time = parse_time(.data$session_start) |> format("%H:%M"),
-      sleep_onset = parse_time(.data$time_at_sleep_onset) |> format("%H:%M"),
-      wakeup_time = parse_time(.data$time_at_wakeup) |> format("%H:%M"),
-      end_time = parse_time(.data$session_end) |> format("%H:%M"),
-      session_duration_h = difftime(parse_time(.data$session_end),
-                                    parse_time(.data$session_start),
+      start_time = parse_time(.data[[col$session_start]]) |> format("%H:%M"),
+      sleep_onset = parse_time(.data[[col$time_at_sleep_onset]]) |> format("%H:%M"),
+      wakeup_time = parse_time(.data[[col$time_at_wakeup]]) |> format("%H:%M"),
+      end_time = parse_time(.data[[col$session_end]]) |> format("%H:%M"),
+      session_duration_h = difftime(parse_time(.data[[col$session_end]]),
+                                    parse_time(.data[[col$session_start]]),
                                     units = "hours"),
-      night = format(.data$night, "%Y-%m-%d"),
-      time_in_bed_h = .data$time_in_bed / 60 / 60
+      night = format(.data[[col$night]], "%Y-%m-%d"),
+      time_in_bed_h = .data[[col$time_in_bed]] / 60 / 60
     ) |>
-    dplyr::select("id", "night", "start_time", "sleep_onset", "wakeup_time", "end_time", "session_duration_h", "time_in_bed_h")
+    dplyr::select(
+      col$id,
+      col$night,
+      "start_time",
+      "sleep_onset",
+      "wakeup_time",
+      "end_time",
+      "session_duration_h",
+      "time_in_bed_h",
+      "annotation"
+    )
 }

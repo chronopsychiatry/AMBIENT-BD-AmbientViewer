@@ -15,16 +15,24 @@ export_data_module <- function(id) {
 export_data_server <- function(id, sessions, epochs) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    output$download_sessions <- get_table_download_handler(
-      session = session,
-      output_table = sessions,
-      output_name = "sessions"
-    )
+    shiny::observe({
+      shiny::req(sessions())
+      sessions <- sessions()[sessions()$display, ]
+      output$download_sessions <- get_table_download_handler(
+        session = session,
+        output_table = sessions,
+        output_name = "sessions"
+      )
+    })
 
-    output$download_epochs <- get_table_download_handler(
-      session = session,
-      output_table = epochs,
-      output_name = "epochs"
-    )
+    shiny::observe({
+      shiny::req(epochs())
+      epochs <- epochs()[epochs()$display, ]
+      output$download_epochs <- get_table_download_handler(
+        session = session,
+        output_table = epochs,
+        output_name = "epochs"
+      )
+    })
   })
 }

@@ -1,12 +1,17 @@
 #' Plot Hypnogram
 #'
 #' @param epochs The epochs dataframe
+#' @param col_names A list to override default column names. This function uses columns:
+#' - `timestamp`
+#' - `sleep_stage`
 #' @returns A ggplot object showing the hypnogram as bars
 #' @importFrom rlang .data
 #' @export
 #' @family plot epochs
 #' @seealso [plot_sleep_stages()] to show the proportion of each sleep stage per day
-plot_hypnogram <- function(epochs) {
+plot_hypnogram <- function(epochs, col_names = NULL) {
+  col <- get_epoch_colnames(epochs, col_names)
+
   sleep_stage_labels <- c(
     "1" = "Deep",
     "2" = "Light",
@@ -28,10 +33,10 @@ plot_hypnogram <- function(epochs) {
   )
 
   hypnogram_data <- epochs |>
-    dplyr::filter(.data$sleep_stage != "5") |>
+    dplyr::filter(.data[[col$sleep_stage]] != "5") |>
     dplyr::mutate(
-      timestamp = parse_time(.data$timestamp),
-      sleep_stage = factor(.data$sleep_stage, levels = names(sleep_stage_labels), labels = sleep_stage_labels),
+      timestamp = parse_time(.data[[col$timestamp]]),
+      sleep_stage = factor(.data[[col$sleep_stage]], levels = names(sleep_stage_labels), labels = sleep_stage_labels),
       sleep_stage_numeric = as.numeric(sleep_stage_numeric[as.character(.data$sleep_stage)])
     ) |>
     dplyr::group_by(timestamp = lubridate::floor_date(.data$timestamp, unit = "minute")) |>

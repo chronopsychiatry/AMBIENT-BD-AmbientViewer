@@ -4,10 +4,15 @@
 \alias{group_sessions_by_night}
 \title{Create a grouping by night for session data}
 \usage{
-group_sessions_by_night(sessions)
+group_sessions_by_night(sessions, col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{session_start}
+}}
 }
 \value{
 The sessions dataframe with the \code{night} column added

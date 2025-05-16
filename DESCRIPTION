@@ -1,6 +1,6 @@
 Package: AmbientViewer
 Title: Filtering and Visualisation for Somnofy Data
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("Daniel", "Thedie", , "daniel.thedie@ed.ac.uk", role = c("aut", "cre"))
 Description: This package helps importing, filtering and visualising data from Somnofy devices (VitalThings).
@@ -15,10 +15,12 @@ Suggests:
     tibble
 Config/testthat/edition: 3
 Imports: 
+    bslib,
     cli,
     dplyr,
+    DT,
+    ggnewscale,
     ggplot2,
-    later,
     logging,
     lubridate,
     readr,

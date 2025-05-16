@@ -4,7 +4,13 @@
 \alias{set_session_start_time_range}
 \title{Set session start time range}
 \usage{
-set_session_start_time_range(sessions, from_time, to_time)
+set_session_start_time_range(
+  sessions,
+  from_time,
+  to_time,
+  col_names = NULL,
+  flag_only = FALSE
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -12,6 +18,13 @@ set_session_start_time_range(sessions, from_time, to_time)
 \item{from_time}{Include sessions that started after this time (in format HH:MM)}
 
 \item{to_time}{Include sessions that started before this time (in format HH:MM)}
+
+\item{col_names}{A list to override default column names. This function uses columns:
+\itemize{
+\item \code{session_start}
+}}
+
+\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
 }
 \value{
 The sessions dataframe with only the sessions that started within the specified time range
@@ -26,7 +39,9 @@ filtered_sessions <- set_session_start_time_range(example_sessions, "22:00", "06
 \code{\link[=set_session_sleep_onset_range]{set_session_sleep_onset_range()}} to filter sessions based on sleep onset time.
 
 Other filtering: 
+\code{\link{filter_by_age_range}()},
 \code{\link{filter_by_night_range}()},
+\code{\link{filter_by_sex}()},
 \code{\link{filter_epochs_from_sessions}()},
 \code{\link{remove_sessions_no_sleep}()},
 \code{\link{select_devices}()},

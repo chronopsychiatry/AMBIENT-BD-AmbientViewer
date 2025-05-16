@@ -21,7 +21,7 @@ ambient_viewer <- function() {
   }
   logging::basicConfig()
   logging::addHandler(logging::writeToFile, file = log_file, level = "INFO")
-  schedule_log_clearing(log_file)
+  clear_log_file(log_file)
 
   ui <- fluidPage(
     shinyjs::useShinyjs(),
@@ -32,6 +32,16 @@ ambient_viewer <- function() {
 
     tags$h1(class = "custom-title", "Ambient Viewer"),
 
+    theme = bslib::bs_theme(
+      version = 5,
+      "font-size-base" = "0.9rem",
+      "btn-padding-y" = "0.25rem",   # vertical padding (default is 0.375rem)
+      "btn-padding-x" = "0.5rem",   # horizontal padding (default is 0.75rem)
+      "input-padding-y" = "0.25rem", # input vertical padding
+      "input-padding-x" = "0.5rem",  # input horizontal padding
+      "input-border-radius" = "0.2rem"
+    ),
+
     sidebarLayout(
       # Side panel ----
       sidebarPanel(
@@ -40,6 +50,7 @@ ambient_viewer <- function() {
         # Data input, filtering and export ----
         h4("Data Input"),
         input_ui("input"),
+        br(),
         h4("Filtering"),
         filtering_module("filtering"),
         br(),
@@ -58,7 +69,8 @@ ambient_viewer <- function() {
             type = "tabs",
             tabPanel("Summary", summary_module_ui("summary")),
             tabPanel("Compliance", compliance_module("compliance"), value = "compliance_tab"),
-            tabPanel("Filtering", filtering_tab("filtering"), value = "filtering_tab")
+            tabPanel("Filtering", filtering_tab("filtering"), value = "filtering_tab"),
+            tabPanel("Annotation", annotation_module_ui("annotation"), value = "annotation_tab"),
           ),
         ),
 
@@ -68,8 +80,8 @@ ambient_viewer <- function() {
           tabsetPanel(
             id = "main_tabs_plots",
             type = "tabs",
-            tabPanel("Sleep Spiral", sleep_spiral_module_ui("sleep_spiral")),
             tabPanel("Sleep Clock", sleep_clock_module_ui("sleep_clock")),
+            tabPanel("Sleep Spiral", sleep_spiral_module_ui("sleep_spiral")),
             tabPanel("Sleep onset & Wakeup", bedtimes_waketimes_module_ui("bedtimes_waketimes")),
             tabPanel("Sleep Bubbles", sleep_bubbles_module_ui("sleep_bubbles")),
             tabPanel("Sleep Stages", sleep_stages_module_ui("sleep_stages")),
@@ -114,27 +126,46 @@ ambient_viewer <- function() {
     data <- input_server("input", session)
     sessions <- data$sessions
     epochs <- data$epochs
+    sessions_colnames <- data$sessions_colnames
+    epochs_colnames <- data$epochs_colnames
 
-    # Filtering and compliance module
-    filtered_sessions <- filtering_server("filtering", sessions)
-    filtered_epochs <- reactive(filter_epochs_from_sessions(epochs(), filtered_sessions()))
-    compliance_server("compliance", filtered_sessions)
+    # Filtering module
+    filtered_sessions <- filtering_server("filtering", sessions, sessions_colnames, data$annotations)
+    filtered_epochs <- reactive(filter_epochs_from_sessions(
+      epochs(),
+      filtered_sessions(),
+      session_col_names = sessions_colnames(),
+      epoch_col_names = epochs_colnames(),
+      flag_only = TRUE
+    ))
+
+    # Annotation module
+    annotated_sessions <- annotation_server("annotation", filtered_sessions, sessions_colnames, data$annotations)
+    annotated_epochs <- reactive(annotate_epochs_from_sessions(
+      annotated_sessions(),
+      filtered_epochs(),
+      sessions_colnames(),
+      epochs_colnames()
+    ))
+
+    # Compliance module
+    compliance_server("compliance", annotated_sessions, sessions_colnames)
 
     # Summary table module
-    summary_server("summary", filtered_sessions, filtered_epochs)
+    summary_server("summary", annotated_sessions, annotated_epochs, sessions_colnames, epochs_colnames)
 
     # Export data module
-    export_data_server("export_data", filtered_sessions, filtered_epochs)
+    export_data_server("export_data", annotated_sessions, annotated_epochs)
 
     # Plotting modules
-    sleep_spiral_module_server("sleep_spiral", filtered_epochs)
-    sleep_clock_module_server("sleep_clock", filtered_sessions)
-    bedtimes_waketimes_module_server("bedtimes_waketimes", filtered_sessions)
-    sleep_bubbles_module_server("sleep_bubbles", filtered_sessions)
-    sleep_stages_module_server("sleep_stages", filtered_epochs)
-    hypnogram_module_server("hypnogram", filtered_epochs)
-    timeseries_sessions_module_server("timeseries_sessions", filtered_sessions)
-    timeseries_module_server("timeseries", filtered_epochs)
+    sleep_clock_module_server("sleep_clock", annotated_sessions, sessions_colnames)
+    sleep_spiral_module_server("sleep_spiral", annotated_epochs, epochs_colnames)
+    bedtimes_waketimes_module_server("bedtimes_waketimes", annotated_sessions, sessions_colnames)
+    sleep_bubbles_module_server("sleep_bubbles", annotated_sessions, sessions_colnames)
+    sleep_stages_module_server("sleep_stages", annotated_epochs, epochs_colnames)
+    hypnogram_module_server("hypnogram", annotated_epochs, epochs_colnames)
+    timeseries_sessions_module_server("timeseries_sessions", annotated_sessions, sessions_colnames)
+    timeseries_module_server("timeseries", annotated_epochs, epochs_colnames)
 
   }
 
