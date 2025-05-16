@@ -18,6 +18,8 @@ Imports:
     bslib,
     cli,
     dplyr,
+    DT,
+    ggnewscale,
     ggplot2,
     logging,
     lubridate,

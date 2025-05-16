@@ -1,6 +1,11 @@
 sleep_bubbles_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::selectInput(
+      inputId = ns("colorby"),
+      label = "Colour by:",
+      choices = NULL
+    ),
     shiny::plotOutput(ns("sleep_bubbles_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
@@ -18,13 +23,20 @@ sleep_bubbles_module_ui <- function(id) {
 sleep_bubbles_module_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
+    plot_options <- shiny::reactiveValues(colorby = NULL)
+    update_colorby_dropdown(sessions, sessions_colnames, plot_options, input, session)
+
     sleep_bubbles_plot <- shiny::reactive({
       shiny::req(sessions())
       sessions <- sessions()[sessions()$display, ]
       if (nrow(sessions) == 0) {
         return(NULL)
       }
-      plot_sleep_bubbles(sessions = sessions, col_names = sessions_colnames())
+      plot_sleep_bubbles(
+        sessions = sessions,
+        color_by = input$colorby,
+        col_names = sessions_colnames()
+      )
     })
 
     output$sleep_bubbles_plot <- shiny::renderPlot({

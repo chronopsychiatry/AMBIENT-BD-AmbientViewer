@@ -77,7 +77,7 @@ input_server <- function(id, session) {
         val <- input[[paste0("col_", key)]]
         if (identical(val, "-")) NULL else val
       })
-      sessions_colnames(setNames(vals, keys))
+      sessions_colnames(stats::setNames(vals, keys))
       shiny::removeModal()
     })
 
@@ -119,7 +119,7 @@ input_server <- function(id, session) {
         val <- input[[paste0("col_", key)]]
         if (identical(val, "-")) NULL else val
       })
-      epochs_colnames(setNames(vals, keys))
+      epochs_colnames(stats::setNames(vals, keys))
       shiny::removeModal()
     })
 

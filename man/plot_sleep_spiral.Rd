@@ -4,10 +4,12 @@
 \alias{plot_sleep_spiral}
 \title{Plot Sleep Spiral}
 \usage{
-plot_sleep_spiral(epochs, col_names = NULL)
+plot_sleep_spiral(epochs, color_by = "default", col_names = NULL)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
+
+\item{color_by}{The variable to color the spiral by. Can be "default" or any other column name in the epochs dataframe.}
 
 \item{col_names}{A list to override default column names. This function uses columns:
 \itemize{

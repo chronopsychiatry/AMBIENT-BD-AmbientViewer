@@ -1,6 +1,11 @@
 sleep_spiral_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::selectInput(
+      inputId = ns("colorby"),
+      label = "Colour by:",
+      choices = NULL
+    ),
     shiny::plotOutput(ns("sleep_spiral_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
@@ -18,13 +23,20 @@ sleep_spiral_module_ui <- function(id) {
 sleep_spiral_module_server <- function(id, epochs, epochs_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
+    plot_options <- shiny::reactiveValues(colorby = NULL)
+    update_colorby_dropdown(epochs, epochs_colnames, plot_options, input, session)
+
     sleep_spiral_plot <- shiny::reactive({
       shiny::req(epochs())
       epochs <- epochs()[epochs()$display, ]
       if (nrow(epochs) == 0) {
         return(NULL)
       }
-      plot_sleep_spiral(epochs = epochs, col_names = epochs_colnames())
+      plot_sleep_spiral(
+        epochs = epochs,
+        color_by = input$colorby,
+        col_names = epochs_colnames()
+      )
     })
 
     output$sleep_spiral_plot <- shiny::renderPlot({

@@ -104,7 +104,7 @@ annotate_epochs_from_sessions <- function(sessions, epochs, session_colnames, ep
   scol <- session_colnames
   ecol <- epoch_colnames
 
-  annotation_map <- setNames(sessions$annotation, sessions[[scol$id]])
+  annotation_map <- stats::setNames(sessions$annotation, sessions[[scol$id]])
 
   epochs$annotation <- annotation_map[as.character(epochs[[ecol$session_id]])]
   epochs$annotation[is.na(epochs$annotation)] <- ""

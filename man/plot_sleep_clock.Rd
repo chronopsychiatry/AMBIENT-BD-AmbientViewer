@@ -4,10 +4,12 @@
 \alias{plot_sleep_clock}
 \title{Plot Sleep Clock}
 \usage{
-plot_sleep_clock(sessions, col_names = NULL)
+plot_sleep_clock(sessions, color_by = "default", col_names = NULL)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
+
+\item{color_by}{The variable to color the segments by. Can be "default" or any other column name in the sessions dataframe.}
 
 \item{col_names}{A list to override default column names. This function uses columns:
 \itemize{

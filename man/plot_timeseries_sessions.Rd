@@ -7,6 +7,7 @@
 plot_timeseries_sessions(
   sessions,
   variable,
+  color_by = "default",
   exclude_zero = FALSE,
   col_names = NULL
 )
@@ -15,6 +16,8 @@ plot_timeseries_sessions(
 \item{sessions}{The sessions dataframe}
 
 \item{variable}{The variable to plot (e.g., "time_at_sleep_onset")}
+
+\item{color_by}{The variable to color the points by. Can be "default" or any other column name in the sessions dataframe.}
 
 \item{exclude_zero}{Logical, whether to exclude zero values from the plot (default: FALSE)}
 

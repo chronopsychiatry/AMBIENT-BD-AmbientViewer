@@ -15,7 +15,7 @@ test_that("input_module returns correct data", {
 
     expect_equal(class(data$sessions()), "data.frame")
     expect_equal(class(data$epochs()), "data.frame")
-    expect_equal(ncol(data$sessions()), 69)
+    expect_equal(ncol(data$sessions()), 70)
     expect_equal(ncol(data$epochs()), 17)
     expect_equal(nrow(data$sessions()), 124)
     expect_equal(nrow(data$epochs()), 18755)

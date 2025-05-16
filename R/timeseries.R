@@ -6,13 +6,16 @@
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `timestamp`
 #' - `night`
+#' @param color_by The variable to color the points by. Can be "default" or any other column name in the epochs dataframe.
 #' @returns A ggplot object
 #' @importFrom rlang .data
 #' @export
 #' @family plot epochs
 #' @seealso [plot_timeseries_sessions()] to plot session data.
-plot_timeseries <- function(epochs, variable, exclude_zero = FALSE, col_names = NULL) {
+plot_timeseries <- function(epochs, variable, color_by = "default", exclude_zero = FALSE, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
+
+  color_by <- if (color_by %in% colnames(epochs)) color_by else "night"
 
   if (exclude_zero) {
     epochs <- epochs |>
@@ -24,7 +27,7 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE, col_names = 
     ggplot2::aes(
       x = time_to_hours(shift_times_by_12h(.data[[col$timestamp]])),
       y = .data[[variable]],
-      color = as.factor(.data[[col$night]]),
+      color = as.factor(.data[[color_by]]),
       group = .data[[col$night]]
     )
   ) +
@@ -32,7 +35,7 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE, col_names = 
     ggplot2::labs(
       x = "Time",
       y = variable,
-      color = "Night of"
+      color = color_by
     ) +
     ggplot2::theme_minimal(base_size = 16) +
     ggplot2::theme(
@@ -52,11 +55,12 @@ plot_timeseries <- function(epochs, variable, exclude_zero = FALSE, col_names = 
 #' @param exclude_zero Logical, whether to exclude zero values from the plot (default: FALSE)
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `night`
+#' @param color_by The variable to color the points by. Can be "default" or any other column name in the sessions dataframe.
 #' @returns A ggplot object
 #' @export
 #' @family plot sessions
 #' @seealso [plot_timeseries()] to plot epoch data.
-plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE, col_names = NULL) {
+plot_timeseries_sessions <- function(sessions, variable, color_by = "default", exclude_zero = FALSE, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
 
   sessions <- sessions |>
@@ -74,21 +78,29 @@ plot_timeseries_sessions <- function(sessions, variable, exclude_zero = FALSE, c
     sessions$plot_var <- sessions[[variable]]
   }
 
-  p <- ggplot2::ggplot(
-    sessions,
-    ggplot2::aes(
-      x = .data[[col$night]],
-      y = .data$plot_var
+  if (color_by != "default" && color_by %in% names(sessions)) {
+    sessions$color_group <- as.factor(sessions[[color_by]])
+    color_aes <- ggplot2::aes(x = .data[[col$night]], y = .data$plot_var, color = .data$color_group)
+    color_scale <- ggplot2::scale_color_manual(
+      values = stats::setNames(scales::hue_pal()(length(levels(sessions$color_group))), levels(sessions$color_group)),
+      name = color_by
     )
-  ) +
-    ggplot2::geom_point() +
+  } else {
+    color_aes <- ggplot2::aes(x = .data[[col$night]], y = .data$plot_var)
+    color_scale <- ggplot2::scale_color_manual(values = "black", guide = "none")
+  }
+
+  p <- ggplot2::ggplot(sessions, color_aes) +
+    ggplot2::geom_point(size = 5) +
+    color_scale +
     ggplot2::labs(
       x = NULL,
-      y = variable
+      y = variable,
+      color = if (color_by != "default" && color_by %in% names(sessions)) color_by else NULL
     ) +
     ggplot2::theme_minimal(base_size = 16) +
     ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
     )
 
   if (is_iso8601_datetime(sessions[[variable]])) {

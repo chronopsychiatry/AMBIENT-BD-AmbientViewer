@@ -29,7 +29,7 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
     sessions$display <- TRUE
   }
 
-  display_map <- setNames(sessions$display, sessions[[scol$id]])
+  display_map <- stats::setNames(sessions$display, sessions[[scol$id]])
 
   epochs$display <- display_map[as.character(epochs[[ecol$session_id]])]
   # If there are unmatched session_ids, set display to FALSE
