@@ -1,6 +1,10 @@
 # Ambient Viewer Changelog
 
-## 0.0.2 (in dev)
+## 0.0.2.1 (19/05/2025)
+
+Patch to fix sleep clock display on the shiny server. No visible changes for users.
+
+## 0.0.2 (16/05/2025)
 
 ### New
 
