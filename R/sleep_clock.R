@@ -203,7 +203,7 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
       title = NULL,
       x = NULL,
       y = NULL,
-      color = color_by
+      color = if (color_by != "default") color_by else NULL
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
