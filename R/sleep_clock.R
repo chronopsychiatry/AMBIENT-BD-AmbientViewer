@@ -138,7 +138,12 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
         linewidth = 0.8,
         show.legend = FALSE
       ) +
-      ggplot2::scale_color_viridis_d(option = "viridis") +
+      ggplot2::scale_color_manual(
+        values = stats::setNames(
+          grDevices::hcl.colors(length(unique(curve_data$night)), "viridis"),
+          unique(curve_data$night)
+        )
+      ) +
       ggnewscale::new_scale_color() +
       # Sleep Onset straight lines (second color scale)
       ggplot2::geom_segment(
