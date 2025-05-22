@@ -40,6 +40,13 @@ test_that("max_time calculates the correct maximum time", {
   expect_equal(result, "11:00")
 })
 
+test_that("time_diff calculates the correct time difference", {
+  result <- time_diff("2025-04-08 21:00:00", "2025-04-05 06:00:00", unit = "hour")
+  expect_equal(result, 9)
+  result <- time_diff("2025-04-08 21:00:00", "2025-04-05 06:00:00", unit = "minute")
+  expect_equal(result, 9 * 60)
+})
+
 test_that("convert_times_to_mean_angle works correctly", {
   times <- c(0, 43200, 86400)
   angle <- convert_times_to_mean_angle(times, unit = "second")
@@ -176,4 +183,11 @@ test_that("parse_time ignores timezone successfully", {
   parsed_time <- parse_time(time_vector)
   expected_time <- as.POSIXct(c("2025-03-03 09:30:00", "2025-03-03 20:00:00"))
   expect_equal(parsed_time, expected_time)
+})
+
+test_that("update_date works correctly", {
+  times <- parse_time(c("2025-03-03 09:30:00", "2025-03-03T20:00:00"))
+  updated_date <- update_date(times, "2025-04-08")
+  expected_date <- parse_time(c("2025-04-08 09:30:00", "2025-04-08 20:00:00"))
+  expect_equal(updated_date, expected_date)
 })

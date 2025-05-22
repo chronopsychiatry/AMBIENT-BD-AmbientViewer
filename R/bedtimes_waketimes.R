@@ -26,7 +26,7 @@ plot_bedtimes_waketimes <- function(sessions, groupby = "night", color_by = "def
   )
 
   plot_data <- sessions |>
-    dplyr::filter(!.data[[col$time_at_sleep_onset]] == "" & !.data[[col$time_at_wakeup]] == "") |>
+    dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
     dplyr::mutate(
       time_at_sleep_onset = parse_time(.data[[col$time_at_sleep_onset]]),
       time_at_wakeup = parse_time(.data[[col$time_at_wakeup]])
@@ -40,7 +40,7 @@ plot_bedtimes_waketimes <- function(sessions, groupby = "night", color_by = "def
           levels = c("Weekend", "Weekday")
         ),
         weekday = factor(
-          weekdays(.data$time_at_sleep_onset),
+          lubridate::as_date(.data[[col$night]]) |> weekdays(),
           levels = c("Sunday", "Saturday", "Friday", "Thursday", "Wednesday", "Tuesday", "Monday")
         ),
         .data[[col$night]]

@@ -12,10 +12,9 @@
 #' filtered_sessions <- set_min_time_in_bed(example_sessions, 2)
 set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
-  if (!(class(min_time_in_bed) %in% c("numeric", "integer"))) {
-    cli::cli_abort(c(
-      "!" = "min_time_in_bed must be a numeric value (hours)."
-    ))
+
+  if (nrow(sessions) == 0 || is.null(min_time_in_bed)) {
+    return(sessions)
   }
 
   if (!"display" %in% colnames(sessions)) {

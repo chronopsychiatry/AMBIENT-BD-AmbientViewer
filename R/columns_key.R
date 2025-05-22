@@ -30,6 +30,22 @@
   night = "night"
 )
 
+.sessions_col_ggir <- list(
+  id = "session_id",
+  subject_id = "ID",
+  sex = NULL,
+  birth_year = NULL,
+  device_id = NULL,
+  session_start = "session_start",
+  session_end = "session_end",
+  time_at_sleep_onset = "sleeponset_ts",
+  time_at_wakeup = "wakeup_ts",
+  sleep_period = "sleep_period",
+  time_in_bed = "time_in_bed",
+  is_workday = "is_workday",
+  night = "calendar_date"
+)
+
 .epochs_col_somnofy_v2 <- list(
   timestamp = "timestamp",
   session_id = "session_id",

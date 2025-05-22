@@ -13,7 +13,7 @@
 plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
   sessions <- sessions |>
-    dplyr::filter(!.data[[col$time_at_sleep_onset]] == "" & !.data[[col$time_at_wakeup]] == "") |>
+    dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
     dplyr::mutate(
       sleep_onset_hour = time_to_hours(shift_times_by_12h(.data[[col$time_at_sleep_onset]])),
       wakeup_hour = time_to_hours(shift_times_by_12h(.data[[col$time_at_wakeup]])),

@@ -59,7 +59,7 @@ update_variable_dropdown <- function(df, df_colnames, plot_options, input, sessi
 
     col <- df_colnames()
     excluded_vars <- c(col$id, "state", col$subject_id, col$device_id, col$night, col$timestamp, "motion_data_count",
-                       col$session_id, col$sleep_stage, "epoch_duration", ".data_type")
+                       col$session_id, col$sleep_stage, "epoch_duration", ".data_type", "filename", "display")
     available_vars <- setdiff(names(df), excluded_vars)
 
     # Update the dropdown, but preserve the selected variable if possible

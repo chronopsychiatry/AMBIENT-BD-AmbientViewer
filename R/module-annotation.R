@@ -84,7 +84,7 @@ make_annotation_table <- function(sessions, annotations, sessions_colnames) {
                                           parse_time(.data[[col$session_start]]),
                                           units = "hours"), 2),
       night = format(.data[[col$night]], "%Y-%m-%d"),
-      time_in_bed_h = round(.data[[col$time_in_bed]] / 60 / 60, 2)
+      time_in_bed_h = if (!is.null(col$time_in_bed)) round(.data[[col$time_in_bed]] / 60 / 60, 2) else NA
     ) |>
     dplyr::select(
       "annotation",

@@ -15,15 +15,8 @@ plot_sleep_bubbles <- function(sessions, color_by = "default", col_names = NULL)
   col <- get_session_colnames(sessions, col_names)
 
   sessions <- sessions |>
-    dplyr::filter(sessions[[col$time_at_sleep_onset]] != "" &
-                    sessions[[col$time_at_wakeup]] != "") |>
-    dplyr::mutate(
-      sleep_duration = as.numeric(difftime(
-        parse_time(.data[[col$time_at_wakeup]]),
-        parse_time(.data[[col$time_at_sleep_onset]]),
-        units = "hours"
-      ))
-    )
+    dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
+    dplyr::mutate(sleep_duration = time_diff(.data[[col$time_at_sleep_onset]], .data[[col$time_at_wakeup]]))
 
   if (color_by != "default" && color_by %in% names(sessions)) {
     sessions$color_group <- as.factor(sessions[[color_by]])

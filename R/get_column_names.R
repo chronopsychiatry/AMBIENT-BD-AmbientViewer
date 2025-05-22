@@ -21,7 +21,7 @@ get_session_colnames <- function(sessions, col_names = NULL) {
     }
   }
 
-  if (".data_type" %in% colnames(sessions) && sessions$.data_type[1] %in% c("somnofy_v1", "somnofy_v2")) {
+  if (".data_type" %in% colnames(sessions)) {
     fmt <- sessions$.data_type[1]
   } else {
     fmt <- "somnofy_v2"
@@ -59,7 +59,7 @@ get_epoch_colnames <- function(epochs, col_names = NULL) {
     }
   }
 
-  if (".data_type" %in% colnames(epochs) && epochs$.data_type[1] %in% c("somnofy_v1", "somnofy_v2")) {
+  if (".data_type" %in% colnames(epochs)) {
     fmt <- epochs$.data_type[1]
   } else {
     fmt <- "somnofy_v2"

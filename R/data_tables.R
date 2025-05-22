@@ -30,7 +30,7 @@ get_sessions_summary <- function(sessions, col_names = NULL) {
       total_sessions = dplyr::n(),
       mean_sleep_onset = mean_time(.data[[col$time_at_sleep_onset]]),
       mean_wakeup_time = mean_time(.data[[col$time_at_wakeup]]),
-      mean_time_in_bed = mean(.data[[col$time_in_bed]]) / 3600,
+      mean_time_in_bed = if (!is.null(col$time_in_bed)) mean(.data[[col$time_in_bed]]) / 3600 else NA
     )
 
   if ("annotation" %in% colnames(sessions)) {

@@ -16,7 +16,7 @@ plot_actigram <- function(epochs, col_names = NULL) {
     dplyr::mutate(
       timestamp = parse_time(.data[[col$timestamp]]),
       date = lubridate::as_date(.data$timestamp),
-      time = as.numeric(difftime(.data$timestamp, lubridate::as_date(.data$timestamp), units = "secs")) / 3600, # Time in hours
+      time = time_diff("00:00", .data$timestamp),
       sleep_value = ifelse(.data[[col$sleep_stage]] %in% c(2, 3, 4), .data[[col$signal_quality_mean]], 0)
     )
 

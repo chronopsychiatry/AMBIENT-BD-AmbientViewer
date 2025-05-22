@@ -51,10 +51,6 @@ test_that("set_time_in_bed flagging works", {
   expect_equal(nrow(filtered_sessions), nrow(sessions))
 })
 
-test_that("set_time_in_bed throws error for invalid input", {
-  expect_error(set_min_time_in_bed(sessions, "2"), "must be a numeric value")
-})
-
 test_that("set_session_start_time_range flagging works", {
   filtered_sessions <- set_session_start_time_range(sessions, "19:00", "23:00", flag_only = TRUE)
   expect_equal(sum(filtered_sessions$display), 1)

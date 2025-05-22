@@ -78,12 +78,12 @@ make_sessions_display_table <- function(sessions, col_names = NULL) {
       session_duration_h = difftime(parse_time(.data[[col$session_end]]),
                                     parse_time(.data[[col$session_start]]),
                                     units = "hours"),
-      night = format(.data[[col$night]], "%Y-%m-%d"),
-      time_in_bed_h = .data[[col$time_in_bed]] / 60 / 60
+      night = lubridate::as_date(.data[[col$night]]) |> format("%Y-%m-%d"),
+      time_in_bed_h = if (!is.null(col$time_in_bed)) .data[[col$time_in_bed]] / 60 / 60 else NA
     ) |>
     dplyr::select(
       col$id,
-      col$night,
+      "night",
       "start_time",
       "sleep_onset",
       "wakeup_time",

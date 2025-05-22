@@ -32,12 +32,7 @@ filtering_module <- function(id) {
         selected = c("13", "12"),
         grid = TRUE
       ),
-      shiny::sliderInput(
-        ns("min_time_in_bed"),
-        "Minimum Time in Bed:",
-        min = 0, max = 12, value = 0, step = 1, post = "h",
-        ticks = FALSE
-      )
+      shiny::uiOutput(ns("time_in_bed_slider"))
     ),
     open = NULL
   )
@@ -142,6 +137,23 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
       }
     })
 
+    output$time_in_bed_slider <- shiny::renderUI({
+      shiny::req(sessions())
+      col <- sessions_colnames()
+      if (!is.null(col$time_in_bed)) {
+        shiny::sliderInput(
+          inputId = session$ns("time_in_bed"),
+          label = "Minimum Time in Bed:",
+          min = 0,
+          max = 12,
+          value = 0,
+          step = 1,
+          post = "h",
+          ticks = FALSE
+        )
+      }
+    })
+
     filtered_sessions <- shiny::reactive({
       shiny::req(sessions())
       col <- sessions_colnames()
@@ -149,18 +161,14 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
       from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
       to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
 
-      if (lubridate::as_date(input$date_range[1], format = "%Y-%m-%d") != Sys.Date() + 1) {
-        logging::loginfo(paste0("Filtering:",
-                                " date_range: ", input$date_range[1], "-", input$date_range[2],
-                                " sleep_onset_range: ", from_time, "-", to_time,
-                                " min_time_in_bed: ", input$min_time_in_bed))
-      }
-
       df <- sessions() |>
         remove_sessions_no_sleep(col_names = col) |>
-        set_min_time_in_bed(input$min_time_in_bed, col_names = col, flag_only = TRUE) |>
         set_session_sleep_onset_range(from_time, to_time, col_names = col, flag_only = TRUE) |>
         filter_by_night_range(input$date_range[1], input$date_range[2], col_names = col, flag_only = TRUE)
+      if (!is.null(col$time_in_bed)) {
+        df <- df |>
+          set_min_time_in_bed(input$time_in_bed, col_names = col, flag_only = TRUE)
+      }
       if (!is.null(col$birth_year)) {
         df <- df |>
           filter_by_age_range(input$age_range[1], input$age_range[2], col_names = col, flag_only = TRUE)
