@@ -64,7 +64,7 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
   }
 
   from_night <- if (is.null(from_night)) min(sessions[[col$night]]) else from_night
-  to_night <- if (is.null(to_night)) min(sessions[[col$night]]) else to_night
+  to_night <- if (is.null(to_night)) max(sessions[[col$night]]) else to_night
 
   if (from_night > to_night) {
     cli::cli_abort(c("!" = "from_night must be before to_night."))

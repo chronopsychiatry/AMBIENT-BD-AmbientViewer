@@ -29,29 +29,40 @@ input_server <- function(id, session) {
     ns <- session$ns
 
     # Sessions ----
+    sessions_data <- shiny::reactiveVal()
     sessions_colnames <- shiny::reactiveVal()
     annotations <- shiny::reactiveVal()
 
-    sessions <- shiny::reactive({
+    shiny::observeEvent(input$sessions_file, {
       shiny::req(input$sessions_file)
-      logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
-      sessions <- load_sessions(input$sessions_file$datapath)
-      sessions_colnames(get_session_colnames(sessions))
-      if (!is.null(sessions$annotation)) {
+      data <- load_sessions(input$sessions_file$datapath)
+      sessions_data(data)
+      sessions_colnames(get_session_colnames(data))
+    })
+
+    sessions <- shiny::reactive({
+      shiny::req(sessions_data())
+      data <- sessions_data()
+      col <- sessions_colnames()
+      if (!is.null(col$session_start) && (is.null(col$night) || !"night" %in% colnames(data))) {
+        data <- group_sessions_by_night(data, col_names = list(session_start = col$session_start))
+        set_colname(sessions_colnames, "night", "night")
+      }
+      if (!is.null(data$annotation)) {
         annotations(data.frame(
-          id = sessions[[sessions_colnames()$id]],
-          annotation = as.character(sessions$annotation),
+          id = data[[sessions_colnames()$id]],
+          annotation = as.character(data$annotation),
           stringsAsFactors = FALSE
         ))
       } else {
-        sessions$annotation <- ""
+        data$annotation <- ""
         annotations(data.frame(
-          id = sessions[[sessions_colnames()$id]],
+          id = data[[sessions_colnames()$id]],
           annotation = "",
           stringsAsFactors = FALSE
         ))
       }
-      sessions
+      data
     })
 
     shiny::observeEvent(input$open_session_col_names, {
@@ -72,6 +83,7 @@ input_server <- function(id, session) {
     })
 
     shiny::observeEvent(input$save_session_col_names, {
+      shiny::req(sessions())
       keys <- names(sessions_colnames())
       vals <- lapply(keys, function(key) {
         val <- input[[paste0("col_", key)]]
@@ -165,4 +177,10 @@ show_colnames_modal <- function(
       do.call(shiny::tagList, inputs)
     )
   )
+}
+
+set_colname <- function(colnames_reactive, key, value) {
+  col_map <- colnames_reactive()
+  col_map[[key]] <- value
+  colnames_reactive(col_map)
 }

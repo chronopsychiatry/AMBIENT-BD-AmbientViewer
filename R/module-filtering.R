@@ -3,14 +3,7 @@ filtering_module <- function(id) {
   bslib::accordion(
     bslib::accordion_panel(
       "Date",
-      shiny::sliderInput(
-        inputId = ns("date_range"),
-        label = "Date Range:",
-        min = Sys.Date() + 1,
-        max = Sys.Date() + 1,
-        value = c(Sys.Date() + 1, Sys.Date() + 1),
-        timeFormat = "%Y-%m-%d"
-      )
+      shiny::uiOutput(ns("date_range_slider"))
     ),
     bslib::accordion_panel(
       "Subject",
@@ -20,18 +13,7 @@ filtering_module <- function(id) {
     ),
     bslib::accordion_panel(
       "Sleep",
-      shinyWidgets::sliderTextInput(
-        inputId = ns("time_range"),
-        label = "Sleep Onset Time:",
-        choices = c(
-                    "13", "14", "15", "16", "17",
-                    "18", "19", "20", "21", "22", "23",
-                    "00", "01", "02", "03", "04", "05",
-                    "06", "07", "08", "09", "10", "11",
-                    "12"),
-        selected = c("13", "12"),
-        grid = TRUE
-      ),
+      shiny::uiOutput(ns("sleep_onset_range")),
       shiny::uiOutput(ns("time_in_bed_slider"))
     ),
     open = NULL
@@ -53,27 +35,20 @@ filtering_tab <- function(id) {
 filtering_server <- function(id, sessions, sessions_colnames, annotations) {
   shiny::moduleServer(id, function(input, output, session) {
 
-    shiny::observe({
+    output$date_range_slider <- shiny::renderUI({
       shiny::req(sessions())
       col <- sessions_colnames()
-
-      if (nrow(sessions()) == 0) {
-        shiny::updateSliderInput(
-          session,
-          inputId = "date_range",
-          min = Sys.Date() + 1,
-          max = Sys.Date() + 1,
-          value = c(Sys.Date() + 1, Sys.Date() + 1)
-        )
-      } else {
+      if (!is.null(col$night) && nrow(sessions()) > 0) {
         min_date <- min(sessions()[[col$night]], na.rm = TRUE)
         max_date <- max(sessions()[[col$night]], na.rm = TRUE)
-        shiny::updateSliderInput(
-          session,
-          inputId = "date_range",
+        shiny::sliderInput(
+          inputId = session$ns("date_range"),
+          label = "Date Range:",
           min = min_date,
           max = max_date,
-          value = c(min_date, max_date)
+          value = c(min_date, max_date),
+          timeFormat = "%Y-%m-%d",
+          ticks = FALSE
         )
       }
     })
@@ -154,17 +129,42 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
       }
     })
 
+    output$sleep_onset_range <- shiny::renderUI({
+      shiny::req(sessions())
+      col <- sessions_colnames()
+      if (!is.null(col$time_at_sleep_onset)) {
+        shinyWidgets::sliderTextInput(
+          inputId = session$ns("time_range"),
+          label = "Sleep Onset Time:",
+          choices = sprintf("%02d", c(13:23, 0:12)),
+          selected = c("13", "12"),
+          grid = TRUE
+        )
+      }
+    })
+
     filtered_sessions <- shiny::reactive({
       shiny::req(sessions())
       col <- sessions_colnames()
 
-      from_time <- sprintf("%02d:00", as.numeric(input$time_range[1]) %% 24)
-      to_time <- sprintf("%02d:00", as.numeric(input$time_range[2]) %% 24)
+      from_time <- if (!is.null(input$time_range[1])) paste0(input$time_range[1], ":00") else NULL
+      to_time <- if (!is.null(input$time_range[2])) paste0(input$time_range[2], ":00") else NULL
 
       df <- sessions() |>
-        remove_sessions_no_sleep(col_names = col) |>
-        set_session_sleep_onset_range(from_time, to_time, col_names = col, flag_only = TRUE) |>
-        filter_by_night_range(input$date_range[1], input$date_range[2], col_names = col, flag_only = TRUE)
+        tidyr::drop_na(dplyr::all_of(unname(unlist(col)))) |>
+        remove_sessions_no_sleep(col_names = col)
+
+      if (!"display" %in% colnames(df)) {
+        df$display <- TRUE
+      }
+      if (!is.null(col$night)) {
+        df <- df |>
+          filter_by_night_range(input$date_range[1], input$date_range[2], col_names = col, flag_only = TRUE)
+      }
+      if (!is.null(col$time_at_sleep_onset)) {
+        df <- df |>
+          set_session_sleep_onset_range(from_time, to_time, col_names = col, flag_only = TRUE)
+      }
       if (!is.null(col$time_in_bed)) {
         df <- df |>
           set_min_time_in_bed(input$time_in_bed, col_names = col, flag_only = TRUE)
@@ -229,7 +229,6 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
   })
 }
 
-#' @importFrom rlang .data
 get_removed_sessions_table <- function(sessions, col_names = NULL) {
   sessions[!sessions$display, ] |>
     make_sessions_display_table(col_names = col_names)

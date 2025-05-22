@@ -72,28 +72,31 @@ annotation_server <- function(id, sessions, sessions_colnames, annotations) {
 
 make_annotation_table <- function(sessions, annotations, sessions_colnames) {
   col <- sessions_colnames
+  sessions <- sessions |>
+    dplyr::filter(.data$display)
   sessions |>
-    dplyr::filter(.data$display) |>
     dplyr::mutate(
       annotation = annotations$annotation[match(.data[[col$id]], annotations$id)],
-      start = parse_time(.data[[col$session_start]]) |> format("%Y-%m-%d %H:%M"),
-      sleep_onset = parse_time(.data[[col$time_at_sleep_onset]]) |> format("%H:%M"),
-      wakeup = parse_time(.data[[col$time_at_wakeup]]) |> format("%H:%M"),
-      end = parse_time(.data[[col$session_end]]) |> format("%Y-%m-%d %H:%M"),
-      session_duration_h = round(difftime(parse_time(.data[[col$session_end]]),
-                                          parse_time(.data[[col$session_start]]),
+      start = parse_time(get_col(sessions, col$session_start)) |> format("%Y-%m-%d %H:%M"),
+      sleep_onset = parse_time(get_col(sessions, col$time_at_sleep_onset)) |> format("%H:%M"),
+      wakeup = parse_time(get_col(sessions, col$time_at_wakeup)) |> format("%H:%M"),
+      end = parse_time(get_col(sessions, col$session_end)) |> format("%Y-%m-%d %H:%M"),
+      session_duration_h = round(difftime(parse_time(get_col(sessions, col$session_end)),
+                                          parse_time(get_col(sessions, col$session_start)),
                                           units = "hours"), 2),
-      night = format(.data[[col$night]], "%Y-%m-%d"),
-      time_in_bed_h = if (!is.null(col$time_in_bed)) round(.data[[col$time_in_bed]] / 60 / 60, 2) else NA
+      night = format(get_col(sessions, col$night), "%Y-%m-%d"),
+      time_in_bed_h = if (!is.null(col$time_in_bed)) round(get_col(sessions, col$time_in_bed) / 60 / 60, 2) else NA
     ) |>
     dplyr::select(
-      "annotation",
-      "start",
-      "sleep_onset",
-      "wakeup",
-      "end",
-      "session_duration_h",
-      "time_in_bed_h"
+      dplyr::any_of(c(
+        "annotation",
+        "start",
+        "sleep_onset",
+        "wakeup",
+        "end",
+        "session_duration_h",
+        "time_in_bed_h"
+      ))
     )
 }
 

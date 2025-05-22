@@ -24,6 +24,11 @@ hypnogram_module_server <- function(id, epochs, epochs_colnames) {
       if (nrow(epochs) == 0) {
         return(NULL)
       }
+      col <- epochs_colnames()
+      shiny::validate(
+        shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
+        shiny::need(!is.null(col$sleep_stage), "'sleep_stage' column was not specified.")
+      )
       plot_hypnogram(epochs = epochs, col_names = epochs_colnames())
     })
 

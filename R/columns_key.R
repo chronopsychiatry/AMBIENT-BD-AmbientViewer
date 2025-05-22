@@ -46,6 +46,22 @@
   night = "calendar_date"
 )
 
+.sessions_col_none <- list(
+  id = "id",
+  subject_id = NULL,
+  sex = NULL,
+  birth_year = NULL,
+  device_id = NULL,
+  session_start = NULL,
+  session_end = NULL,
+  time_at_sleep_onset = NULL,
+  time_at_wakeup = NULL,
+  sleep_period = NULL,
+  time_in_bed = NULL,
+  is_workday = NULL,
+  night = NULL
+)
+
 .epochs_col_somnofy_v2 <- list(
   timestamp = "timestamp",
   session_id = "session_id",
@@ -60,4 +76,12 @@
   signal_quality = "signal_quality_mean",
   sleep_stage = "sleep_stage",
   night = "night"
+)
+
+.epochs_col_none <- list(
+  timestamp = NULL,
+  session_id = NULL,
+  signal_quality = NULL,
+  sleep_stage = NULL,
+  night = NULL
 )

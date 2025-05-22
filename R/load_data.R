@@ -31,6 +31,9 @@ load_sessions <- function(sessions_file) {
     sessions |> clean_ggir_sessions()
   } else if (fmt %in% c("somnofy_v1", "somnofy_v2")) {
     sessions |> group_sessions_by_night()
+  } else {
+    sessions |>
+      dplyr::mutate(id = dplyr::row_number())
   }
 }
 
@@ -71,6 +74,8 @@ load_epochs <- function(epochs_file) {
   if (fmt %in% c("somnofy_v1", "somnofy_v2")) {
     epochs |>
       group_epochs_by_night()
+  } else {
+    epochs
   }
 }
 
@@ -85,7 +90,7 @@ load_epochs <- function(epochs_file) {
 #' @examples
 #' example_sessions <- set_data_type(example_sessions, "somnofy_v2")
 set_data_type <- function(df, data_type) {
-  if (!data_type %in% c("somnofy_v1", "somnofy_v2", "ggir")) {
+  if (!data_type %in% c("somnofy_v1", "somnofy_v2", "ggir", "none")) {
     cli::cli_abort(c(
       "!" = "Invalid data type: {.val {data_type}}",
       "i" = "Available data types: somnofy_v1, somnofy_v2, ggir."
@@ -113,9 +118,10 @@ get_sessions_format <- function(sessions) {
   } else {
     cli::cli_warn(c(
       "!" = "Could not infer the Sessions data type.",
-      "i" = "Please check the csv file contains session data."
+      "i" = "Please check the csv file contains session data.",
+      "i" = "Setting all column names to NULL."
     ))
-    NULL
+    "none"
   }
 }
 
@@ -127,8 +133,9 @@ get_epochs_format <- function(epochs) {
   } else {
     cli::cli_warn(c(
       "!" = "Could not infer the Epochs data type.",
-      "i" = "Please check the csv file contains epoch data."
+      "i" = "Please check the csv file contains epoch data.",
+      "i" = "Setting all column names to NULL."
     ))
-    NULL
+    "none"
   }
 }

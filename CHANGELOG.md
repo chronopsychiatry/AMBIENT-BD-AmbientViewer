@@ -1,5 +1,15 @@
 # Ambient Viewer Changelog
 
+## 0.0.3 (in dev)
+
+### New
+
+- Summary outputs from GGIR (part 5) in csv format can be loaded as Sessions
+
+### Fixed
+
+- Setting column names with "Set Session Columns" and "Set Epoch Columns" work correctly
+
 ## 0.0.2.1 (19/05/2025)
 
 Patch to fix sleep clock display on the shiny server. No visible changes for users.

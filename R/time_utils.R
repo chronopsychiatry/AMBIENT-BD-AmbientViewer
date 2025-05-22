@@ -189,6 +189,7 @@ shift_times_by_12h <- function(times) {
 group_epochs_by_night <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
   epochs |>
+    tidyr::drop_na(dplyr::all_of(col$timestamp)) |>
     dplyr::mutate(
       time_stamp = parse_time(.data[[col$timestamp]]),
       date = lubridate::as_date(.data$time_stamp),
@@ -214,6 +215,7 @@ group_epochs_by_night <- function(epochs, col_names = NULL) {
 group_sessions_by_night <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
   sessions |>
+    tidyr::drop_na(dplyr::all_of(col$session_start)) |>
     dplyr::mutate(
       start_time = parse_time(.data[[col$session_start]]),
       date = lubridate::as_date(.data$start_time),
