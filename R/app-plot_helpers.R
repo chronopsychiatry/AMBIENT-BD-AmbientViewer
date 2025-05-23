@@ -15,8 +15,8 @@ update_colorby_dropdown <- function(df, df_colnames, plot_options, input, sessio
 
     col <- Filter(Negate(is.null), df_colnames())
 
-    excluded_vars <- c("session_start", "session_end", "time_at_sleep_onset", "time_at_wakeup",
-                       "sleep_period", "time_in_bed", "timestamp", "signal_quality_mean")
+    excluded_vars <- c(col$session_start, col$session_end, col$time_at_sleep_onset, col$time_at_wakeup,
+                       col$sleep_period, col$time_in_bed, col$timestamp, col$signal_quality)
     available_vars <- setdiff(c("default", "annotation", unlist(col, use.names = FALSE)), excluded_vars)
 
     # Update the dropdown, but preserve the selected variable if possible
@@ -57,7 +57,7 @@ update_variable_dropdown <- function(df, df_colnames, plot_options, input, sessi
       return()
     }
 
-    col <- df_colnames()
+    col <- Filter(Negate(is.null), df_colnames())
     excluded_vars <- c(col$id, "state", col$subject_id, col$device_id, col$night, col$timestamp, "motion_data_count",
                        col$session_id, col$sleep_stage, "epoch_duration", ".data_type", "filename", "display")
     available_vars <- setdiff(names(df), excluded_vars)

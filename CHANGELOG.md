@@ -9,6 +9,7 @@
 ### Fixed
 
 - Setting column names with "Set Session Columns" and "Set Epoch Columns" work correctly
+- Loading a CSV file that doesn't fit the pre-set formats doesn't crash the app anymore
 
 ## 0.0.2.1 (19/05/2025)
 

@@ -47,7 +47,7 @@
 )
 
 .sessions_col_none <- list(
-  id = "id",
+  id = "id_default",
   subject_id = NULL,
   sex = NULL,
   birth_year = NULL,

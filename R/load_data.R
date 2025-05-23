@@ -33,7 +33,7 @@ load_sessions <- function(sessions_file) {
     sessions |> group_sessions_by_night()
   } else {
     sessions |>
-      dplyr::mutate(id = dplyr::row_number())
+      dplyr::mutate(id_default = dplyr::row_number())
   }
 }
 

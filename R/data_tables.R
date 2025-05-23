@@ -61,11 +61,10 @@ get_epochs_summary <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
 
   epochs |>
-    dplyr::mutate(timestamp = parse_time(.data[[col$timestamp]])) |>
     dplyr::summarise(
       total_sessions = dplyr::n_distinct(.data[[col$session_id]]),
-      start_date = format(min(.data[[col$timestamp]], na.rm = TRUE), "%Y-%m-%d"),
-      end_date = format(max(.data[[col$timestamp]], na.rm = TRUE), "%Y-%m-%d")
+      start_date = if (!is.null(col$timestamp)) format(min(parse_time(.data[[col$timestamp]]), na.rm = TRUE), "%Y-%m-%d") else NA,
+      end_date = if (!is.null(col$timestamp)) format(max(parse_time(.data[[col$timestamp]]), na.rm = TRUE), "%Y-%m-%d") else NA
     )
 }
 

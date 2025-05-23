@@ -20,6 +20,15 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
   scol <- get_session_colnames(sessions, session_col_names)
   ecol <- get_epoch_colnames(epochs, epoch_col_names)
 
+  if (is.null(ecol$session_id) || is.null(scol$id)) {
+    epochs$display <- FALSE
+    if (flag_only) {
+      return(epochs)
+    } else {
+      return(epochs[epochs$display, ])
+    }
+  }
+
   if (sum(epochs[[ecol$session_id]] %in% unique(sessions[[scol$id]])) == 0) {
     cli::cli_warn(c("!" = "None of the epochs match the selected sessions.",
                     "i" = "Returning an empty epoch table."))
