@@ -26,7 +26,7 @@ test_that("get_removed_sessions_table output is correct", {
     remove_sessions_no_sleep() |>
     set_min_time_in_bed(2, flag_only = TRUE) |>
     set_session_sleep_onset_range("20:00", "06:00", flag_only = TRUE)
-  result <- get_removed_sessions_table(filtered_sessions)
+  result <- get_removed_sessions_table(filtered_sessions, col_names = get_session_colnames(example_sessions))
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 3)
