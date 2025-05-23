@@ -23,13 +23,8 @@ mean_time <- function(time_vector) {
 
   time_vector <- time_vector |>
     parse_time() |>
-    stats::na.omit()
-
-  ref_day <- lubridate::floor_date(time_vector, unit = "day")
-
-  time_vector |>
-    difftime(time1 = _, time2 = ref_day, units = "secs") |>
-    as.numeric() |>
+    stats::na.omit() |>
+    time_diff(t1 = "00:00", t2 = _, unit = "second") |>
     convert_times_to_mean_angle(unit = "second") |>
     convert_angle_to_time(unit = "second") |>
     as.POSIXct(origin = "1970-01-01", tz = "UTC") |>
@@ -76,6 +71,32 @@ max_time <- function(time_vector) {
     (\(x) (x + 12) * 3600)() |>
     as.POSIXct(tz = "UTC") |>
     format("%H:%M")
+}
+
+#' Compute the forward time difference from t1 to t2 (wrapping at 24)
+#'
+#' This function returns the time from t1 to t2, always moving forward on the clock.
+#' For example, from 07:00 to 22:00 is 15 hours, from 22:00 to 07:00 is 9 hours.
+#' @param t1 First time (character, POSIXct, or numeric hour)
+#' @param t2 Second time (character, POSIXct, or numeric hour)
+#' @param unit The unit of time. Can be "second", "minute", or "hour". Default is "hour".
+#' @returns The forward difference in the specified unit (numeric, always positive, 0 <= x < 24)
+#' @export
+#' @family time processing
+#' @examples
+#' time_diff("07:00", "22:00") # 15
+#' time_diff("22:00", "07:00") # 9
+#' time_diff("07:00", "22:00", unit = "minute") # 540
+time_diff <- function(t1, t2, unit = "hour") {
+  h1 <- time_to_hours(t1)
+  h2 <- time_to_hours(t2)
+  switch(unit,
+    second = (h2 - h1) %% 24 * 3600,
+    minute = (h2 - h1) %% 24 * 60,
+    hour = (h2 - h1) %% 24,
+    cli::cli_abort(c("!" = "unit must be one of 'second', 'minute', or 'hour'.",
+                     "x" = "You supplied {unit}."))
+  )
 }
 
 #' Convert a vector of times to a mean angle
@@ -148,13 +169,7 @@ shift_times_by_12h <- function(times) {
   }
 
   times <- parse_time(times)
-  times <- dplyr::if_else(lubridate::hour(times) < 12, times + lubridate::hours(12), times - lubridate::hours(12))
-
-  if (all(lubridate::year(times) == 0000)) {
-    times |> format("%H:%M")
-  } else {
-    times
-  }
+  dplyr::if_else(lubridate::hour(times) < 12, times + lubridate::hours(12), times - lubridate::hours(12))
 }
 
 #' Create a grouping by night for epoch data
@@ -174,6 +189,7 @@ shift_times_by_12h <- function(times) {
 group_epochs_by_night <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
   epochs |>
+    tidyr::drop_na(dplyr::all_of(col$timestamp)) |>
     dplyr::mutate(
       time_stamp = parse_time(.data[[col$timestamp]]),
       date = lubridate::as_date(.data$time_stamp),
@@ -199,6 +215,7 @@ group_epochs_by_night <- function(epochs, col_names = NULL) {
 group_sessions_by_night <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
   sessions |>
+    tidyr::drop_na(dplyr::all_of(col$session_start)) |>
     dplyr::mutate(
       start_time = parse_time(.data[[col$session_start]]),
       date = lubridate::as_date(.data$start_time),
@@ -225,6 +242,9 @@ is_iso8601_datetime <- function(column) {
 }
 
 time_to_hours <- function(time_vector) {
+  if (inherits(time_vector, "numeric")) {
+    return(time_vector)
+  }
   time_vector <- parse_time(time_vector)
   lubridate::hour(time_vector) + lubridate::minute(time_vector) / 60
 }
@@ -234,6 +254,26 @@ parse_time <- function(time_vector) {
     return(time_vector)
   }
   time_vector <- gsub("(\\+|-)[0-9]{2}:[0-9]{2}$|Z$", "", time_vector) # Remove timezone information
-  time_formats <- c("ymd_HMS", "ymd_HMSz", "HMS", "HM")
+  time_formats <- c("ymd_HMS", "ymd_HM", "ymd_HMSz", "HMS", "HM")
   lubridate::parse_date_time(time_vector, orders = time_formats, tz = NULL, quiet = TRUE)
+}
+
+update_date <- function(time, date) {
+  if (!inherits(time, "POSIXct")) {
+    time <- parse_time(time)
+  }
+  if (!inherits(date, "Date")) {
+    date <- lubridate::as_date(date)
+  }
+
+  if (length(date) == 1 && length(time) > 1) {
+    date <- rep(date, length(time))
+  }
+
+  stats::update(
+    time,
+    year = lubridate::year(date),
+    month = lubridate::month(date),
+    day = lubridate::day(date)
+  )
 }

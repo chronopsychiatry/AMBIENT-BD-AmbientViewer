@@ -29,29 +29,41 @@ input_server <- function(id, session) {
     ns <- session$ns
 
     # Sessions ----
+    sessions_data <- shiny::reactiveVal()
     sessions_colnames <- shiny::reactiveVal()
     annotations <- shiny::reactiveVal()
 
-    sessions <- shiny::reactive({
+    shiny::observeEvent(input$sessions_file, {
       shiny::req(input$sessions_file)
       logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
-      sessions <- load_sessions(input$sessions_file$datapath)
-      sessions_colnames(get_session_colnames(sessions))
-      if (!is.null(sessions$annotation)) {
+      data <- load_sessions(input$sessions_file$datapath)
+      sessions_data(data)
+      sessions_colnames(get_session_colnames(data))
+    })
+
+    sessions <- shiny::reactive({
+      shiny::req(sessions_data())
+      data <- sessions_data()
+      col <- sessions_colnames()
+      if (!is.null(col$session_start) && (is.null(col$night) || !"night" %in% colnames(data))) {
+        data <- group_sessions_by_night(data, col_names = list(session_start = col$session_start))
+        set_colname(sessions_colnames, "night", "night")
+      }
+      if (!is.null(data$annotation)) {
         annotations(data.frame(
-          id = sessions[[sessions_colnames()$id]],
-          annotation = as.character(sessions$annotation),
+          id = data[[sessions_colnames()$id]],
+          annotation = as.character(data$annotation),
           stringsAsFactors = FALSE
         ))
       } else {
-        sessions$annotation <- ""
+        data$annotation <- ""
         annotations(data.frame(
-          id = sessions[[sessions_colnames()$id]],
+          id = data[[sessions_colnames()$id]],
           annotation = "",
           stringsAsFactors = FALSE
         ))
       }
-      sessions
+      data
     })
 
     shiny::observeEvent(input$open_session_col_names, {
@@ -72,6 +84,7 @@ input_server <- function(id, session) {
     })
 
     shiny::observeEvent(input$save_session_col_names, {
+      shiny::req(sessions())
       keys <- names(sessions_colnames())
       vals <- lapply(keys, function(key) {
         val <- input[[paste0("col_", key)]]
@@ -84,16 +97,28 @@ input_server <- function(id, session) {
 
     # Epochs ----
     epochs_colnames <- shiny::reactiveVal()
+    epochs_data <- shiny::reactiveVal()
 
-    epochs <- shiny::reactive({
+    shiny::observeEvent(input$epochs_file, {
       shiny::req(input$epochs_file)
       logging::loginfo(paste0("Loading epochs file: ", input$epochs_file$name))
-      epochs <- load_epochs(input$epochs_file$datapath)
-      if (epochs$.data_type[1] == "somnofy_v1") {
-        epochs$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
+      data <- load_epochs(input$epochs_file$datapath)
+      if (data$.data_type[1] == "somnofy_v1") {
+        data$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
       }
-      epochs_colnames(get_epoch_colnames(epochs))
-      epochs
+      epochs_data(data)
+      epochs_colnames(get_epoch_colnames(data))
+    })
+
+    epochs <- shiny::reactive({
+      shiny::req(epochs_data())
+      data <- epochs_data()
+      col <- epochs_colnames()
+      if (!is.null(col$timestamp) && (is.null(col$night) || !"night" %in% colnames(data))) {
+        data <- group_epochs_by_night(data, col_names = list(timestamp = col$timestamp))
+        set_colname(epochs_colnames, "night", "night")
+      }
+      data
     })
 
     shiny::observeEvent(input$open_epoch_col_names, {
@@ -165,4 +190,10 @@ show_colnames_modal <- function(
       do.call(shiny::tagList, inputs)
     )
   )
+}
+
+set_colname <- function(colnames_reactive, key, value) {
+  col_map <- colnames_reactive()
+  col_map[[key]] <- value
+  colnames_reactive(col_map)
 }

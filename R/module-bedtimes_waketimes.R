@@ -53,6 +53,13 @@ bedtimes_waketimes_module_server <- function(id, sessions, sessions_colnames) {
       if (nrow(sessions) == 0) {
         return(NULL)
       }
+      col <- sessions_colnames()
+      shiny::validate(
+        shiny::need(!is.null(col$time_at_sleep_onset), "'time_at_sleep_onset' column was not specified."),
+        shiny::need(!is.null(col$time_at_wakeup), "'time_at_wakeup' column was not specified."),
+        shiny::need(!is.null(col$night), "'night' column was not specified."),
+        shiny::need(!is.null(col$is_workday), "'is_workday' column was not specified.")
+      )
       plot_bedtimes_waketimes(
         sessions = sessions,
         groupby = input$groupby,

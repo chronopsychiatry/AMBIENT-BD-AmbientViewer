@@ -8,14 +8,15 @@ test_that("compliance module works", {
       session$flushReact()
       expect_equal(
         compliance_table(),
-        get_compliance_table(sessions())
+        get_compliance_table(sessions(), col_names = sessions_colnames())
       )
     }
   )
 })
 
 test_that("get_compliance_table output is correct", {
-  result <- get_compliance_table(example_sessions |> dplyr::mutate(display = TRUE, annotation = ""))
+  result <- get_compliance_table(example_sessions |>
+                                   dplyr::mutate(display = TRUE, annotation = ""), col_names = get_session_colnames(example_sessions))
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 123)
@@ -24,7 +25,8 @@ test_that("get_compliance_table output is correct", {
 })
 
 test_that("make_sessions_display_table output is correct", {
-  result <- make_sessions_display_table(example_sessions |> dplyr::mutate(annotation = ""))
+  result <- make_sessions_display_table(example_sessions |>
+                                          dplyr::mutate(annotation = ""), col_names = get_session_colnames(example_sessions))
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 124)

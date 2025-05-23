@@ -46,6 +46,10 @@ timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
     timeseries_sessions_plot <- shiny::reactive({
       shiny::req(input$variable, sessions())
       sessions <- sessions()[sessions()$display, ]
+      col <- sessions_colnames()
+      shiny::validate(
+        shiny::need(!is.null(col$night), "'night' column was not specified.")
+      )
       plot_timeseries_sessions(
         sessions = sessions,
         variable = input$variable,

@@ -12,10 +12,9 @@
 #' filtered_sessions <- set_min_time_in_bed(example_sessions, 2)
 set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
-  if (!(class(min_time_in_bed) %in% c("numeric", "integer"))) {
-    cli::cli_abort(c(
-      "!" = "min_time_in_bed must be a numeric value (hours)."
-    ))
+
+  if (nrow(sessions) == 0 || is.null(min_time_in_bed)) {
+    return(sessions)
   }
 
   if (!"display" %in% colnames(sessions)) {
@@ -50,8 +49,8 @@ set_session_start_time_range <- function(sessions, from_time, to_time, col_names
   col <- get_session_colnames(sessions, col_names)
 
   session_times <- parse_time(sessions[[col$session_start]]) |> stats::update(year = 0, month = 1, day = 1)
-  from_time <- parse_time(from_time)
-  to_time <- parse_time(to_time)
+  from_time <- if (is.null(from_time)) min(session_times) else parse_time(from_time)
+  to_time <- if (is.null(to_time)) max(session_times) else parse_time(to_time)
 
   if (!"display" %in% colnames(sessions)) {
     sessions$display <- TRUE
@@ -90,9 +89,13 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
   col <- get_session_colnames(sessions, col_names)
   sessions <- remove_sessions_no_sleep(sessions)
 
+  if (nrow(sessions) == 0) {
+    return(sessions)
+  }
+
   session_times <- parse_time(sessions[[col$time_at_sleep_onset]]) |> stats::update(year = 0, month = 1, day = 1)
-  from_time <- parse_time(from_time)
-  to_time <- parse_time(to_time)
+  from_time <- if (is.null(from_time)) min(session_times) else parse_time(from_time)
+  to_time <- if (is.null(to_time)) max(session_times) else parse_time(to_time)
 
   if (!"display" %in% colnames(sessions)) {
     sessions$display <- TRUE
@@ -125,6 +128,15 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
 #' filtered_sessions <- remove_sessions_no_sleep(example_sessions)
 remove_sessions_no_sleep <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
+
+  if (nrow(sessions) == 0 || is.null(col$sleep_period)) {
+    cli::cli_warn(c(
+      "!" = "No sleep period column found in the sessions dataframe.",
+      "i" = "Returning the original sessions dataframe."
+    ))
+    return(sessions)
+  }
+
   sessions[sessions[[col$sleep_period]] > 0, ]
 }
 

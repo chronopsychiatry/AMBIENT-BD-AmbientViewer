@@ -28,9 +28,9 @@ get_sessions_summary <- function(sessions, col_names = NULL) {
   summary <- sessions |>
     dplyr::summarise(
       total_sessions = dplyr::n(),
-      mean_sleep_onset = mean_time(.data[[col$time_at_sleep_onset]]),
-      mean_wakeup_time = mean_time(.data[[col$time_at_wakeup]]),
-      mean_time_in_bed = mean(.data[[col$time_in_bed]]) / 3600,
+      mean_sleep_onset = if (!is.null(col$time_at_sleep_onset)) mean_time(.data[[col$time_at_sleep_onset]]) else NA,
+      mean_wakeup_time = if (!is.null(col$time_at_wakeup)) mean_time(.data[[col$time_at_wakeup]]) else NA,
+      mean_time_in_bed = if (!is.null(col$time_in_bed)) mean(.data[[col$time_in_bed]]) / 3600 else NA
     )
 
   if ("annotation" %in% colnames(sessions)) {
@@ -61,10 +61,17 @@ get_epochs_summary <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
 
   epochs |>
-    dplyr::mutate(timestamp = parse_time(.data[[col$timestamp]])) |>
     dplyr::summarise(
       total_sessions = dplyr::n_distinct(.data[[col$session_id]]),
-      start_date = format(min(.data[[col$timestamp]], na.rm = TRUE), "%Y-%m-%d"),
-      end_date = format(max(.data[[col$timestamp]], na.rm = TRUE), "%Y-%m-%d")
+      start_date = if (!is.null(col$timestamp)) format(min(parse_time(.data[[col$timestamp]]), na.rm = TRUE), "%Y-%m-%d") else NA,
+      end_date = if (!is.null(col$timestamp)) format(max(parse_time(.data[[col$timestamp]]), na.rm = TRUE), "%Y-%m-%d") else NA
     )
+}
+
+get_col <- function(df, col) {
+  if (is.null(col) || !col %in% colnames(df)) {
+    rep(list(NULL), nrow(df))
+  } else {
+    df[[col]]
+  }
 }

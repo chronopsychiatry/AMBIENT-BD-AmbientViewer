@@ -46,6 +46,11 @@ timeseries_module_server <- function(id, epochs, epochs_colnames) {
     timeseries_plot <- shiny::reactive({
       shiny::req(input$variable, epochs())
       epochs <- epochs()[epochs()$display, ]
+      col <- epochs_colnames()
+      shiny::validate(
+        shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
+        shiny::need(!is.null(col$night), "'night' column was not specified.")
+      )
       plot_timeseries(
         epochs = epochs,
         variable = input$variable,

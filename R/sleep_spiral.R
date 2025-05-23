@@ -47,7 +47,7 @@ plot_sleep_spiral <- function(epochs, color_by = "default", col_names = NULL) {
       "Awake",
       as.character(epochs$color_group)
     )
-    color_values <- c(stats::setNames("orange", "Awake"), color_map)
+    color_values <- c(stats::setNames("lightgrey", "Awake"), color_map)
     color_aes <- ggplot2::aes(color = .data$plot_color)
     legend_title <- color_by
   } else {
