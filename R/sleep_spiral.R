@@ -3,7 +3,7 @@
 #' @param epochs The epochs dataframe
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `timestamp`
-#' - `sleep_stage`
+#' - `is_asleep`
 #' @param color_by The variable to color the spiral by. Can be "default" or any other column name in the epochs dataframe.
 #' @returns A ggplot object showing the sleep spiral
 #' @importFrom rlang .data
@@ -22,12 +22,11 @@ plot_sleep_spiral <- function(epochs, color_by = "default", col_names = NULL) {
   epochs <- epochs |>
     dplyr::mutate(
       timestamp = parse_time(.data[[col$timestamp]]),
-      sleep_stage = as.character(.data[[col$sleep_stage]]),
-      sleep_stage = dplyr::if_else(.data$sleep_stage == "5", "4", .data$sleep_stage)
+      is_asleep = as.character(.data[[col$is_asleep]])
     ) |>
     tidyr::complete(
       timestamp = seq(min(.data$timestamp), max(.data$timestamp), by = "2 min"),
-      fill = list(sleep_stage = "4")
+      fill = list(is_asleep = "0")
     ) |>
     dplyr::mutate(
       time_in_days = as.numeric(difftime(.data$timestamp, reference_time, units = "days")),
@@ -43,7 +42,7 @@ plot_sleep_spiral <- function(epochs, color_by = "default", col_names = NULL) {
     color_map <- stats::setNames(scales::hue_pal()(length(color_levels)), color_levels)
     # Orange for awake, colormap for others
     epochs$plot_color <- ifelse(
-      epochs$sleep_stage == "4",
+      epochs$is_asleep == "0",
       "Awake",
       as.character(epochs$color_group)
     )
@@ -52,16 +51,13 @@ plot_sleep_spiral <- function(epochs, color_by = "default", col_names = NULL) {
     legend_title <- color_by
   } else {
     # Default: original colors
-    epochs$plot_color <- epochs$sleep_stage
+    epochs$plot_color <- epochs$is_asleep
     color_values <- c(
-      "1" = "#6A3A9A",
-      "2" = "#D3B9E6",
-      "3" = "#A074C4",
-      "4" = "orange"
+      "0" = "orange", # Awake
+      "1" = "#A074C4" # Asleep
     )
-    color_labels <- c("Light Sleep", "REM Sleep", "Deep Sleep", "Awake")
     color_aes <- ggplot2::aes(color = .data$plot_color)
-    legend_title <- "Sleep Stage"
+    legend_title <- NULL
   }
 
   ggplot2::ggplot(epochs, ggplot2::aes(x = .data$angle, y = .data$radius)) +
@@ -72,8 +68,8 @@ plot_sleep_spiral <- function(epochs, color_by = "default", col_names = NULL) {
     ) +
     ggplot2::scale_color_manual(
       values = color_values,
-      breaks = if (color_by != "default" && color_by %in% names(epochs)) names(color_map) else c("2", "3", "1", "4"),
-      labels = if (color_by != "default" && color_by %in% names(epochs)) names(color_map) else color_labels,
+      breaks = if (color_by != "default" && color_by %in% names(epochs)) names(color_map) else c("0", "1"),
+      labels = if (color_by != "default" && color_by %in% names(epochs)) names(color_map) else c("Awake", "Asleep"),
       na.value = "grey"
     ) +
     ggplot2::coord_polar(theta = "x") +
