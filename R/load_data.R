@@ -44,6 +44,7 @@ load_sessions <- function(sessions_file) {
 #' @details The function loads the epoch data from a CSV file and groups the epochs by night.
 #' @export
 #' @family data loading
+#' @importFrom rlang .data
 load_epochs <- function(epochs_file) {
   if (!file.exists(epochs_file)) {
     cli::cli_abort(c(
@@ -65,13 +66,14 @@ load_epochs <- function(epochs_file) {
 
   fmt <- get_epochs_format(epochs)
   epochs <- set_data_type(epochs, fmt)
+  epochs <- clean_epochs(epochs)
 
   if (fmt == "somnofy_v1") {
     epochs <- epochs |>
       dplyr::mutate(session_id = stringr::str_extract(basename(epochs_file), "^[^.]+"))
   }
 
-  if (fmt %in% c("somnofy_v1", "somnofy_v2")) {
+  if (fmt %in% c("somnofy_v1", "somnofy_v2", "ggir")) {
     epochs |>
       group_epochs_by_night()
   } else {
@@ -126,7 +128,9 @@ get_sessions_format <- function(sessions) {
 }
 
 get_epochs_format <- function(epochs) {
-  if (all(c("timestamp", "session_id", "sleep_stage") %in% colnames(epochs))) {
+  if (all(c("timenum", "window", "SleepPeriodTime") %in% colnames(epochs))) {
+    "ggir"
+  } else if (all(c("timestamp", "session_id", "sleep_stage") %in% colnames(epochs))) {
     "somnofy_v2"
   } else if (all(c("timestamp", "sleep_stage") %in% colnames(epochs))) {
     "somnofy_v1"

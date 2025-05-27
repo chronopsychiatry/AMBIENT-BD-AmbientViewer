@@ -1,3 +1,5 @@
+# Sessions ----
+
 .sessions_col_somnofy_v2 <- list(
   id = "id",
   subject_id = "subject_id",
@@ -31,7 +33,7 @@
 )
 
 .sessions_col_ggir <- list(
-  id = "session_id",
+  id = "window_number",
   subject_id = "ID",
   sex = NULL,
   birth_year = NULL,
@@ -62,12 +64,15 @@
   night = NULL
 )
 
+# Epochs ----
+
 .epochs_col_somnofy_v2 <- list(
   timestamp = "timestamp",
   session_id = "session_id",
   signal_quality = "signal_quality_mean",
   sleep_stage = "sleep_stage",
-  night = "night"
+  night = "night",
+  is_asleep = "is_asleep"
 )
 
 .epochs_col_somnofy_v1 <- list(
@@ -75,7 +80,17 @@
   session_id = "session_id",
   signal_quality = "signal_quality_mean",
   sleep_stage = "sleep_stage",
-  night = "night"
+  night = "night",
+  is_asleep = "is_asleep"
+)
+
+.epochs_col_ggir <- list(
+  timestamp = "timenum",
+  session_id = "window",
+  signal_quality = NULL,
+  sleep_stage = "class_id",
+  night = "night",
+  is_asleep = "is_asleep"
 )
 
 .epochs_col_none <- list(
@@ -83,5 +98,6 @@
   session_id = NULL,
   signal_quality = NULL,
   sleep_stage = NULL,
-  night = NULL
+  night = NULL,
+  is_asleep = NULL
 )
