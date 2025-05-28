@@ -203,7 +203,6 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
 
     shiny::observe({
       shiny::req(removed_sessions(), filtered_sessions())
-      logging::loginfo(paste0("Removed sessions: ", nrow(removed_sessions()), ". Remaining sessions: ", sum(filtered_sessions()$display)))
     })
 
     output$removed_sessions_text <- shiny::renderUI({

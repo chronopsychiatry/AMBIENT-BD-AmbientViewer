@@ -29,6 +29,12 @@ get_session_colnames <- function(sessions, col_names = NULL) {
 
   default_list <- get(paste0(".sessions_col_", fmt))
 
+  for (name in names(default_list)) {
+    if (!default_list[name] %in% colnames(sessions)) {
+      default_list[name] <- list(NULL)
+    }
+  }
+
   if (is.null(col_names)) {
     return(default_list)
   }
@@ -66,6 +72,12 @@ get_epoch_colnames <- function(epochs, col_names = NULL) {
   }
 
   default_list <- get(paste0(".epochs_col_", epochs$.data_type[1]))
+
+  for (name in names(default_list)) {
+    if (!default_list[name] %in% colnames(epochs)) {
+      default_list[name] <- list(NULL)
+    }
+  }
 
   if (is.null(col_names)) {
     return(default_list)
