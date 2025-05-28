@@ -1,6 +1,6 @@
 # Ambient Viewer Changelog
 
-## 0.0.4 (in dev)
+## 0.0.4 (28/05/2025)
 
 ### New
 

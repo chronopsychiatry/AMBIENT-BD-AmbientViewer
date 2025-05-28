@@ -1,9 +1,9 @@
 Package: AmbientViewer
 Title: Filtering and Visualisation for Somnofy Data
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
     person("Daniel", "Thedie", , "daniel.thedie@ed.ac.uk", role = c("aut", "cre"))
-Description: This package helps importing, filtering and visualising data from Somnofy devices (VitalThings).
+Description: This package helps importing, filtering and visualising sleep data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
