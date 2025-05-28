@@ -81,10 +81,6 @@ override_col_names <- function(data, col_names, default_list) {
     val <- col_names[[name]]
     if (is.null(val)) {
       val <- default_list[[name]]
-    } else if (!val %in% colnames(data)) {
-      cli::cli_abort(c(
-        "!" = "Column {val} not found."
-      ))
     }
     result[[name]] <- val
   }
