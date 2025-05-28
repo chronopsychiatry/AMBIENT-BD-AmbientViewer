@@ -12,32 +12,14 @@
 plot_hypnogram <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
 
-  sleep_stage_labels <- c(
-    "1" = "Deep",
-    "2" = "Light",
-    "3" = "REM",
-    "4" = "Awake"
-  )
-  sleep_stage_colors <- c(  # Colors picked from the VT website
-    "Awake" = "#B81722",
-    "Light" = "#7DC9D0",
-    "Deep" = "#485D78",
-    "REM" = "#FAC54E"
-  )
-
-  sleep_stage_numeric <- c(
-    "Deep" = 1,
-    "Light" = 2,
-    "REM" = 3,
-    "Awake" = 4
-  )
-
   hypnogram_data <- epochs |>
-    dplyr::filter(.data[[col$sleep_stage]] != "5") |>
     dplyr::mutate(
       timestamp = parse_time(.data[[col$timestamp]]),
-      sleep_stage = factor(.data[[col$sleep_stage]], levels = names(sleep_stage_labels), labels = sleep_stage_labels),
-      sleep_stage_numeric = as.numeric(sleep_stage_numeric[as.character(.data$sleep_stage)])
+      sleep_stage_numeric = .data[[col$sleep_stage]] + 1,
+      sleep_stage = factor(
+        .data[[col$sleep_stage]],
+        levels = sort(unique(.data[[col$sleep_stage]]))
+      )
     ) |>
     dplyr::group_by(timestamp = lubridate::floor_date(.data$timestamp, unit = "minute")) |>
     dplyr::summarize(
@@ -45,6 +27,29 @@ plot_hypnogram <- function(epochs, col_names = NULL) {
       sleep_stage = dplyr::first(.data$sleep_stage),
       .groups = "drop"
     )
+
+  custom_colors <- c(
+    "#8dd3c7",  # Light teal (Set3)
+    "#ffffb3",  # Light yellow (Set3)
+    "#bebada",  # Light purple (Set3)
+    "#fb8072",  # Light coral (Set3)
+    "#80b1d3",  # Light blue (Set3)
+    "#fdb462",  # Light orange (Set3)
+    "#b3de69",  # Light green (Set3)
+    "#fccde5",  # Light pink (Set3)
+    "#d9d9d9",  # Light gray (Set3)
+    "#bc80bd",  # Medium purple (Set3)
+    "#1f77b4",  # Blue (tab20)
+    "#ff7f0e",  # Orange (tab20)
+    "#2ca02c",  # Green (tab20)
+    "#d62728",  # Red (tab20)
+    "#9467bd",  # Purple (tab20)
+    "#8c564b",  # Brown (tab20)
+    "#e377c2",  # Pink (tab20)
+    "#7f7f7f",  # Gray (tab20)
+    "#bcbd22",  # Yellow-green (tab20)
+    "#17becf"   # Cyan (tab20)
+  )
 
   ggplot2::ggplot(hypnogram_data) +
     ggplot2::geom_rect(
@@ -59,22 +64,22 @@ plot_hypnogram <- function(epochs, col_names = NULL) {
     ggplot2::scale_x_datetime(
       date_labels = "%Y-%m-%d\n%H:%M",
     ) +
-    ggplot2::scale_y_continuous(
-      breaks = sleep_stage_numeric,
-      labels = names(sleep_stage_numeric),
-      limits = c(0, max(sleep_stage_numeric) + 2)
-    ) +
-    ggplot2::scale_fill_manual(values = sleep_stage_colors) +
+    # ggplot2::scale_y_continuous(
+    #   breaks = sleep_stage_numeric,
+    #   labels = names(sleep_stage_numeric),
+    #   limits = c(0, max(sleep_stage_numeric) + 2)
+    # ) +
+    ggplot2::scale_fill_manual(values = custom_colors) +
     ggplot2::labs(
       x = NULL,
       y = NULL,
-      fill = "Sleep Stage",
+      fill = NULL,
       title = NULL
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, size = 12),
-      axis.text.y = ggplot2::element_text(size = 12),
+      axis.text.y = ggplot2::element_blank(),
       legend.text = ggplot2::element_text(size = 12),
       legend.title = ggplot2::element_text(size = 14),
       legend.position = "bottom"
