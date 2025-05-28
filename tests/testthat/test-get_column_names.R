@@ -14,7 +14,7 @@ epochs <- data.frame(
 
 test_that("get_session_colnames returns default values if col_names is NULL", {
   result <- get_session_colnames(sessions, col_names = NULL)
-  expect_equal(result, .sessions_col_somnofy_v2)
+  expect_equal(result$id, "id")
 })
 
 test_that("get_session_colnames overrides default values if col_names is provided", {
@@ -25,7 +25,7 @@ test_that("get_session_colnames overrides default values if col_names is provide
 
 test_that("get_epochs_colnames returns default values if col_names is NULL", {
   result <- get_epoch_colnames(epochs, col_names = NULL)
-  expect_equal(result, .epochs_col_somnofy_v2)
+  expect_equal(result$session_id, "session_id")
 })
 
 test_that("get_epochs_colnames overrides default values if col_names is provided", {

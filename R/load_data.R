@@ -104,13 +104,11 @@ set_data_type <- function(df, data_type) {
 
 get_sessions_format <- function(sessions) {
   if (all(c(
-    "id", "subject_id", "device_serial_number", "session_start", "session_end",
-    "time_at_sleep_onset", "time_at_wakeup", "sleep_period", "time_in_bed", "is_workday"
+    "id", "session_start", "session_end", "time_at_sleep_onset", "time_at_wakeup"
   ) %in% colnames(sessions))) {
     "somnofy_v2"
   } else if (all(c(
-    "session_id", "user_id", "sex", "birth_year", "session_start", "session_end",
-    "time_at_sleep_onset", "time_at_wakeup", "sleep_period", "time_in_bed", "is_workday"
+    "session_id", "session_start", "session_end", "time_at_sleep_onset", "time_at_wakeup"
   ) %in% colnames(sessions))) {
     "somnofy_v1"
   } else if (all(c(

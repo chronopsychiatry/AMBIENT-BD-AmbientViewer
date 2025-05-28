@@ -14,7 +14,7 @@ plot_sleep_spiral(epochs, color_by = "default", col_names = NULL)
 \item{col_names}{A list to override default column names. This function uses columns:
 \itemize{
 \item \code{timestamp}
-\item \code{sleep_stage}
+\item \code{is_asleep}
 }}
 }
 \value{

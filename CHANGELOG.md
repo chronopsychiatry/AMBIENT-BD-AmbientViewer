@@ -1,5 +1,12 @@
 # Ambient Viewer Changelog
 
+## 0.0.4 (28/05/2025)
+
+### New
+
+- Time-series data from GGIR (raw output from part 5) can be loaded as Epochs
+  - A new [wiki section](https://github.com/chronopsychiatry/AmbientViewer/wiki/Using-GGIR-data) has been added to explain which outputs can be used
+
 ## 0.0.3 (23/05/2025)
 
 ### New

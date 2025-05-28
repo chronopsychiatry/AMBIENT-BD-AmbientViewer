@@ -40,6 +40,7 @@ Other time processing:
 \code{\link{group_sessions_by_night}()},
 \code{\link{max_time}()},
 \code{\link{mean_time}()},
-\code{\link{min_time}()}
+\code{\link{min_time}()},
+\code{\link{time_diff}()}
 }
 \concept{time processing}

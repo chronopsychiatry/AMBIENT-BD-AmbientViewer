@@ -37,6 +37,7 @@ input_server <- function(id, session) {
       shiny::req(input$sessions_file)
       logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
       data <- load_sessions(input$sessions_file$datapath)
+      logging::loginfo(paste0("Detected data type: ", data$.data_type[1]))
       sessions_data(data)
       sessions_colnames(get_session_colnames(data))
     })
