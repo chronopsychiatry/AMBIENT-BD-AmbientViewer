@@ -2,6 +2,7 @@
 #'
 #' This function calculates the mean time from a vector of time strings in the format "YYYY-MM-DD HH:MM:SS".
 #' @param time_vector A vector of time strings in format "YYYY-MM-DD HH:MM:SS", "HH:MM:SS" or "HH:MM".
+#' @param unit The unit of time for the result. Can be "HH:MM" (default), "hour", "minute" or "second".
 #' @returns A string representing the mean time in the format "HH:MM".
 #' @export
 #' @family time processing
@@ -16,7 +17,7 @@
 #'
 #' # Use on a dataframe column
 #' mean_time(example_sessions$time_at_sleep_onset)
-mean_time <- function(time_vector) {
+mean_time <- function(time_vector, unit = "HH:MM") {
   if (length(time_vector) == 0) {
     return(NA_character_)
   }
@@ -24,11 +25,52 @@ mean_time <- function(time_vector) {
   time_vector <- time_vector |>
     parse_time() |>
     stats::na.omit() |>
-    time_diff(t1 = "00:00", t2 = _, unit = "second") |>
-    convert_times_to_mean_angle(unit = "second") |>
-    convert_angle_to_time(unit = "second") |>
-    as.POSIXct(origin = "1970-01-01", tz = "UTC") |>
-    format("%H:%M")
+    time_to_hours() |>
+    circular::circular(units = "hours", modulo = "asis") |>
+    circular::mean.circular() |>
+    as.numeric() |>
+    prod(3600) |>
+    round() |>
+    as.POSIXct(origin = "1970-01-01", tz = "UTC")
+
+  switch(unit,
+    "HH:MM" = time_vector |> format("%H:%M"),
+    "hour" = time_to_hours(time_vector),
+    "minute" = time_to_hours(time_vector) * 60,
+    "second" = time_to_hours(time_vector) * 3600,
+    cli::cli_abort(c("!" = "unit must be one of 'HH:MM', 'hour', 'minute', or 'second'.",
+                     "x" = "You supplied {unit}."))
+  )
+}
+
+#' Calculate the circular standard deviation of a vector of times
+#'
+#' This function calculates the standard deviation of a vector of time strings,
+#' accounting for the circular nature of time (e.g., 23:59 is close to 00:00).
+#' @param time_vector A vector of time strings in format "YYYY-MM-DD HH:MM:SS", "HH:MM:SS" or "HH:MM".
+#' @param unit The unit of time for the result. Can be "second", "minute", or "hour". Default is "hour".
+#' @returns A numeric value representing the standard deviation in the specified unit.
+#' @export
+#' @family time processing
+#' @examples
+#' sd_time(c("23:59", "00:01"))
+sd_time <- function(time_vector, unit = "hour") {
+  if (length(time_vector) == 0) {
+    return(NA_real_)
+  }
+  times_in_hours <- time_vector |>
+    parse_time() |>
+    stats::na.omit() |>
+    time_to_hours()
+  circ <- circular::circular(times_in_hours, units = "hours", modulo = "asis")
+  circ_sd <- circular::sd.circular(circ)
+  switch(unit,
+    hour = circ_sd,
+    minute = circ_sd * 60,
+    second = circ_sd * 3600,
+    cli::cli_abort(c("!" = "unit must be one of 'second', 'minute', or 'hour'.",
+                     "x" = "You supplied {unit}."))
+  )
 }
 
 #' Calculate the minimum time from 12pm to 12pm
@@ -97,47 +139,6 @@ time_diff <- function(t1, t2, unit = "hour") {
     cli::cli_abort(c("!" = "unit must be one of 'second', 'minute', or 'hour'.",
                      "x" = "You supplied {unit}."))
   )
-}
-
-#' Convert a vector of times to a mean angle
-#'
-#' This function converts a vector of times to a mean angle in radians.
-#' It is useful to calculate average times spanning midnight
-#' @param times A vector of times in seconds.
-#' @param unit A string indicating the unit of time. Can be "second", "minute", or "hour".
-#' @returns A numeric value representing the mean angle in radians.
-#' @export
-#' @family time processing
-#' @seealso [convert_angle_to_time()] to convert the mean angle back to time format.
-#' @examples
-#' convert_times_to_mean_angle(c(23, 10, 0), unit = "hour")
-convert_times_to_mean_angle <- function(times, unit = "second") {
-  if (!is.numeric(times) || any(times < 0)) {
-    cli::cli_abort(c("!" = "times must be a numeric vector with non-negative values."))
-  }
-  conversion_factor <- get_time_per_day(unit = unit)
-  atan2(mean(sin(2 * pi * times / conversion_factor)),
-        mean(cos(2 * pi * times / conversion_factor)))
-}
-
-#' Convert an angle to time
-#'
-#' This function converts an angle in radians to time in the provided unit (can be "second", "minute" or "hour").
-#' @param angle A numeric value representing the angle in radians.
-#' @param unit A string indicating the unit of time. Can be "second", "minute", or "hour".
-#' @returns A numeric value representing the time in the specified unit.
-#' @export
-#' @family time processing
-#' @seealso [convert_times_to_mean_angle()] to calculate the average angle from a vector of time values.
-#' @examples
-#' convert_angle_to_time(pi/2, unit = "hour")
-convert_angle_to_time <- function(angle, unit = "second") {
-  if (!is.numeric(angle)) {
-    cli::cli_abort(c("!" = "angle must be a numeric value."))
-  }
-  conversion_factor <- get_time_per_day(unit = unit)
-  time <- (angle / (2 * pi)) * conversion_factor
-  if (time >= 0) time else time + conversion_factor
 }
 
 #' Shift times to break at 12 pm

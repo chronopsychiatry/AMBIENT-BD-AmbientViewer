@@ -31,12 +31,11 @@ sessions <- group_sessions_by_night(example_sessions)
 \code{\link[=group_epochs_by_night]{group_epochs_by_night()}} to group epoch data by night.
 
 Other time processing: 
-\code{\link{convert_angle_to_time}()},
-\code{\link{convert_times_to_mean_angle}()},
 \code{\link{group_epochs_by_night}()},
 \code{\link{max_time}()},
 \code{\link{mean_time}()},
 \code{\link{min_time}()},
+\code{\link{sd_time}()},
 \code{\link{shift_times_by_12h}()},
 \code{\link{time_diff}()}
 }

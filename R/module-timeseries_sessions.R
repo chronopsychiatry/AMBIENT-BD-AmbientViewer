@@ -22,7 +22,7 @@ timeseries_sessions_module_ui <- function(id) {
       label = "Exclude Zero Values",
       value = FALSE
     ),
-    shiny::plotOutput(ns("timeseries_sessions_plot")),
+    plotly::plotlyOutput(ns("timeseries_sessions_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
       label = NULL
@@ -59,9 +59,10 @@ timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
       )
     })
 
-    output$timeseries_sessions_plot <- shiny::renderPlot({
+    output$timeseries_sessions_plot <- plotly::renderPlotly({
       shiny::req(timeseries_sessions_plot())
-      timeseries_sessions_plot()
+      p <- timeseries_sessions_plot()
+      plotly::ggplotly(p)
     })
 
     output$download_plot <- get_plot_download_handler(

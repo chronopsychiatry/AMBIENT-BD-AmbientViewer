@@ -28,6 +28,40 @@ test_that("mean_time handles single time input", {
   expect_equal(result, "12:00")
 })
 
+test_that("mean time outputs in correct format", {
+  time_vector <- c("2025-04-08 20:00:00", "2025-04-09 22:00:00")
+  result <- mean_time(time_vector, unit = "hour")
+  expect_equal(result, 21)
+  result <- mean_time(time_vector, unit = "minute")
+  expect_equal(result, 1260)
+  result <- mean_time(time_vector, unit = "second")
+  expect_equal(result, 75600)
+})
+
+test_that("sd_time calculates the correct deviation for valid time strings", {
+  time_vector <- c("2025-04-08 23:00:00", "2025-04-09 01:00:00")
+  result <- sd_time(time_vector)
+  expect_equal(round(result, 2), 0.26)
+})
+
+test_that("sd_time handles NA values gracefully", {
+  time_vector <- c("2025-04-08 23:00:00", NA, "2025-04-09 01:00:00")
+  result <- sd_time(time_vector)
+  expect_equal(round(result, 2), 0.26)
+})
+
+test_that("sd_time handles empty input", {
+  time_vector <- c()
+  result <- sd_time(time_vector)
+  expect_equal(result, NA_real_)
+})
+
+test_that("sd_time handles single time input", {
+  time_vector <- c("2025-04-08 12:00:00")
+  result <- sd_time(time_vector)
+  expect_equal(result, 0)
+})
+
 test_that("min_time calculates the correct minimum time", {
   time_vector <- c("2025-04-08 11:00:00", "2025-04-05 13:00:00")
   result <- min_time(time_vector)
@@ -45,30 +79,6 @@ test_that("time_diff calculates the correct time difference", {
   expect_equal(result, 9)
   result <- time_diff("2025-04-08 21:00:00", "2025-04-05 06:00:00", unit = "minute")
   expect_equal(result, 9 * 60)
-})
-
-test_that("convert_times_to_mean_angle works correctly", {
-  times <- c(0, 43200, 86400)
-  angle <- convert_times_to_mean_angle(times, unit = "second")
-  expect_true(is.numeric(angle))
-  expect_true(angle >= 0 && angle <= 2 * pi)
-})
-
-test_that("convert_times_to_mean_angle throws error for invalid input", {
-  expect_error(convert_times_to_mean_angle(c(-1, 43200), unit = "second"),
-               "times must be a numeric vector with non-negative values")
-})
-
-test_that("convert_angle_to_time works correctly", {
-  angle <- pi / 2
-  time <- convert_angle_to_time(angle, unit = "second")
-  expect_true(is.numeric(time))
-  expect_equal(time, 21600)
-})
-
-test_that("convert_angle_to_time throws error for invalid input", {
-  expect_error(convert_angle_to_time("pi", unit = "second"),
-               "angle must be a numeric value")
 })
 
 test_that("shift_times_by_12h shifts times correctly", {

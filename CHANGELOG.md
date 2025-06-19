@@ -1,5 +1,11 @@
 # Ambient Viewer Changelog
 
+## 0.0.5 (in dev)
+
+### Fixed
+
+- In Somnofy data, sleep stage 5 (no presence) was incorrectly classed as "asleep" in the spiral
+
 ## 0.0.4 (28/05/2025)
 
 ### New

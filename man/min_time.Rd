@@ -23,12 +23,11 @@ min_time(c("2025-04-08 23:00:00", "2025-04-09 01:00:00", "2025-04-09 02:30:00"))
 \code{\link[=max_time]{max_time()}} to calculate the maximum time in the same format.
 
 Other time processing: 
-\code{\link{convert_angle_to_time}()},
-\code{\link{convert_times_to_mean_angle}()},
 \code{\link{group_epochs_by_night}()},
 \code{\link{group_sessions_by_night}()},
 \code{\link{max_time}()},
 \code{\link{mean_time}()},
+\code{\link{sd_time}()},
 \code{\link{shift_times_by_12h}()},
 \code{\link{time_diff}()}
 }

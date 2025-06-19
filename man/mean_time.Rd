@@ -4,10 +4,12 @@
 \alias{mean_time}
 \title{Calculate the mean time from a vector of time strings}
 \usage{
-mean_time(time_vector)
+mean_time(time_vector, unit = "HH:MM")
 }
 \arguments{
 \item{time_vector}{A vector of time strings in format "YYYY-MM-DD HH:MM:SS", "HH:MM:SS" or "HH:MM".}
+
+\item{unit}{The unit of time for the result. Can be "HH:MM" (default), "hour", "minute" or "second".}
 }
 \value{
 A string representing the mean time in the format "HH:MM".
@@ -29,12 +31,11 @@ mean_time(example_sessions$time_at_sleep_onset)
 }
 \seealso{
 Other time processing: 
-\code{\link{convert_angle_to_time}()},
-\code{\link{convert_times_to_mean_angle}()},
 \code{\link{group_epochs_by_night}()},
 \code{\link{group_sessions_by_night}()},
 \code{\link{max_time}()},
 \code{\link{min_time}()},
+\code{\link{sd_time}()},
 \code{\link{shift_times_by_12h}()},
 \code{\link{time_diff}()}
 }
