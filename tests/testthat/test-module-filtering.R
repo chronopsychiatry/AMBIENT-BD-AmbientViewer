@@ -15,6 +15,7 @@ test_that("filtering module works", {
         remove_sessions_no_sleep() |>
         set_min_time_in_bed(2, flag_only = TRUE) |>
         set_session_sleep_onset_range("20:00", "06:00", flag_only = TRUE)
+      rownames(expected_sessions) <- NULL
       expect_equal(filtered_sessions(), expected_sessions)
     }
   )
