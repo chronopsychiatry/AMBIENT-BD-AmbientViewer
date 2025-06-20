@@ -13,8 +13,7 @@ plot_sleep_bubbles(sessions, color_by = "default", col_names = NULL)
 
 \item{col_names}{A list to override default column names. This function uses columns:
 \itemize{
-\item \code{time_at_sleep_onset}
-\item \code{time_at_wakeup}
+\item \code{sleep_period}
 \item \code{night}
 }}
 }

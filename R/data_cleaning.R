@@ -14,7 +14,10 @@ clean_ggir_sessions <- function(sessions) {
       sleep_period = .data$dur_spt_sleep_min * 60,
       time_in_bed = time_diff(.data$sleeponset_ts, .data$wakeup_ts, unit = "second"),
       is_workday = ifelse(.data$daytype == "WD", TRUE, FALSE)
-    )
+    ) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(midsleep_ts = mean_time(c(.data$sleeponset_ts, .data$wakeup_ts))) |>
+    dplyr::ungroup()
 }
 
 #' @importFrom rlang .data

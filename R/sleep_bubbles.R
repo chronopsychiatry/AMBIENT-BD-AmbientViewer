@@ -3,8 +3,7 @@
 #' @description This function creates a bubble plot of sleep sessions, where the size and colour of the bubbles represents the sleep duration.
 #' @param sessions The sessions dataframe.
 #' @param col_names A list to override default column names. This function uses columns:
-#' - `time_at_sleep_onset`
-#' - `time_at_wakeup`
+#' - `sleep_period`
 #' - `night`
 #' @param color_by The variable to color the bubbles by. Can be "default" or any other column name in the sessions dataframe.
 #' @returns A ggplot object containing the sleep bubbles graph.
@@ -16,7 +15,7 @@ plot_sleep_bubbles <- function(sessions, color_by = "default", col_names = NULL)
 
   sessions <- sessions |>
     dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
-    dplyr::mutate(sleep_duration = time_diff(.data[[col$time_at_sleep_onset]], .data[[col$time_at_wakeup]]))
+    dplyr::mutate(sleep_duration = .data[[col$sleep_period]] / 3600)
 
   if (color_by != "default" && color_by %in% names(sessions)) {
     sessions$color_group <- as.factor(sessions[[color_by]])

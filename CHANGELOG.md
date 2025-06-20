@@ -2,6 +2,15 @@
 
 ## 0.0.5 (in dev)
 
+### New
+
+- Added functions to calculate different metrics on sleep regularity (see [Fischer et al., 2021](https://academic.oup.com/sleep/article/44/10/zsab103/6232042#400055633) for details on these metrics)
+  - Interdaily stability (IS)
+  - Social jet-lag (SJL)
+  - Chronotype
+  - Composite Phase Deviation (CPD)
+  - Sleep Regularity Index (SRI)
+
 ### Fixed
 
 - In Somnofy data, sleep stage 5 (no presence) was incorrectly classed as "asleep" in the spiral
