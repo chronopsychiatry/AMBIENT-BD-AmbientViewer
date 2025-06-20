@@ -24,6 +24,8 @@ Imports:
     ggplot2,
     logging,
     lubridate,
+    markdown,
+    plotly,
     readr,
     rlang,
     scales,

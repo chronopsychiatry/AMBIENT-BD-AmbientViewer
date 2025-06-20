@@ -73,20 +73,20 @@ plot_timeseries_sessions <- function(sessions, variable, color_by = "default", e
 
   if (is_iso8601_datetime(sessions[[variable]])) {
     sessions <- sessions |>
-      dplyr::mutate(plot_var = time_to_hours(.data[[variable]]))
+      dplyr::mutate(variable = time_to_hours(.data[[variable]]))
   } else {
-    sessions$plot_var <- sessions[[variable]]
+    sessions$variable <- sessions[[variable]]
   }
 
   if (color_by != "default" && color_by %in% names(sessions)) {
     sessions$color_group <- as.factor(sessions[[color_by]])
-    color_aes <- ggplot2::aes(x = .data[[col$night]], y = .data$plot_var, color = .data$color_group)
+    color_aes <- ggplot2::aes(x = .data[[col$night]], y = .data$variable, color = .data$color_group)
     color_scale <- ggplot2::scale_color_manual(
       values = stats::setNames(scales::hue_pal()(length(levels(sessions$color_group))), levels(sessions$color_group)),
       name = color_by
     )
   } else {
-    color_aes <- ggplot2::aes(x = .data[[col$night]], y = .data$plot_var)
+    color_aes <- ggplot2::aes(x = .data[[col$night]], y = .data$variable)
     color_scale <- ggplot2::scale_color_manual(values = "black", guide = "none")
   }
 

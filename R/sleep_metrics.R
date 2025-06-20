@@ -9,7 +9,7 @@
 #' @export
 #' @family sleep metrics
 #' @examples
-#' interdaily_stability(example_epochs, "is_asleep")
+#' interdaily_stability(example_epochs)
 #' @importFrom rlang .data
 interdaily_stability <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
@@ -20,7 +20,7 @@ interdaily_stability <- function(epochs, col_names = NULL) {
                   day = as.Date(.data$time))
 
   mean_tod <- epochs |>
-    dplyr::group_by(tod) |>
+    dplyr::group_by(.data$tod) |>
     dplyr::summarise(mean_val = mean(.data[[col$is_asleep]], na.rm = TRUE), .groups = "drop")
 
   overall_mean <- mean(epochs[[col$is_asleep]], na.rm = TRUE)
@@ -38,7 +38,6 @@ interdaily_stability <- function(epochs, col_names = NULL) {
 #' This function calculates the Social Jet Lag (SJL) metric as the difference in mid-sleep times
 #' between workdays and free days.
 #' @param sessions The sessions data frame
-#' @param midsleep The name of the column containing mid-sleep times (default is "time_at_midsleep")
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `time_at_midsleep`
 #' - `is_workday`
@@ -53,7 +52,7 @@ social_jet_lag <- function(sessions, col_names = NULL) {
 
   sessions <- sessions |>
     dplyr::mutate(is_workday = as.logical(.data[[col$is_workday]])) |>
-    dplyr::group_by(is_workday) |>
+    dplyr::group_by(.data$is_workday) |>
     dplyr::summarise(
       mean_midsleep = mean_time(.data[[col$time_at_midsleep]], unit = "hour"), .groups = "drop"
     )
@@ -103,7 +102,7 @@ chronotype <- function(sessions, col_names = NULL) {
     sleep_duration_all <- sessions |>
       remove_sessions_no_sleep() |>
       dplyr::summarise(sleep_duration = mean(.data[[col$sleep_period]] / 3600, na.rm = TRUE)) |>
-      dplyr::pull(sleep_duration)
+      dplyr::pull(.data$sleep_duration)
     chronotype - (sleep_period_free - sleep_duration_all) / 2
   }
 }
@@ -132,9 +131,9 @@ composite_phase_deviation <- function(sessions, col_names = NULL) {
     remove_sessions_no_sleep() |>
     dplyr::arrange(.data[[col$night]]) |>
     dplyr::mutate(mistiming = chronotype - time_to_hours(.data[[col$time_at_midsleep]]),
-                  irregularity = mistiming - dplyr::lag(mistiming)) |>
-    dplyr::summarise(cpd = mean(sqrt(mistiming^2 + irregularity^2), na.rm = TRUE)) |>
-    dplyr::pull(cpd)
+                  irregularity = .data$mistiming - dplyr::lag(.data$mistiming)) |>
+    dplyr::summarise(cpd = mean(sqrt(.data$mistiming^2 + .data$irregularity^2), na.rm = TRUE)) |>
+    dplyr::pull(.data$cpd)
 }
 
 #' Calculate the Sleep Regularity Index (SRI)
@@ -162,7 +161,7 @@ sleep_regularity_index <- function(epochs, col_names = NULL) {
   p_same <- data.frame(timestamp = seq(min(epochs$timestamp), max(epochs$timestamp), by = 30)) |>
     dplyr::left_join(epochs, by = "timestamp") |>
     dplyr::mutate(is_asleep = ifelse(is.na(.data[[col$is_asleep]]), 0, .data[[col$is_asleep]]),
-                  is_asleep_nextday = dplyr::lead(is_asleep, n = 24*60*2)) |> # 24h = 2880 epochs of 30s
+                  is_asleep_nextday = dplyr::lead(.data$is_asleep, n = 24*60*2)) |> # 24h = 2880 epochs of 30s
     dplyr::mutate(same_state = .data$is_asleep == .data$is_asleep_nextday) |>
     dplyr::summarise(p_same = mean(.data$same_state, na.rm = TRUE)) |>
     dplyr::pull(p_same)

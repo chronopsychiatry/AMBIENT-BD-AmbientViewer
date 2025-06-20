@@ -71,6 +71,7 @@ ambient_viewer <- function() {
             tabPanel("Compliance", compliance_module("compliance"), value = "compliance_tab"),
             tabPanel("Filtering", filtering_tab("filtering"), value = "filtering_tab"),
             tabPanel("Annotation", annotation_module_ui("annotation"), value = "annotation_tab"),
+            tabPanel("Sleep Regularity", sleep_regularity_module("sleep_regularity"), value = "sleep_regularity_tab"),
           ),
         ),
 
@@ -152,6 +153,9 @@ ambient_viewer <- function() {
 
     # Summary table module
     summary_server("summary", annotated_sessions, annotated_epochs, sessions_colnames, epochs_colnames)
+
+    # Sleep regularity module
+    sleep_regularity_server("sleep_regularity", annotated_sessions, annotated_epochs, sessions_colnames, epochs_colnames)
 
     # Export data module
     export_data_server("export_data", annotated_sessions, annotated_epochs)

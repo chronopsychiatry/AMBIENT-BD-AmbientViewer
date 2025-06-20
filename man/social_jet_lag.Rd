@@ -14,8 +14,6 @@ social_jet_lag(sessions, col_names = NULL)
 \item \code{time_at_midsleep}
 \item \code{is_workday}
 }}
-
-\item{midsleep}{The name of the column containing mid-sleep times (default is "time_at_midsleep")}
 }
 \value{
 The Social Jet Lag (SJL) value in hours

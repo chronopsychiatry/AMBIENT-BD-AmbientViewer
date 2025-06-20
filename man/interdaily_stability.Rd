@@ -22,7 +22,7 @@ The Interdaily Stability (IS) value
 This function calculates the Interdaily Stability (IS) metric from a binary awake/asleep variable
 }
 \examples{
-interdaily_stability(example_epochs, "is_asleep")
+interdaily_stability(example_epochs)
 }
 \seealso{
 Other sleep metrics: 

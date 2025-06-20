@@ -37,7 +37,7 @@ input_server <- function(id, session) {
       shiny::req(input$sessions_file)
       logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
       data <- load_sessions(input$sessions_file$datapath)
-      logging::loginfo(paste0("Detected data type: ", data$.data_type[1]))
+      logging::loginfo(paste0("Detected session data type: ", data$.data_type[1]))
       sessions_data(data)
       sessions_colnames(get_session_colnames(data))
     })
@@ -104,6 +104,7 @@ input_server <- function(id, session) {
       shiny::req(input$epochs_file)
       logging::loginfo(paste0("Loading epochs file: ", input$epochs_file$name))
       data <- load_epochs(input$epochs_file$datapath)
+      logging::loginfo(paste0("Detected epoch data type: ", data$.data_type[1]))
       if (data$.data_type[1] == "somnofy_v1") {
         data$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
       }
