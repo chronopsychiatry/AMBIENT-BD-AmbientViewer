@@ -1,8 +1,9 @@
 sleep_regularity_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::uiOutput(ns("sleep_regularity_text")),
-    shiny::tableOutput(ns("sleep_regularity_table"))
+    shiny::HTML("Click on metrics names for more information.<br>"),
+    shiny::tableOutput(ns("sleep_regularity_table")),
+    shiny::HTML("Metrics based on <a href='https://doi.org/10.1093/sleep/zsab103' target='_blank'> Fischer et al. (2021)</a>.")
   )
 }
 
@@ -10,9 +11,17 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    output$sleep_regularity_text <- shiny::renderUI({
-      shiny::req(sessions(), epochs())
-      shiny::HTML("Click on metrics names for more information.<br>")
+    sessions_in <- sessions
+    epochs_in <- epochs
+
+    sessions <- shiny::reactive({
+      shiny::req(sessions_in())
+      sessions_in()[sessions_in()$display, ]
+    })
+
+    epochs <- shiny::reactive({
+      shiny::req(epochs_in())
+      epochs_in()[epochs_in()$display, ]
     })
 
     metric_names <- c(
@@ -87,6 +96,7 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
       shiny::showModal(
         shiny::modalDialog(
           title = gsub("_", " ", metric_name),
+          size = "l",
           shiny::includeMarkdown(system.file(paste0("resources/", metric_name, ".md"), package = "AmbientViewer")),
           easyClose = TRUE,
           footer = shiny::modalButton("Close")

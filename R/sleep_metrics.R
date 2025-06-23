@@ -130,8 +130,9 @@ composite_phase_deviation <- function(sessions, col_names = NULL) {
   sessions |>
     remove_sessions_no_sleep() |>
     dplyr::arrange(.data[[col$night]]) |>
-    dplyr::mutate(mistiming = chronotype - time_to_hours(.data[[col$time_at_midsleep]]),
-                  irregularity = .data$mistiming - dplyr::lag(.data$mistiming)) |>
+    dplyr::mutate(midsleep_h = time_to_hours(.data[[col$time_at_midsleep]]),
+                  mistiming = chronotype - .data$midsleep_h,
+                  irregularity = .data$midsleep_h - dplyr::lag(.data$midsleep_h)) |>
     dplyr::summarise(cpd = mean(sqrt(.data$mistiming^2 + .data$irregularity^2), na.rm = TRUE)) |>
     dplyr::pull(.data$cpd)
 }

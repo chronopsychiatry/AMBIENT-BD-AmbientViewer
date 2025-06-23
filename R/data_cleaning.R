@@ -16,7 +16,7 @@ clean_ggir_sessions <- function(sessions) {
       is_workday = ifelse(.data$daytype == "WD", TRUE, FALSE)
     ) |>
     dplyr::rowwise() |>
-    dplyr::mutate(midsleep_ts = mean_time(c(.data$sleeponset_ts, .data$wakeup_ts))) |>
+    dplyr::mutate(midsleep_ts = .data$sleeponset_ts + (.data$time_in_bed / 2)) |>
     dplyr::ungroup()
 }
 

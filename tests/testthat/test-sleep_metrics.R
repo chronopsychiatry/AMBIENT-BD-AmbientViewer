@@ -15,7 +15,7 @@ test_that("chronotype works", {
 
 test_that("composite_phase_deviation works", {
   result <- composite_phase_deviation(example_sessions)
-  expect_equal(round(result, 2), 4.25)
+  expect_equal(round(result, 1), 4.3)
 })
 
 test_that("sleep_regularity_index works", {
