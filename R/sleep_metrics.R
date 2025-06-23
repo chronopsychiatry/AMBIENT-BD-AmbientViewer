@@ -153,7 +153,7 @@ composite_phase_deviation <- function(sessions, col_names = NULL) {
 #' @importFrom rlang .data
 sleep_regularity_index <- function(epochs, col_names = NULL) {
   col <- get_epoch_colnames(epochs, col_names)
-  
+
   epochs <- epochs |>
     dplyr::mutate(
       timestamp = floor(as.numeric(parse_time(.data[[col$timestamp]])))
