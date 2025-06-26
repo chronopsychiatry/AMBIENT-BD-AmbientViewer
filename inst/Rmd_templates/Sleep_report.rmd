@@ -1,0 +1,135 @@
+---
+title: ""
+output:
+    pdf_document:
+        latex_engine: pdflatex
+        keep_tex: false
+geometry: left=1em, right=1em, top=2em, bottom=1em, a4paper, landscape
+header-includes:
+  - \usepackage{microtype}
+  - \usepackage{moresize}
+  - \usepackage[most]{tcolorbox}
+  - \usepackage{xcolor}
+  - \renewcommand{\familydefault}{\sfdefault}
+  - \pagenumbering{gobble}
+  - \usepackage{xcolor}
+  - \definecolor{mybg}{RGB}{210,230,255}
+  - \usepackage{background}
+  - \backgroundsetup{
+      scale=1,
+      angle=0,
+      opacity=1,
+      contents={\includegraphics[width=\paperwidth,height=\paperheight]{../resources/Sleep_report_background.png}}
+    }
+---
+
+```{=latex}
+\noindent
+\color{white}
+\begin{minipage}[t]{0.32\textwidth}
+  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=center, arc=12pt, opacityback=0.5, boxrule=0pt]
+    \large
+    \begin{center}
+      \Large\textbf{Sleep Monitoring}
+    \end{center}
+    \vspace*{0.02\textheight}
+      Your sleep was monitored using a Somnofy device. The device uses radar technology to detect your movements and breathing patterns during sleep. This was used to record:
+      \begin{itemize}
+        \item When you fell asleep and woke up
+        \item How long you slept
+        \item Your sleep efficiency (the percentage of time you spent asleep while in bed)
+      \end{itemize}
+      \vspace*{0.02\textheight}
+      \begin{center}
+        \includegraphics[width=0.2\textwidth]{../resources/Somnofy_device.png}
+      \end{center}
+  \end{tcolorbox}
+  \vfill
+  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=center, arc=12pt, opacityback=0.5, boxrule=0pt]
+    \large
+    \begin{center}
+      \Large\textbf{Sleep Duration}
+    \end{center}
+```
+```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=5.5, fig.width=6}
+print(sleep_bubbles)
+```
+```{=latex}
+  \end{tcolorbox}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.33\textwidth}
+  \centering
+  \vspace*{-0.4\textheight}
+  {\HUGE \textls[150]{Ambient-BD}}\\
+  \vspace*{0.02\textheight}
+  {\HUGE \textls[150]{Sleep Report}}\\
+  \vspace*{0.02\textheight}
+  {\large `r paste0("\\texttt{", dates[1], "}")` to `r paste0("\\texttt{", dates[2], "}")`}
+
+  \vspace*{0.06\textheight}
+```
+```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=6}
+print(clock_plot)
+```
+```{=latex}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.32\textwidth}
+\begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=center, arc=12pt, opacityback=0, boxrule=0pt, left=0pt, right=0pt, top=0pt, bottom=0pt]
+  \begin{tabular}{@{}p{0.48\textwidth}@{\hspace{0.02\textwidth}}p{0.48\textwidth}@{}}
+    \begin{tcolorbox}[standard jigsaw, height=0.21\textheight, arc=8pt, opacityback=0.5, boxrule=0pt, colback=white]
+      \large
+      \begin{center}
+        \includegraphics[width=0.6\textwidth]{../resources/Person_brooding.png}\\
+        \textbf{Time to fall asleep}\\
+        `r paste0("\\texttt{", stats$time_to_fall_asleep, "}")` minutes
+      \end{center}
+    \end{tcolorbox} &
+    \begin{tcolorbox}[standard jigsaw, height=0.21\textheight, arc=8pt, opacityback=0.5, boxrule=0pt, colback=white]
+      \large
+      \begin{center}
+        \vspace*{0.035\textheight}
+        \includegraphics[width=0.6\textwidth]{../resources/Person_sleeping.png}\\
+        \textbf{Sleep efficiency}\\
+        `r paste0("\\texttt{", stats$sleep_efficiency, "}")`\%
+      \end{center}
+    \end{tcolorbox} \\
+    \begin{tcolorbox}[standard jigsaw, height=0.21\textheight, arc=8pt, opacityback=0.5, boxrule=0pt, colback=white]
+      \large
+      \begin{center}
+        \includegraphics[width=\textwidth]{../resources/`r stats$chronotype_image`}\\
+        \textbf{Chronotype}\\
+        `r stats$chronotype`
+      \end{center}
+    \end{tcolorbox} &
+    \begin{tcolorbox}[standard jigsaw, height=0.21\textheight, arc=8pt, opacityback=0.5, boxrule=0pt, colback=white]
+      \large
+      \begin{center}
+        \vspace*{0.03\textheight}
+        \includegraphics[width=0.5\textwidth]{../resources/Clock.png}\\
+        \vspace*{0.015\textheight}
+        \textbf{Sleep regularity}\\
+        `r paste0("\\texttt{", stats$sleep_regularity, "/100}")`
+      \end{center}
+    \end{tcolorbox}
+  \end{tabular}
+  \end{tcolorbox}
+  \vfill
+  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=center, arc=12pt, opacityback=0.5, boxrule=0pt]
+    \large
+    \begin{center}
+      \Large\textbf{Sleep and Wakeup times}
+    \end{center}
+```
+```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=7}
+print(sleep_times)
+```
+```{=latex}
+  \end{tcolorbox}
+\end{minipage}
+
+{\small Chronotype image credit: `r stats$chronotype_credit`}
+
+\vfill
+```
