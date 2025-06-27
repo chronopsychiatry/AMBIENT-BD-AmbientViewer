@@ -6,6 +6,7 @@
 
 - Added the `sleep_report` function to generate a sleep report for patients, using R markdown
   - Added a "Download subject report" button to the Export Data section of Ambient Viewer
+- Added sleep efficiency to the Sessions summary table
 
 ## 0.0.5 (25/06/2025)
 
