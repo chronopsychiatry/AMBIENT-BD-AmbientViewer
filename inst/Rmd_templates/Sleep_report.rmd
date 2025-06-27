@@ -143,7 +143,7 @@ print(sleep_times)
 \begin{spacing}{2}
 \color{white}
 \large
-\begin{tcolorbox}[standard jigsaw, height=0.95\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
+\begin{tcolorbox}[standard jigsaw, height=0.92\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
   \vspace*{0.02\textheight}
   \begin{center}
     \huge\textbf{Glossary}
