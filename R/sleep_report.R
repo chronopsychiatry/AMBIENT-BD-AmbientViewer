@@ -7,6 +7,7 @@
 #' - `night`
 #' - `time_at_sleep_onset`
 #' - `time_at_wakeup`
+#' - `time_at_midsleep`
 #' - `sleep_onset_latency`
 #' @param output_file Path for the output PDF. Default is "Sleep_report.pdf"
 #' @export
@@ -15,11 +16,11 @@ sleep_report <- function(sessions, col_names = NULL, output_file = "Sleep_report
 
   dates <- format(c(min(sessions[[col$night]]), max(sessions[[col$night]])), "%d/%m/%Y")
 
-  # Stats: Time to fall asleep, sleep efficiency, chronotype, SRI
+  # Stats: Time to fall asleep, sleep efficiency, chronotype, Sleep Regularity (based on midsleep standard deviation)
   stats <- list()
   stats$time_to_fall_asleep <- round(mean(sessions[[col$sleep_onset_latency]], na.rm = TRUE) / 60)
   stats$sleep_efficiency <- round(mean(sessions[[col$sleep_period]], na.rm = TRUE) / mean(sessions[[col$time_in_bed]], na.rm = TRUE) * 100)
-  stats$chronotype <- ifelse(mean_time(sessions[[col$time_at_sleep_onset]]) < 4.25, "Morning Lark", "Evening Owl")
+  stats$chronotype <- ifelse(mean_time(sessions[[col$time_at_midsleep]], unit = "hour") < 4.25, "Morning Lark", "Evening Owl")
   stats$chronotype_image <- ifelse(stats$chronotype == "Morning Lark",
     "Morning_Lark.jpg",
     "Evening_Owl.JPG"
@@ -50,8 +51,10 @@ sleep_report <- function(sessions, col_names = NULL, output_file = "Sleep_report
   template_path <- system.file("Rmd_templates", package = "AmbientViewer")
   rmarkdown::render(
     paste0(template_path, "/Sleep_report.rmd"),
-    output_file = "Sleep_report.pdf",
+    output_file = basename(output_file),
     params = list(clock_plot = clock_plot, dates = dates, stats = stats, sleep_times = sleep_times, sleep_bubbles = sleep_bubbles),
     output_dir = dirname(output_file),
+    quiet = TRUE,
   )
+  unlink(paste0(template_path, "/*.log"))
 }

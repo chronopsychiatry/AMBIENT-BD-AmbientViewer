@@ -6,6 +6,7 @@ output:
         keep_tex: false
 geometry: left=1em, right=1em, top=2em, bottom=1em, a4paper, landscape
 header-includes:
+  - \usepackage{setspace}
   - \usepackage{microtype}
   - \usepackage{moresize}
   - \usepackage[most]{tcolorbox}
@@ -45,7 +46,7 @@ header-includes:
       \end{center}
   \end{tcolorbox}
   \vfill
-  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=center, arc=12pt, opacityback=0.5, boxrule=0pt]
+  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
     \large
     \begin{center}
       \Large\textbf{Sleep Duration}
@@ -64,10 +65,10 @@ print(sleep_bubbles)
   {\HUGE \textls[150]{Ambient-BD}}\\
   \vspace*{0.02\textheight}
   {\HUGE \textls[150]{Sleep Report}}\\
-  \vspace*{0.02\textheight}
-  {\large `r paste0("\\texttt{", dates[1], "}")` to `r paste0("\\texttt{", dates[2], "}")`}
+  \vspace*{0.04\textheight}
+  {\Large `r paste0("\\texttt{", dates[1], "}")` to `r paste0("\\texttt{", dates[2], "}")`}
 
-  \vspace*{0.06\textheight}
+  \vspace*{0.04\textheight}
 ```
 ```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=6}
 print(clock_plot)
@@ -116,7 +117,7 @@ print(clock_plot)
   \end{tabular}
   \end{tcolorbox}
   \vfill
-  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=center, arc=12pt, opacityback=0.5, boxrule=0pt]
+  \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
     \large
     \begin{center}
       \Large\textbf{Sleep and Wakeup times}
@@ -128,8 +129,32 @@ print(sleep_times)
 ```{=latex}
   \end{tcolorbox}
 \end{minipage}
-
-{\small Chronotype image credit: `r stats$chronotype_credit`}
+\vspace*{0.01\textheight}
+\begin{flushleft}
+  \small
+  Chronotype image credit: `r stats$chronotype_credit`\\
+  The data presented in this report is solely for personal information, and is not a medical assessment of any sleep disorders.
+\end{flushleft}
 
 \vfill
+\clearpage
+
+\noindent
+\begin{spacing}{2}
+\color{white}
+\large
+\begin{tcolorbox}[standard jigsaw, height=0.95\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
+  \vspace*{0.02\textheight}
+  \begin{center}
+    \huge\textbf{Glossary}
+  \end{center}
+  \vspace*{0.04\textheight}
+  \textbf{Chronotype} - A person's natural inclination with regard to the timing of sleep and activity periods. Here, we have classified chronotypes into two categories: morning larks (who are more active in the morning) and evening owls (who are more active in the evening).\\
+  \textbf{Sleep duration} - The number of hours slept each night, not counting time spent awake in bed.\\
+  \textbf{Sleep efficiency} - The percentage of time spent asleep while in bed.\\
+  \textbf{Sleep regularity} - A measure of how consistent your sleep and wake times are, on a scale from 0 to 100.\\
+  \textbf{Somnofy} - A device that uses radar technology to monitor sleep patterns, including movements and breathing.\\
+  \textbf{Time to fall asleep} - The average time between getting into bed and falling asleep.\\
+\end{tcolorbox}
+\end{spacing}
 ```

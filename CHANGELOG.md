@@ -1,5 +1,12 @@
 # Ambient Viewer Changelog
 
+## 0.0.6 (in dev)
+
+### New
+
+- Added the `sleep_report` function to generate a sleep report for patients, using R markdown
+  - Added a "Download subject report" button to the Export Data section of Ambient Viewer
+
 ## 0.0.5 (25/06/2025)
 
 ### New
