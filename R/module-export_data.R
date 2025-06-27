@@ -8,6 +8,10 @@ export_data_module <- function(id) {
     shiny::downloadButton(
       outputId = ns("download_epochs"),
       label = "Epochs"
+    ),
+    shiny::downloadButton(
+      outputId = ns("download_report"),
+      label = "Subject Report"
     )
   )
 }
@@ -34,5 +38,15 @@ export_data_server <- function(id, sessions, epochs) {
         output_name = "epochs"
       )
     })
+
+    shiny::observe({
+      shiny::req(sessions())
+      sessions <- sessions()[sessions()$display, ]
+      output$download_report <- get_report_download_handler(
+        session = session,
+        sessions = sessions
+      )
+    })
+
   })
 }
