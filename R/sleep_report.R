@@ -48,6 +48,14 @@ sleep_report <- function(sessions, col_names = NULL, output_file = "Sleep_report
   sleep_bubbles <- plot_sleep_bubbles(sessions, col_names = col_names) +
     ggplot2::theme(panel.grid = ggplot2::element_blank())
 
+  if (inherits(sleep_bubbles$layers[[1]]$geom, "GeomRect")) {
+    sleep_bubbles$layers <- sleep_bubbles$layers[-1]
+    sleep_bubbles$layers[[1]]$aes_params$alpha <- 0.8
+    sleep_bubbles$layers[[1]]$aes_params$size <- 15
+    sleep_bubbles <- sleep_bubbles +
+      ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.15)))
+  }
+
   template_path <- system.file("Rmd_templates", package = "AmbientViewer")
   rmarkdown::render(
     paste0(template_path, "/Sleep_report.rmd"),

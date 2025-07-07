@@ -52,6 +52,8 @@ plot_sleep_bubbles <- function(sessions, color_by = "default", col_names = NULL)
     ) +
     ggplot2::theme_minimal(base_size = 16) +
     ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      axis.text = ggplot2::element_text(size = 14),
+      axis.title = ggplot2::element_text(size = 16)
     )
 }
