@@ -7,6 +7,10 @@
 - Added the `sleep_report` function to generate a sleep report for patients, using R markdown
   - Added a "Download subject report" button to the Export Data section of Ambient Viewer
 - Added sleep efficiency to the Sessions summary table
+- Added a "Sleep Times Distributions" tab that shows distributions of times at sleep onset, midsleep and wakeup. Three types of graph are available:
+  - Boxplot (horizontal)
+  - Histogram
+  - Density (with median value highlighted as dashed line)
 
 ## 0.0.5 (25/06/2025)
 

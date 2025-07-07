@@ -61,8 +61,7 @@ timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
 
     output$timeseries_sessions_plot <- plotly::renderPlotly({
       shiny::req(timeseries_sessions_plot())
-      p <- timeseries_sessions_plot()
-      plotly::ggplotly(p)
+      plotly::ggplotly(timeseries_sessions_plot())
     })
 
     output$download_plot <- get_plot_download_handler(

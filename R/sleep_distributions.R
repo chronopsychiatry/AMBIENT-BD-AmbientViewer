@@ -1,6 +1,4 @@
-utils::globalVariables(c("variable", "hour", "count"))
-
-#' Plot boxplots for sleep onset, midsleep, and wakeup times (horizontal, colored outline, filled dot outliers)
+#' Plot boxplots for sleep onset, midsleep, and wakeup times
 #'
 #' @param sessions The sessions dataframe
 #' @param col_names A list to override default column names. This function uses columns:
@@ -9,11 +7,12 @@ utils::globalVariables(c("variable", "hour", "count"))
 #' - `time_at_midsleep`
 #' @returns A ggplot object with three horizontal boxplots (onset, midsleep, wakeup)
 #' @export
+#' @importFrom rlang .data
 sleeptimes_boxplot <- function(sessions, col_names = NULL) {
   plot_data <- prepare_sleeptimes_data(sessions, col_names)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
-  ggplot2::ggplot(plot_data, ggplot2::aes(y = variable, x = hour, color = variable)) +
+  ggplot2::ggplot(plot_data, ggplot2::aes(y = .data$variable, x = .data$hour, color = .data$variable)) +
     ggplot2::geom_boxplot(
       fill = "white",
       outlier.shape = 16,
@@ -42,23 +41,24 @@ sleeptimes_boxplot <- function(sessions, col_names = NULL) {
     )
 }
 
-#' Plot histograms for sleep onset, midsleep, and wakeup times (overlaid, colored fill and outline)
+#' Plot histograms for sleep onset, midsleep, and wakeup times
 #'
 #' @param sessions The sessions dataframe
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `time_at_sleep_onset`
 #' - `time_at_wakeup`
 #' - `time_at_midsleep`
-#' @param binwidth The width of the bins for the histogram
+#' @param binwidth The width of the bins for the histogram (default 0.25)
 #' @returns A ggplot object with three overlaid histograms (sleep onset, midsleep, wakeup)
 #' @export
+#' @importFrom rlang .data
 sleeptimes_histogram <- function(sessions, col_names = NULL, binwidth = 0.25) {
   plot_data <- prepare_sleeptimes_data(sessions, col_names)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
-  ggplot2::ggplot(plot_data, ggplot2::aes(x = hour, color = variable)) +
+  ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$hour, color = .data$variable)) +
     ggplot2::geom_histogram(
-      ggplot2::aes(y = ggplot2::after_stat(count), fill = variable),
+      ggplot2::aes(y = ggplot2::after_stat(.data$count), fill = .data$variable),
       binwidth = binwidth,
       position = "identity",
       alpha = 0.3,
@@ -88,7 +88,7 @@ sleeptimes_histogram <- function(sessions, col_names = NULL, binwidth = 0.25) {
     )
 }
 
-#' Plot density curves for sleep onset, midsleep, and wakeup times (overlaid, colored fill and outline)
+#' Plot density curves for sleep onset, midsleep, and wakeup times with a dashed line showing the median
 #'
 #' @param sessions The sessions dataframe
 #' @param col_names A list to override default column names. This function uses columns:
@@ -98,16 +98,17 @@ sleeptimes_histogram <- function(sessions, col_names = NULL, binwidth = 0.25) {
 #' @param adjust The bandwidth adjustment for the density estimate (default 1)
 #' @returns A ggplot object with three overlaid density curves (sleep onset, midsleep, wakeup)
 #' @export
+#' @importFrom rlang .data
 sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
   plot_data <- prepare_sleeptimes_data(sessions, col_names)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
   medians <- plot_data |>
-    dplyr::group_by(variable) |>
-    dplyr::summarise(median_hour = median(hour), .groups = "drop")
+    dplyr::group_by(.data$variable) |>
+    dplyr::summarise(median_hour = stats::median(.data$hour), .groups = "drop")
 
   density_data <- plot_data |>
-    dplyr::group_by(variable) |>
+    dplyr::group_by(.data$variable) |>
     dplyr::group_modify(~{
       d <- stats::density(.x$hour, adjust = adjust)
       tibble::tibble(hour = d$x, density = d$y)
@@ -116,11 +117,11 @@ sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
 
   median_lines <- density_data |>
     dplyr::left_join(medians, by = "variable") |>
-    dplyr::group_by(variable) |>
-    dplyr::filter(abs(hour - median_hour) == min(abs(hour - median_hour))) |>
+    dplyr::group_by(.data$variable) |>
+    dplyr::filter(abs(.data$hour - .data$median_hour) == min(abs(.data$hour - .data$median_hour))) |>
     dplyr::slice(1) |>
     dplyr::ungroup() |>
-    dplyr::select(variable, median_hour, density_at_median = density)
+    dplyr::select("variable", "median_hour", density_at_median = .data$density)
 
   ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$hour, color = .data$variable, fill = .data$variable)) +
     ggplot2::geom_density(
@@ -165,8 +166,10 @@ sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
     )
 }
 
+#' @importFrom rlang .data
 prepare_sleeptimes_data <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
+  sessions <- remove_sessions_no_sleep(sessions)
   plot_data <- tidyr::pivot_longer(
     sessions,
     cols = dplyr::all_of(c(col$time_at_sleep_onset, col$time_at_midsleep, col$time_at_wakeup)),

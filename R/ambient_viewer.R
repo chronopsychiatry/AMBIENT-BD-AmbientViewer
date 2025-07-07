@@ -83,7 +83,8 @@ ambient_viewer <- function() {
             type = "tabs",
             tabPanel("Sleep Clock", sleep_clock_module_ui("sleep_clock")),
             tabPanel("Sleep Spiral", sleep_spiral_module_ui("sleep_spiral")),
-            tabPanel("Sleep onset & Wakeup", bedtimes_waketimes_module_ui("bedtimes_waketimes")),
+            tabPanel("Sleep Onset & Wakeup", bedtimes_waketimes_module_ui("bedtimes_waketimes")),
+            tabPanel("Sleep Times Distributions", sleep_distributions_module_ui("sleep_distributions")),
             tabPanel("Sleep Bubbles", sleep_bubbles_module_ui("sleep_bubbles")),
             tabPanel("Hypnogram", hypnogram_module_ui("hypnogram")),
             tabPanel("Session Timeseries", timeseries_sessions_module_ui("timeseries_sessions")),
@@ -164,6 +165,7 @@ ambient_viewer <- function() {
     sleep_clock_module_server("sleep_clock", annotated_sessions, sessions_colnames)
     sleep_spiral_module_server("sleep_spiral", annotated_epochs, epochs_colnames)
     bedtimes_waketimes_module_server("bedtimes_waketimes", annotated_sessions, sessions_colnames)
+    sleep_distributions_module_server("sleep_distributions", annotated_sessions, sessions_colnames)
     sleep_bubbles_module_server("sleep_bubbles", annotated_sessions, sessions_colnames)
     hypnogram_module_server("hypnogram", annotated_epochs, epochs_colnames)
     timeseries_sessions_module_server("timeseries_sessions", annotated_sessions, sessions_colnames)

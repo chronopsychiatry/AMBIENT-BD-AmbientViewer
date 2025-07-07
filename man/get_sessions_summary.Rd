@@ -14,6 +14,7 @@ get_sessions_summary(sessions, col_names = NULL)
 \item \code{time_at_sleep_onset}
 \item \code{time_at_wakeup}
 \item \code{time_in_bed}
+\item \code{sleep_period}
 }}
 }
 \value{
