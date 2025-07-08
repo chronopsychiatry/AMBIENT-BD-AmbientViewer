@@ -49,11 +49,11 @@ header-includes:
   \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
     \large
     \begin{center}
-      \Large\textbf{Sleep Duration}
+      \Large\textbf{Number of hours slept per night}
     \end{center}
 ```
 ```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=5.5, fig.width=6}
-print(sleep_bubbles)
+print(sleep_duration_plot)
 ```
 ```{=latex}
   \end{tcolorbox}
@@ -149,7 +149,7 @@ print(sleep_times)
     \huge\textbf{Glossary}
   \end{center}
   \vspace*{0.04\textheight}
-  \textbf{Chronotype} - A person's natural inclination with regard to the timing of sleep and activity periods. Here, we have classified chronotypes into two categories: morning larks (who are more active in the morning) and evening owls (who are more active in the evening).\\
+  \textbf{Chronotype} - A person's natural inclination with regard to the timing of sleep and activity periods. Here, we have classified chronotypes into two categories: morning larks (who are more active in the morning) and evening owls (who are more active in the evening). See the {\color{blue}\href{https://www.bioclocks.uk/_files/ugd/60af58_33654da1d8fd46f3810ca9f3743f9df4.pdf}{BioClocks UK factsheet}} for more information on Chronotype.\\
   \textbf{Sleep duration} - The number of hours slept each night, not counting time spent awake in bed.\\
   \textbf{Sleep efficiency} - The percentage of time spent asleep while in bed.\\
   \textbf{Sleep regularity} - A measure of how consistent your sleep and wake times are, on a scale from 0 to 100.\\

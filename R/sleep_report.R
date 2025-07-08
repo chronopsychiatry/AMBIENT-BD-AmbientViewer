@@ -45,24 +45,51 @@ sleep_report <- function(sessions, col_names = NULL, output_file = "Sleep_report
   sleep_times <- plot_bedtimes_waketimes(sessions, col_names = col_names, groupby = "weekday") +
     ggplot2::labs(title = NULL)
 
-  sleep_bubbles <- plot_sleep_bubbles(sessions, col_names = col_names) +
-    ggplot2::theme(panel.grid = ggplot2::element_blank())
-
-  if (inherits(sleep_bubbles$layers[[1]]$geom, "GeomRect")) {
-    sleep_bubbles$layers <- sleep_bubbles$layers[-1]
-    sleep_bubbles$layers[[1]]$aes_params$alpha <- 0.8
-    sleep_bubbles$layers[[1]]$aes_params$size <- 15
-    sleep_bubbles <- sleep_bubbles +
-      ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.15, 0.15)))
-  }
+  sleep_duration_plot <- sleep_duration_distribution(sessions, col_names = col_names)
 
   template_path <- system.file("Rmd_templates", package = "AmbientViewer")
   rmarkdown::render(
     paste0(template_path, "/Sleep_report.rmd"),
     output_file = basename(output_file),
-    params = list(clock_plot = clock_plot, dates = dates, stats = stats, sleep_times = sleep_times, sleep_bubbles = sleep_bubbles),
+    params = list(clock_plot = clock_plot, dates = dates, stats = stats, sleep_times = sleep_times, sleep_duration_plot = sleep_duration_plot),
     output_dir = dirname(output_file),
     quiet = TRUE,
   )
   unlink(paste0(template_path, "/*.log"))
+}
+
+sleep_duration_distribution <- function(sessions, col_names = NULL, adjust = 1) {
+  col <- get_session_colnames(sessions, col_names)
+
+  plot_data <- sessions |>
+    remove_sessions_no_sleep() |>
+    dplyr::filter(!is.na(.data[[col$sleep_period]])) |>
+    dplyr::mutate(sleep_period = as.numeric(.data[[col$sleep_period]]) / 3600)
+
+  ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$sleep_period)) +
+    ggplot2::geom_histogram(
+      ggplot2::aes(y = ggplot2::after_stat(.data$count)),
+      color = "blue",
+      fill = "blue",
+      binwidth = 0.25,
+      position = "identity",
+      alpha = 0.3,
+      linewidth = 0.5
+    ) +
+    ggplot2::labs(
+      title = NULL,
+      x = "Sleep Duration (hours)",
+      y = NULL
+    ) +
+    ggplot2::scale_x_continuous(
+      expand = ggplot2::expansion(mult = c(0.08, 0.08))
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text = ggplot2::element_text(size = 18),
+      axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_blank(),
+      axis.title = ggplot2::element_text(size = 20),
+      panel.grid = ggplot2::element_blank()
+    )
 }
