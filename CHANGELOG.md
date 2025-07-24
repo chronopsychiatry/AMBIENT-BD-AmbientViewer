@@ -1,5 +1,13 @@
 # Ambient Viewer Changelog
 
+## 0.0.7 (24/07/2025)
+
+## Sleep Report
+
+- The title of the Sleep Report can be set in the app via the corresponding text box, or by using the `title` argument with the `sleep_report` function
+  - Default title is an empty string, which will only print "Sleep Report"
+- Added a sentence in the "Sleep monitoring" section to let people know that the recording is not always fully accurate and can be influenced by external factors, e.g. pets
+
 ## 0.0.6 (15/07/2025)
 
 ### New

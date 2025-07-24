@@ -3,6 +3,7 @@
 #' This function generates a sleep report in PDF format using an R Markdown template.
 #' It is designed to work with Somnofy data, so some values may not be available when using other data sources such as GGIR.
 #' @param sessions The sessions dataframe
+#' @param title The title of the report. Default is an empty string.
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `night`
 #' - `time_at_sleep_onset`
@@ -11,7 +12,7 @@
 #' - `sleep_onset_latency`
 #' @param output_file Path for the output PDF. Default is "Sleep_report.pdf"
 #' @export
-sleep_report <- function(sessions, col_names = NULL, output_file = "Sleep_report.pdf") {
+sleep_report <- function(sessions, title = "", col_names = NULL, output_file = "Sleep_report.pdf") {
   col <- get_session_colnames(sessions, col_names)
 
   dates <- format(c(min(sessions[[col$night]]), max(sessions[[col$night]])), "%d/%m/%Y")
@@ -51,13 +52,19 @@ sleep_report <- function(sessions, col_names = NULL, output_file = "Sleep_report
   rmarkdown::render(
     paste0(template_path, "/Sleep_report.rmd"),
     output_file = basename(output_file),
-    params = list(clock_plot = clock_plot, dates = dates, stats = stats, sleep_times = sleep_times, sleep_duration_plot = sleep_duration_plot),
+    params = list(clock_plot = clock_plot,
+                  title = title,
+                  dates = dates,
+                  stats = stats,
+                  sleep_times = sleep_times,
+                  sleep_duration_plot = sleep_duration_plot),
     output_dir = dirname(output_file),
     quiet = TRUE,
   )
   unlink(paste0(template_path, "/*.log"))
 }
 
+#' @importFrom rlang .data
 sleep_duration_distribution <- function(sessions, col_names = NULL, adjust = 1) {
   col <- get_session_colnames(sessions, col_names)
 

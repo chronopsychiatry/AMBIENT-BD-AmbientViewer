@@ -1,6 +1,7 @@
 export_data_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::h5("Raw Data"),
     shiny::downloadButton(
       outputId = ns("download_sessions"),
       label = "Sessions"
@@ -8,6 +9,14 @@ export_data_module <- function(id) {
     shiny::downloadButton(
       outputId = ns("download_epochs"),
       label = "Epochs"
+    ),
+    shiny::br(),
+    shiny::br(),
+    shiny::h5("Subject Report"),
+    shiny::textInput(
+      inputId = ns("title"),
+      label = "Report Title",
+      value = ""
     ),
     shiny::downloadButton(
       outputId = ns("download_report"),
@@ -44,7 +53,8 @@ export_data_server <- function(id, sessions, epochs) {
       sessions <- sessions()[sessions()$display, ]
       output$download_report <- get_report_download_handler(
         session = session,
-        sessions = sessions
+        sessions = sessions,
+        title = shiny::reactive(input$title)
       )
     })
 

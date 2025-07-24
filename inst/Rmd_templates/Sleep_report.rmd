@@ -34,16 +34,20 @@ header-includes:
       \Large\textbf{Sleep Monitoring}
     \end{center}
     \vspace*{0.02\textheight}
-      Your sleep was monitored using a Somnofy device. The device uses radar technology to detect your movements and breathing patterns during sleep. This was used to record:
+      Your sleep was monitored using a Somnofy device. The device uses radar technology to detect your movements and breathing patterns during sleep.
+      This was used to record:
       \begin{itemize}
         \item When you fell asleep and woke up
         \item How long you slept
         \item Your sleep efficiency (the percentage of time you spent asleep while in bed)
       \end{itemize}
       \vspace*{0.02\textheight}
-      \begin{center}
-        \includegraphics[width=0.2\textwidth]{../resources/Somnofy_device.png}
-      \end{center}
+      \begin{tabular}{@{}p{0.55\textwidth}@{\hspace{0.02\textwidth}}p{0.42\textwidth}@{}}
+        Note: the recording may not be 100\% accurate, and can be influenced by external factors such as pets coming into bed. &
+        \begin{center}
+          \includegraphics[width=0.2\textwidth]{../resources/Somnofy_device.png}
+        \end{center}
+      \end{tabular}
   \end{tcolorbox}
   \vfill
   \begin{tcolorbox}[standard jigsaw, height=0.45\textheight, valign=top, arc=12pt, opacityback=0.5, boxrule=0pt]
@@ -62,7 +66,7 @@ print(sleep_duration_plot)
 \begin{minipage}[t]{0.33\textwidth}
   \centering
   \vspace*{-0.4\textheight}
-  {\HUGE \textls[150]{Ambient-BD}}\\
+  {\HUGE \textls[150]{`r title`}}\\
   \vspace*{0.02\textheight}
   {\HUGE \textls[150]{Sleep Report}}\\
   \vspace*{0.04\textheight}

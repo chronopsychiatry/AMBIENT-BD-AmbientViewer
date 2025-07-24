@@ -4,10 +4,17 @@
 \alias{sleep_report}
 \title{Generate a patient sleep report in PDF format}
 \usage{
-sleep_report(sessions, col_names = NULL, output_file = "Sleep_report.pdf")
+sleep_report(
+  sessions,
+  title = "",
+  col_names = NULL,
+  output_file = "Sleep_report.pdf"
+)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
+
+\item{title}{The title of the report. Default is an empty string.}
 
 \item{col_names}{A list to override default column names. This function uses columns:
 \itemize{

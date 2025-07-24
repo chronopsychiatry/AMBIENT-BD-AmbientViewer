@@ -132,6 +132,12 @@ ambient_viewer <- function() {
 
     # Filtering module
     filtered_sessions <- filtering_server("filtering", sessions, sessions_colnames, data$annotations)
+    observe({
+      req(filtered_sessions(), epochs())
+      logging::loginfo(paste0("Session ID for epochs: ", epochs()$session_id[1]))
+      logging::loginfo(paste0("Rows in Filtered Sessions: ", nrow(filtered_sessions())))
+      logging::loginfo(paste0("Epochs found in Sessions: ", epochs()$session_id[1] %in% filtered_sessions()$session_id))
+    })
     filtered_epochs <- reactive(filter_epochs_from_sessions(
       epochs(),
       filtered_sessions(),
