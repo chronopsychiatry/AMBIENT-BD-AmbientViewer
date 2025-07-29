@@ -121,7 +121,7 @@ sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
     dplyr::filter(abs(.data$hour - .data$median_hour) == min(abs(.data$hour - .data$median_hour))) |>
     dplyr::slice(1) |>
     dplyr::ungroup() |>
-    dplyr::select("variable", "median_hour", density_at_median = .data$density)
+    dplyr::select("variable", "median_hour", density_at_median = "density")
 
   ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$hour, color = .data$variable, fill = .data$variable)) +
     ggplot2::geom_density(
