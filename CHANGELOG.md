@@ -1,5 +1,11 @@
 # Ambient Viewer Changelog
 
+## 0.0.8 (in dev)
+
+## Sleep Report
+
+- Added the social jet-lag value
+
 ## 0.0.7 (24/07/2025)
 
 ## Sleep Report

@@ -21,7 +21,7 @@ sleep_report <- function(sessions, title = "", col_names = NULL, output_file = "
   stats <- list()
   stats$time_to_fall_asleep <- round(mean(sessions[[col$sleep_onset_latency]], na.rm = TRUE) / 60)
   stats$sleep_efficiency <- round(mean(sessions[[col$sleep_period]], na.rm = TRUE) / mean(sessions[[col$time_in_bed]], na.rm = TRUE) * 100)
-  stats$chronotype <- ifelse(mean_time(sessions[[col$time_at_midsleep]], unit = "hour") < 4.25, "Morning Lark", "Evening Owl")
+  stats$chronotype <- ifelse(chronotype(sessions = sessions, col_names = col_names) < 4.25, "Morning Lark", "Evening Owl")
   stats$chronotype_image <- ifelse(stats$chronotype == "Morning Lark",
     "Morning_Lark.jpg",
     "Evening_Owl.JPG"
@@ -31,6 +31,7 @@ sleep_report <- function(sessions, title = "", col_names = NULL, output_file = "
     "Charles J. Sharp - Own work, CC BY-SA 4.0"
   )
   stats$sleep_regularity <- round(100 * (1 - sd_time(sessions[[col$time_at_midsleep]]) / 2))
+  stats$social_jet_lag <- round(social_jet_lag(sessions = sessions, col_names = col_names), 2)
 
   clock_plot <- plot_sleep_clock(sessions, col_names = col_names) +
     ggplot2::scale_color_manual(
