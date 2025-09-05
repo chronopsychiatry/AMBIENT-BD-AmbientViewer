@@ -2,13 +2,17 @@
 
 ## 0.0.8 (in dev)
 
-## Sleep Report
+### Sleep Report
 
 - Added the social jet-lag value
 
+### Fixed
+
+- Sleep clock: fixed display for sessions spanning midday
+
 ## 0.0.7 (24/07/2025)
 
-## Sleep Report
+### Sleep Report
 
 - The title of the Sleep Report can be set in the app via the corresponding text box, or by using the `title` argument with the `sleep_report` function
   - Default title is an empty string, which will only print "Sleep Report"

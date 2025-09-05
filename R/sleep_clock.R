@@ -15,8 +15,8 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
   sessions <- sessions |>
     dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
     dplyr::mutate(
-      sleep_onset_hour = time_to_hours(shift_times_by_12h(.data[[col$time_at_sleep_onset]])),
-      wakeup_hour = time_to_hours(shift_times_by_12h(.data[[col$time_at_wakeup]])),
+      sleep_onset_hour = time_to_hours(.data[[col$time_at_sleep_onset]]),
+      wakeup_hour = time_to_hours(.data[[col$time_at_wakeup]]),
       night = as.factor(.data[[col$night]])
     )
 
@@ -46,7 +46,29 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
       sleep_onset_radial = as.numeric(as.factor(.data$night)) / max(as.numeric(as.factor(.data$night))),
       wakeup_radial = as.numeric(as.factor(.data$night)) / max(as.numeric(as.factor(.data$night)))
     ) |>
-    dplyr::select("sleep_onset_hour", "wakeup_hour", "sleep_onset_radial", "wakeup_radial", "night")
+    dplyr::select("sleep_onset_hour", "wakeup_hour", "sleep_onset_radial", "wakeup_radial", "night") |>
+    dplyr::rowwise() |>
+    dplyr::do({
+      if (.data$wakeup_hour < .data$sleep_onset_hour) {
+        # Wrap-around: split into two segments
+        data.frame(
+          x = c(.data$sleep_onset_hour, 0),
+          y = c(.data$sleep_onset_radial, .data$wakeup_radial),
+          xend = c(24, .data$wakeup_hour),
+          yend = c(.data$sleep_onset_radial, .data$wakeup_radial),
+          night = .data$night
+        )
+      } else {
+        # Normal segment
+        data.frame(
+          x = .data$sleep_onset_hour,
+          y = .data$sleep_onset_radial,
+          xend = .data$wakeup_hour,
+          yend = .data$wakeup_radial,
+          night = .data$night
+        )
+      }
+    })
 
   if (color_by != "default" && color_by %in% names(sessions)) {
     # All elements colored by color_by
@@ -70,41 +92,13 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
       ggplot2::geom_segment(
         data = curve_data,
         ggplot2::aes(
-          x = .data$sleep_onset_hour,
-          y = .data$sleep_onset_radial,
-          xend = .data$wakeup_hour,
-          yend = .data$wakeup_radial,
+          x = .data$x,
+          y = .data$y,
+          xend = .data$xend,
+          yend = .data$yend,
           color = .data$color_group
         ),
         linewidth = 0.8,
-        show.legend = TRUE
-      ) +
-      # Sleep Onset straight lines
-      ggplot2::geom_segment(
-        data = plot_data |> dplyr::filter(.data$type == "Sleep Onset"),
-        ggplot2::aes(
-          x = .data$hour,
-          y = .data$radial_distance,
-          xend = .data$hour,
-          yend = 0,
-          color = .data$color_group
-        ),
-        linewidth = 1,
-        alpha = 0.8,
-        show.legend = TRUE
-      ) +
-      # Wakeup straight lines
-      ggplot2::geom_segment(
-        data = plot_data |> dplyr::filter(.data$type == "Wakeup"),
-        ggplot2::aes(
-          x = .data$hour,
-          y = .data$radial_distance,
-          xend = .data$hour,
-          yend = 0,
-          color = .data$color_group
-        ),
-        linewidth = 1,
-        alpha = 0.8,
         show.legend = TRUE
       ) +
       # Points
@@ -129,10 +123,10 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
       ggplot2::geom_segment(
         data = curve_data,
         ggplot2::aes(
-          x = .data$sleep_onset_hour,
-          y = .data$sleep_onset_radial,
-          xend = .data$wakeup_hour,
-          yend = .data$wakeup_radial,
+          x = .data$x,
+          y = .data$y,
+          xend = .data$xend,
+          yend = .data$yend,
           color = .data$night
         ),
         linewidth = 0.8,
@@ -145,34 +139,6 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
         )
       ) +
       ggnewscale::new_scale_color() +
-      # Sleep Onset straight lines (second color scale)
-      ggplot2::geom_segment(
-        data = plot_data |> dplyr::filter(.data$type == "Sleep Onset"),
-        ggplot2::aes(
-          x = .data$hour,
-          y = .data$radial_distance,
-          xend = .data$hour,
-          yend = 0,
-          color = .data$type
-        ),
-        linewidth = 1,
-        alpha = 0.8,
-        show.legend = FALSE
-      ) +
-      # Wakeup straight lines
-      ggplot2::geom_segment(
-        data = plot_data |> dplyr::filter(.data$type == "Wakeup"),
-        ggplot2::aes(
-          x = .data$hour,
-          y = .data$radial_distance,
-          xend = .data$hour,
-          yend = 0,
-          color = .data$type
-        ),
-        linewidth = 1,
-        alpha = 0.8,
-        show.legend = FALSE
-      ) +
       # Points
       ggplot2::geom_point(
         data = plot_data |> dplyr::filter(.data$type == "Sleep Onset"),
@@ -195,10 +161,10 @@ plot_sleep_clock <- function(sessions, color_by = "default", col_names = NULL) {
     ggplot2::scale_x_continuous(
       limits = c(0, 24),
       breaks = seq(0, 23, by = 1),
-      labels = (seq(0, 23, by = 1) + 12) %% 24
+      labels = (seq(0, 23, by = 1)) %% 24
     ) +
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
-    ggplot2::coord_polar(theta = "x", start = pi) +
+    ggplot2::coord_polar(theta = "x", start = 0) +
     ggplot2::labs(
       title = NULL,
       x = NULL,
