@@ -56,7 +56,7 @@ header-includes:
       \Large\textbf{Number of hours slept per night}
     \end{center}
 ```
-```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=5.5, fig.width=6}
+```{r, echo=FALSE, warning=FALSE, fig.align='center', out.width='100%', fig.height=5, fig.width=6}
 print(sleep_duration_plot)
 ```
 ```{=latex}
@@ -74,7 +74,7 @@ print(sleep_duration_plot)
 
   \vspace*{0.04\textheight}
 ```
-```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=6}
+```{r, echo=FALSE, warning=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=6}
 print(clock_plot)
 ```
 ```{=latex}
@@ -127,17 +127,16 @@ print(clock_plot)
       \Large\textbf{Sleep and Wakeup times}
     \end{center}
 ```
-```{r, echo=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=7}
+```{r, echo=FALSE, warning=FALSE, fig.align='center', out.width='100%', fig.height=6, fig.width=7}
 print(sleep_times)
 ```
 ```{=latex}
-  \vspace*{-0.01\textheight}
+  \vspace*{0.01\textheight}
   \begin{center}
     \textbf{Social Jet-Lag}\@ `r paste0("\\texttt{", stats$social_jet_lag, "}")` hours
   \end{center}
   \end{tcolorbox}
 \end{minipage}
-\vspace*{0.01\textheight}
 \begin{flushleft}
   \small
   Chronotype image credit: `r stats$chronotype_credit`\\
