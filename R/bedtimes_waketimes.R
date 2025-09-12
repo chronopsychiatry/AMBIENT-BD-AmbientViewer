@@ -25,6 +25,8 @@ plot_bedtimes_waketimes <- function(sessions, groupby = "night", color_by = "def
     0.05
   )
 
+  Sys.setlocale("LC_TIME", "C") # Ensure weekday names are in English
+
   plot_data <- sessions |>
     dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
     dplyr::mutate(
