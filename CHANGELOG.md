@@ -2,6 +2,10 @@
 
 ## 0.0.8 (in dev)
 
+### Visualisations
+
+- In the sleep clock, removed the "clock arms", which were not very useful and making the figure crowded
+
 ### Sleep Report
 
 - Added the social jet-lag value
