@@ -41,13 +41,22 @@ sleep_report <- function(sessions, title = "", col_names = NULL, output_file = "
     ggplot2::theme(
       legend.position = "bottom",
       legend.text = ggplot2::element_text(color = "white"),
-      axis.text.x = ggplot2::element_text(color = "white")
+      axis.text.x = ggplot2::element_text(color = "white"),
+      panel.background = ggplot2::element_rect(fill = "transparent", color = NA),
+      plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
+      legend.background = ggplot2::element_rect(fill = "transparent", color = NA)
     )
 
   sleep_times <- plot_bedtimes_waketimes(sessions, col_names = col_names, groupby = "weekday") +
-    ggplot2::labs(title = NULL)
+    ggplot2::labs(title = NULL) +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = "transparent", color = NA),
+                   plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
+                   legend.background = ggplot2::element_rect(fill = "transparent", color = NA))
 
-  sleep_duration_plot <- sleep_duration_distribution(sessions, col_names = col_names)
+  sleep_duration_plot <- sleep_duration_distribution(sessions, col_names = col_names) +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = "transparent", color = NA),
+                   plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
+                   legend.background = ggplot2::element_rect(fill = "transparent", color = NA))
 
   template_path <- system.file("Rmd_templates", package = "AmbientViewer")
   rmarkdown::render(
