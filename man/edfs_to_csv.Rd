@@ -19,7 +19,4 @@ This function scans a specified folder (and its subdirectories) for EDF files
 whose filenames contain "BRP" (case-insensitive), reads their headers to extract
 start times and durations, and compiles this information into a single CSV file.
 }
-\examples{
-edfs_to_csv(folder_in = "path/to/edf/files", file_out = "summary.csv")
-}
 \concept{file conversion}

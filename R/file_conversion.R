@@ -7,10 +7,9 @@
 #' @param file_out The name of the output CSV file. Default is "edf_summary.csv".
 #' @return A CSV file summarizing the start times and durations of the EDF files.
 #' @importFrom rlang .data
+#' @importFrom utils write.csv
 #' @export
 #' @family file conversion
-#' @examples
-#' edfs_to_csv(folder_in = "path/to/edf/files", file_out = "summary.csv")
 edfs_to_csv <- function(folder_in = ".", file_out = "edf_summary.csv") {
 
   all_edf <- list.files(
