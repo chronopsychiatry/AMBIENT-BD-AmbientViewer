@@ -1,5 +1,14 @@
 # Ambient Viewer Changelog
 
+## 0.0.9 (25/09/2025)
+
+### Data formats
+
+- Added a function to convert a batch of .edf files (from Continuous Positive Airway Pressure - CPAP devices) to a single .csv file
+  - Example: `edfs_to_csv(folder_in = "path/to/edf_folder", file_out = "summary.csv")
+- Added support for edf-derived data (to be input as "Sessions")
+  - Note: at the moment, the Sleep Report and the Sleep Regularity tab are not functional with this type of data
+
 ## 0.0.8 (15/09/2025)
 
 ### Visualisations

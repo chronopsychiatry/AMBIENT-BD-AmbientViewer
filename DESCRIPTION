@@ -1,6 +1,6 @@
 Package: AmbientViewer
 Title: Filtering and Visualisation for Somnofy Data
-Version: 0.0.8
+Version: 0.0.9
 Authors@R: 
     person("Daniel", "Thedie", , "daniel.thedie@ed.ac.uk", role = c("aut", "cre"))
 Description: This package helps importing, filtering and visualising sleep data.
@@ -20,6 +20,7 @@ Imports:
     cli,
     dplyr,
     DT,
+    edfReader,
     ggnewscale,
     ggplot2,
     logging,

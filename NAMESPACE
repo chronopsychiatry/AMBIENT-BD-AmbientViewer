@@ -3,6 +3,7 @@
 export(ambient_viewer)
 export(chronotype)
 export(composite_phase_deviation)
+export(edfs_to_csv)
 export(filter_by_age_range)
 export(filter_by_night_range)
 export(filter_by_sex)

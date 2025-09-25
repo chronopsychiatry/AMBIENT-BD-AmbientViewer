@@ -54,6 +54,24 @@
   night = "calendar_date"
 )
 
+.sessions_col_edf <- list(
+  id = "session_id",
+  subject_id = NULL,
+  sex = NULL,
+  birth_year = NULL,
+  device_id = "device_id",
+  session_start = "startTime",
+  session_end = "endTime",
+  time_at_sleep_onset = "startTime",
+  time_at_midsleep = "midsleep",
+  time_at_wakeup = "endTime",
+  sleep_onset_latency = NULL,
+  sleep_period = "sleep_period",
+  time_in_bed = "sleep_period",
+  is_workday = "is_workday",
+  night = "night"
+)
+
 .sessions_col_none <- list(
   id = "id_default",
   subject_id = NULL,

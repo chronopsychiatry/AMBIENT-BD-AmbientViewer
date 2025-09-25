@@ -8,7 +8,7 @@ The easiest way to use Ambient Viewer is to visit the [online app](https://shiny
 
 ## Can I use Ambient Viewer with my data?
 
-Ambient Viewer was initially developped to process data from Somnofy devices. However, other data types are supported, such as outputs from the GGIR package (for actigraphy).
+Ambient Viewer was initially developped to process data from Somnofy devices. However, other data types are supported, such as outputs from the GGIR package (for actigraphy), or .edf files converted with `edfs_to_csv`.
 
 If your data is not listed here, feel free to [open an issue](https://github.com/chronopsychiatry/AmbientViewer/issues) (preferably with a sample dataset) for it to be supported by Ambient Viewer.
 
