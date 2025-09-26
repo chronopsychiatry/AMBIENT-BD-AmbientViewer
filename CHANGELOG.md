@@ -9,6 +9,15 @@
 - Added support for edf-derived data (to be input as "Sessions")
   - Note: at the moment, the Sleep Report and the Sleep Regularity tab are not functional with this type of data
 
+### Annotations
+
+- Added pagination options to deal with large numbers of sessions
+- Added a search bar to help in selecting sessions (e.g. select all October 2024 sessions by searching "2024-10")
+
+### Sleep Regularity
+
+- Let Session-based metrics be displayed even if Epochs are not loaded
+
 ## 0.0.8 (15/09/2025)
 
 ### Visualisations
