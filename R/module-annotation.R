@@ -16,6 +16,7 @@ annotation_server <- function(id, sessions, sessions_colnames, annotations) {
     output$annotations_text <- shiny::renderUI({
       shiny::HTML(paste0(
         "<br/><p>Select sessions to annotate by clicking on the table below.</p>",
+        "<p>Use the search bar to control which sessions are shown in the table.</p>",
         "<p>Type your annotation in the text box and click 'Apply' to save it.</p>"
       ))
     })
@@ -42,7 +43,12 @@ annotation_server <- function(id, sessions, sessions_colnames, annotations) {
         annotation_table(),
         rownames = FALSE,
         selection = "multiple",
-        options = list(dom = "t", pageLength = 100)
+        options = list(
+          dom = "lftip",              # Show length menu, filter, table, info, and pagination
+          pageLength = 50,            # Default page length
+          lengthMenu = c(25, 50, 100, 200, 500), # Choices for page length
+          paging = TRUE                # Enable pagination
+        )
       )
     })
 
