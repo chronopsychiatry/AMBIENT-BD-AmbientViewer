@@ -1,3 +1,5 @@
+**Requires Epoch data**
+
 ##### Definition
 
 The Sleep Regularity Index (SRI) measures the similarity of sleep-wake patterns from one day to the next. It calculates the probability of the subject being in the same state (awake or asleep) 24 hours after a given time-point.

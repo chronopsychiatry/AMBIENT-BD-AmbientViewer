@@ -2,7 +2,8 @@ sleep_regularity_module <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::HTML("Click on metrics names for more information.<br>"),
-    shiny::tableOutput(ns("sleep_regularity_table")),
+    shiny::tableOutput(ns("sleep_sessions_regularity_table")),
+    shiny::tableOutput(ns("sleep_epochs_regularity_table")),
     shiny::HTML("Metrics based on <a href='https://doi.org/10.1093/sleep/zsab103' target='_blank'> Fischer et al. (2021)</a>.")
   )
 }
@@ -24,30 +25,43 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
       epochs_in()[epochs_in()$display, ]
     })
 
-    metric_names <- c(
+    metric_names_sessions <- c(
       "Mid-sleep Standard Deviation",
-      "Interdaily Stability",
       "Social Jet Lag",
       "Composite Phase Deviation",
-      "Sleep Regularity Index",
       "Chronotype"
     )
-    metric_ids <- c(
-      "msd", "is", "sjl", "cpd", "sri", "chronotype"
+    metric_ids_sessions <- c(
+      "msd", "sjl", "cpd", "chronotype"
     )
 
-    metric_values <- shiny::reactive({
+    metric_names_epochs <- c(
+      "Interdaily Stability",
+      "Sleep Regularity Index"
+    )
+    metric_ids_epochs <- c(
+      "is", "sri"
+    )
+
+    metric_values_sessions <- shiny::reactive({
+      if (is.null(sessions()) || nrow(sessions()) == 0) return(rep(NA, length(metric_names_sessions)))
       c(
         sd_time(sessions()[[sessions_colnames()$time_at_midsleep]], unit = "hour"),
-        interdaily_stability(epochs(), col_names = epochs_colnames()),
         social_jet_lag(sessions(), col_names = sessions_colnames()),
         composite_phase_deviation(sessions(), col_names = sessions_colnames()),
-        sleep_regularity_index(epochs(), col_names = epochs_colnames()),
         chronotype(sessions(), col_names = sessions_colnames())
       )
     })
 
-    output$sleep_regularity_table <- shiny::renderUI({
+    metric_values_epochs <- shiny::reactive({
+      if (is.null(epochs()) || nrow(epochs()) == 0) return(rep(NA, length(metric_names_epochs)))
+      c(
+        interdaily_stability(epochs(), col_names = epochs_colnames()),
+        sleep_regularity_index(epochs(), col_names = epochs_colnames())
+      )
+    })
+
+    output$sleep_sessions_regularity_table <- shiny::renderUI({
       shiny::tags$table(
         class = "table",
         style = "width: auto;",
@@ -58,16 +72,45 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
           )
         ),
         shiny::tags$tbody(
-          lapply(seq_along(metric_names), function(i) {
-            shiny::tags$tr(
-              shiny::tags$td(
-                shiny::actionLink(ns(paste0("metric_", metric_ids[i])), metric_names[i])
-              ),
-              shiny::tags$td(
-                round(metric_values()[i], 2)
+          c(
+            lapply(seq_along(metric_names_sessions), function(i) {
+              shiny::tags$tr(
+                shiny::tags$td(
+                  shiny::actionLink(ns(paste0("metric_", metric_ids_sessions[i])), metric_names_sessions[i])
+                ),
+                shiny::tags$td(
+                  round(metric_values_sessions()[i], 2)
+                )
               )
-            )
-          })
+            })
+          )
+        )
+      )
+    })
+
+    output$sleep_epochs_regularity_table <- shiny::renderUI({
+      shiny::tags$table(
+        class = "table",
+        style = "width: auto;",
+        shiny::tags$thead(
+          shiny::tags$tr(
+            shiny::tags$th("Metric"),
+            shiny::tags$th("Value")
+          )
+        ),
+        shiny::tags$tbody(
+          c(
+            lapply(seq_along(metric_names_epochs), function(i) {
+              shiny::tags$tr(
+                shiny::tags$td(
+                  shiny::actionLink(ns(paste0("metric_", metric_ids_epochs[i])), metric_names_epochs[i])
+                ),
+                shiny::tags$td(
+                  round(metric_values_epochs()[i], 2)
+                )
+              )
+            })
+          )
         )
       )
     })

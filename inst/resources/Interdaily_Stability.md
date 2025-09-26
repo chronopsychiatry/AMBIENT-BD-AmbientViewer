@@ -1,3 +1,5 @@
+**Requires Epoch data**
+
 ##### Definition
 
 Interdaily Stability (IS) compares sleep-wake patterns over multiple days. It is calculated as the ratio of the variance within the same time interval each day and the overall variance.
