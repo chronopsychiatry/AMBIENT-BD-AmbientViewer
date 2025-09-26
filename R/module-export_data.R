@@ -13,6 +13,7 @@ export_data_module <- function(id) {
     shiny::br(),
     shiny::br(),
     shiny::h5("Subject Report"),
+    shiny::p("(Somnofy data only)"),
     shiny::textInput(
       inputId = ns("title"),
       label = "Report Title",

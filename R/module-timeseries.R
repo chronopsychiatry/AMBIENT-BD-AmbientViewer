@@ -1,6 +1,7 @@
 timeseries_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::HTML("<b>Requires Epoch data</b>"),
     shiny::fluidRow(
       shiny::column(4,
         shiny::selectInput(

@@ -1,6 +1,7 @@
 hypnogram_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::HTML("<b>Requires Epoch data</b>"),
     shiny::plotOutput(ns("hypnogram_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),

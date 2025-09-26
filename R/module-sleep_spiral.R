@@ -1,6 +1,7 @@
 sleep_spiral_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::HTML("<b>Requires Epoch data</b>"),
     shiny::selectInput(
       inputId = ns("colorby"),
       label = "Colour by:",
