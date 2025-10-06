@@ -71,7 +71,7 @@ sleep_report <- function(sessions, title = "", col_names = NULL, output_file = "
     output_dir = dirname(output_file),
     quiet = TRUE,
   )
-  unlink(paste0(template_path, "/*.log"))
+  unlink(paste0(template_path, "/Rmd/*.log"))
 }
 
 #' @importFrom rlang .data
