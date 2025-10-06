@@ -151,7 +151,7 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
       to_time <- if (!is.null(input$time_range[2])) paste0(input$time_range[2], ":00") else NULL
 
       df <- sessions() |>
-        tidyr::drop_na(dplyr::all_of(unname(unlist(col)))) |>
+        # tidyr::drop_na(dplyr::all_of(unname(unlist(col)))) |>  # Dropping rows with NA is problematic if one column is all-NAs
         remove_sessions_no_sleep(col_names = col)
 
       if (!"display" %in% colnames(df)) {

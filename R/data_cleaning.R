@@ -34,5 +34,7 @@ clean_epochs <- function(epochs) {
   } else if (fmt %in% c("somnofy_v1", "somnofy_v2")) {
     epochs |>
       dplyr::mutate(is_asleep = dplyr::if_else(.data[[col$sleep_stage]] %in% c(4, 5), 0, 1))
+  } else if (fmt == "none") {
+    epochs
   }
 }

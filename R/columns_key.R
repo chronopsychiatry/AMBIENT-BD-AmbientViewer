@@ -56,7 +56,7 @@
 
 .sessions_col_edf <- list(
   id = "session_id",
-  subject_id = NULL,
+  subject_id = "subject_id",
   sex = NULL,
   birth_year = NULL,
   device_id = "device_id",

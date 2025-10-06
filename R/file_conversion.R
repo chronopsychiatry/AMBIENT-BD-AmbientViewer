@@ -10,21 +10,24 @@
 #' @importFrom utils write.csv
 #' @export
 #' @family file conversion
-edfs_to_csv <- function(folder_in = ".", file_out = "edf_summary.csv") {
+edfs_to_csv <- function(folder_in = ".", filter_pattern = NULL, file_out = "edf_summary.csv") {
 
-  all_edf <- list.files(
+  edf_files <- list.files(
     path = folder_in,
     pattern = "(?i)\\.edf$", # case-insensitive .edf
     recursive = TRUE,
     full.names = TRUE
   )
 
-  edf_files <- all_edf[grepl("BRP", basename(all_edf), ignore.case = TRUE)]
+  if (!is.null(filter_pattern)) {
+    edf_files <- edf_files[grepl(filter_pattern, basename(edf_files), ignore.case = TRUE)]
+  }
 
   rows <- lapply(edf_files, function(f) {
     hdr <- edfReader::readEdfHeader(f)
     data.frame(
-      device_id = stringr::str_extract(hdr$recordingId, "(?<=SRN=)\\d+"),
+      device_id = stringr::str_extract(hdr$recordingId, "(?<=SRN=)\\d+"), # This seems device-dependent so should probably be removed
+      subject_id = hdr$patient,  # Also seems inconsistently recorded depending on devices/studies
       startTime = as.POSIXct(hdr$startTime),
       sleep_period = as.numeric(hdr$recordedPeriod),  # seconds
       endTime = as.POSIXct(hdr$startTime) + as.numeric(hdr$recordedPeriod),
