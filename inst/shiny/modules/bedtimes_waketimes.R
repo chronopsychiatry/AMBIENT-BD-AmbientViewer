@@ -1,4 +1,4 @@
-bedtimes_waketimes_module_ui <- function(id) {
+bedtimes_waketimes_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::fluidRow(
@@ -31,7 +31,7 @@ bedtimes_waketimes_module_ui <- function(id) {
   )
 }
 
-bedtimes_waketimes_module_server <- function(id, sessions, sessions_colnames) {
+bedtimes_waketimes_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)

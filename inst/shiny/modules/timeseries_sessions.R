@@ -1,4 +1,4 @@
-timeseries_sessions_module_ui <- function(id) {
+timeseries_sessions_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::fluidRow(
@@ -36,7 +36,7 @@ timeseries_sessions_module_ui <- function(id) {
   )
 }
 
-timeseries_sessions_module_server <- function(id, sessions, sessions_colnames) {
+timeseries_sessions_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)

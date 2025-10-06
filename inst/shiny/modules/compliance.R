@@ -1,4 +1,4 @@
-compliance_module <- function(id) {
+compliance_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::uiOutput(ns("compliance_text")),

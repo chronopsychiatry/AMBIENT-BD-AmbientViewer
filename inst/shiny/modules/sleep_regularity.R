@@ -1,10 +1,10 @@
-sleep_regularity_module <- function(id) {
+sleep_regularity_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::HTML("Click on metrics names for more information.<br>"),
     shiny::tableOutput(ns("sleep_sessions_regularity_table")),
     shiny::tableOutput(ns("sleep_epochs_regularity_table")),
-    shiny::HTML("Metrics based on <a href='https://doi.org/10.1093/sleep/zsab103' target='_blank'> Fischer et al. (2021)</a>.")
+    shiny::HTML("<span>Metrics based on <a href='https://doi.org/10.1093/sleep/zsab103' target='_blank'>Fischer et al. (2021)</a></span>")
   )
 }
 
@@ -64,7 +64,7 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
     output$sleep_sessions_regularity_table <- shiny::renderUI({
       shiny::tags$table(
         class = "table",
-        style = "width: auto;",
+        style = "width: 300px;",
         shiny::tags$thead(
           shiny::tags$tr(
             shiny::tags$th("Metric"),
@@ -91,7 +91,7 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
     output$sleep_epochs_regularity_table <- shiny::renderUI({
       shiny::tags$table(
         class = "table",
-        style = "width: auto;",
+        style = "width: 300px;",
         shiny::tags$thead(
           shiny::tags$tr(
             shiny::tags$th("Metric"),
@@ -136,11 +136,12 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
 
     show_metric_modal <- function(metric_name) {
       if (FALSE) markdown::markdownToHTML() # Added to avoid R CMD check warning about unused function
+      rmd_path <- system.file("shiny", package = "AmbientViewer")
       shiny::showModal(
         shiny::modalDialog(
           title = gsub("_", " ", metric_name),
           size = "l",
-          shiny::includeMarkdown(system.file(paste0("resources/", metric_name, ".md"), package = "AmbientViewer")),
+          shiny::includeMarkdown(paste0(rmd_path, "/Rmd/", metric_name, ".Rmd")),
           easyClose = TRUE,
           footer = shiny::modalButton("Close")
         )

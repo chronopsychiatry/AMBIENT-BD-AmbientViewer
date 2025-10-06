@@ -1,4 +1,4 @@
-hypnogram_module_ui <- function(id) {
+hypnogram_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::HTML("<b>Requires Epoch data</b>"),
@@ -16,7 +16,7 @@ hypnogram_module_ui <- function(id) {
   )
 }
 
-hypnogram_module_server <- function(id, epochs, epochs_colnames) {
+hypnogram_server <- function(id, epochs, epochs_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     hypnogram_plot <- shiny::reactive({

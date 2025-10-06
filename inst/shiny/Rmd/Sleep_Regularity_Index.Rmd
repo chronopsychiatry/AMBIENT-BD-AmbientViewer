@@ -1,10 +1,15 @@
+---
+title: "Sleep Regularity Index"
+output: html_document
+---
+
 **Requires Epoch data**
 
 ##### Definition
 
 The Sleep Regularity Index (SRI) measures the similarity of sleep-wake patterns from one day to the next. It calculates the probability of the subject being in the same state (awake or asleep) 24 hours after a given time-point.
 
-![Formula to compute the Sleep Regularity Index (SRI)](./SRI_1.png)
+![Formula to compute the Sleep Regularity Index (SRI)](../../resources/SRI_1.png)
 
 Computing the SRI does not require having a single sleep episode per night (though false sleep events will artificially decrease the SRI value).
 

@@ -20,7 +20,7 @@ header-includes:
       scale=1,
       angle=0,
       opacity=1,
-      contents={\includegraphics[width=\paperwidth,height=\paperheight]{../resources/Sleep_report_background.png}}
+      contents={\includegraphics[width=\paperwidth,height=\paperheight]{../../resources/Sleep_report_background.png}}
     }
 ---
 
@@ -45,7 +45,7 @@ header-includes:
       \begin{tabular}{@{}p{0.55\textwidth}@{\hspace{0.02\textwidth}}p{0.42\textwidth}@{}}
         Note: the recording may not be 100\% accurate, and can be influenced by external factors such as pets coming into bed. &
         \begin{center}
-          \includegraphics[width=0.2\textwidth]{../resources/Somnofy_device.png}
+          \includegraphics[width=0.2\textwidth]{../../resources/Somnofy_device.png}
         \end{center}
       \end{tabular}
   \end{tcolorbox}
@@ -86,7 +86,7 @@ print(clock_plot)
     \begin{tcolorbox}[standard jigsaw, height=0.21\textheight, arc=8pt, opacityback=0.5, boxrule=0pt, colback=white]
       \large
       \begin{center}
-        \includegraphics[width=0.6\textwidth]{../resources/Person_brooding.png}\\
+        \includegraphics[width=0.6\textwidth]{../../resources/Person_brooding.png}\\
         \textbf{Time to fall asleep}\\
         `r paste0("\\texttt{", stats$time_to_fall_asleep, "}")` minutes
       \end{center}
@@ -95,7 +95,7 @@ print(clock_plot)
       \large
       \begin{center}
         \vspace*{0.035\textheight}
-        \includegraphics[width=0.6\textwidth]{../resources/Person_sleeping.png}\\
+        \includegraphics[width=0.6\textwidth]{../../resources/Person_sleeping.png}\\
         \textbf{Sleep efficiency}\\
         `r paste0("\\texttt{", stats$sleep_efficiency, "}")`\%
       \end{center}
@@ -103,7 +103,7 @@ print(clock_plot)
     \begin{tcolorbox}[standard jigsaw, height=0.21\textheight, arc=8pt, opacityback=0.5, boxrule=0pt, colback=white]
       \large
       \begin{center}
-        \includegraphics[width=\textwidth]{../resources/`r stats$chronotype_image`}\\
+        \includegraphics[width=\textwidth]{../../resources/`r stats$chronotype_image`}\\
         \textbf{Chronotype}\\
         `r stats$chronotype`
       \end{center}
@@ -112,7 +112,7 @@ print(clock_plot)
       \large
       \begin{center}
         \vspace*{0.03\textheight}
-        \includegraphics[width=0.5\textwidth]{../resources/Clock.png}\\
+        \includegraphics[width=0.5\textwidth]{../../resources/Clock.png}\\
         \vspace*{0.015\textheight}
         \textbf{Sleep regularity}\\
         `r paste0("\\texttt{", stats$sleep_regularity, "/100}")`

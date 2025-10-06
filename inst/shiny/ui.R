@@ -1,0 +1,88 @@
+resource_path <- system.file("shiny", "www", package = "AmbientViewer")
+addResourcePath("resources", resource_path)
+
+tagList(
+  bslib::page_navbar(
+    lang = "en",
+    theme = bslib::bs_theme(
+      version = 5,
+      bootswatch = "yeti"
+    ),
+    id = "tabs",
+    header = tagList(
+      shinyjs::useShinyjs(),
+      tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+      ),
+    ),
+    title = "Ambient Viewer",
+    window_title = "Ambient Viewer",
+    bslib::nav_panel("Select Data", value = "select_data"),
+    bslib::nav_panel("Filtering", value = "filtering"),
+    bslib::nav_panel("Export Data", value = "export_data"),
+    bslib::nav_panel("About", NULL),
+    bslib::nav_menu("Support",
+                    HTML('<a href="https://github.com/chronopsychiatry/AMBIENT-BD-AmbientViewer/issues" target="_blank">GitHub Issues</a>'),
+                    HTML('<a href="mailto: daniel.thedie@ed.ac.uk" target="_blank">Send Email</a>')),
+  ),
+
+  bslib::layout_sidebar(
+    sidebar = bslib::sidebar(
+      width = 400,
+      open = "always",
+      div(class = "sidebar_container",
+        conditionalPanel(
+          condition = "input.tabs == 'select_data'",
+          h4("Data Input"),
+          input_ui("input"),
+          br()
+        ),
+        conditionalPanel(
+          condition = "input.tabs == 'filtering'",
+          h4("Filtering"),
+          filtering_ui("filtering"),
+          br()
+        ),
+        conditionalPanel(
+          condition = "input.tabs == 'export_data'",
+          h4("Data export"),
+          export_data_ui("export_data"),
+          br()
+        )
+      )
+    ),
+
+    # Main panel ----
+    mainPanel(
+
+      # Tabset for tables ----
+      bslib::navset_card_tab(
+        id = "main_tabs_tables",
+        bslib::nav_panel("Summary", summary_ui("summary")),
+        bslib::nav_panel("Compliance", compliance_ui("compliance"), value = "compliance_tab"),
+        bslib::nav_panel("Filtering", filtering_tab("filtering"), value = "filtering_tab"),
+        bslib::nav_panel("Annotation", annotation_ui("annotation"), value = "annotation_tab"),
+        bslib::nav_panel("Sleep Regularity", sleep_regularity_ui("sleep_regularity"), value = "sleep_regularity_tab"),
+      ),
+
+      # Tabset for plots ----
+      bslib::navset_card_tab(
+        id = "main_tabs_plots",
+        bslib::nav_panel("Sleep Clock", sleep_clock_ui("sleep_clock")),
+        bslib::nav_panel("Sleep Spiral", sleep_spiral_ui("sleep_spiral")),
+        bslib::nav_panel("Sleep Onset & Wakeup", bedtimes_waketimes_ui("bedtimes_waketimes")),
+        bslib::nav_panel("Sleep Times Distributions", sleep_distributions_ui("sleep_distributions")),
+        bslib::nav_panel("Sleep Bubbles", sleep_bubbles_ui("sleep_bubbles")),
+        bslib::nav_panel("Hypnogram", hypnogram_ui("hypnogram")),
+        bslib::nav_panel("Session Timeseries", timeseries_sessions_ui("timeseries_sessions")),
+        bslib::nav_panel("Epoch Timeseries", timeseries_ui("timeseries"))
+      )
+    )
+  ),
+
+  # Footer ----
+  div(
+    style = "text-align: left; margin-top: 5px; font-size: 12px; color: #555;",
+    textOutput("footer_text")
+  )
+)

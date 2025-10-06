@@ -1,4 +1,4 @@
-annotation_module_ui <- function(id) {
+annotation_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::uiOutput(ns("annotations_text")),

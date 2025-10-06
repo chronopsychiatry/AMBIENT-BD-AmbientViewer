@@ -1,4 +1,4 @@
-sleep_clock_module_ui <- function(id) {
+sleep_clock_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::selectInput(
@@ -9,7 +9,8 @@ sleep_clock_module_ui <- function(id) {
     shiny::plotOutput(ns("sleep_clock_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
-      label = NULL
+      label = NULL,
+      class = "small-btn"
     ),
     shiny::radioButtons(
       inputId = ns("download_format"),
@@ -20,7 +21,7 @@ sleep_clock_module_ui <- function(id) {
   )
 }
 
-sleep_clock_module_server <- function(id, sessions, sessions_colnames) {
+sleep_clock_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)

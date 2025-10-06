@@ -1,6 +1,6 @@
 test_that("timeseries module works", {
   shiny::testServer(
-    timeseries_module_server,
+    timeseries_server,
     args = list(epochs = shiny::reactive(example_epochs), epochs_colnames = shiny::reactive(get_epoch_colnames(example_epochs))),
     {
       plot <- session$getReturned()

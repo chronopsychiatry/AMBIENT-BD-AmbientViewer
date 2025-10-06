@@ -1,4 +1,4 @@
-sleep_distributions_module_ui <- function(id) {
+sleep_distributions_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::fluidRow(
@@ -28,7 +28,7 @@ sleep_distributions_module_ui <- function(id) {
   )
 }
 
-sleep_distributions_module_server <- function(id, sessions, sessions_colnames) {
+sleep_distributions_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$binwidth_slider <- shiny::renderUI({

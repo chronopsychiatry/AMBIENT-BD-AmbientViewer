@@ -1,4 +1,4 @@
-filtering_module <- function(id) {
+filtering_ui <- function(id) {
   ns <- shiny::NS(id)
   bslib::accordion(
     bslib::accordion_panel(

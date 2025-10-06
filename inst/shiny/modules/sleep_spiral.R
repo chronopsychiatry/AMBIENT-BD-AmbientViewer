@@ -1,4 +1,4 @@
-sleep_spiral_module_ui <- function(id) {
+sleep_spiral_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::HTML("<b>Requires Epoch data</b>"),
@@ -21,7 +21,7 @@ sleep_spiral_module_ui <- function(id) {
   )
 }
 
-sleep_spiral_module_server <- function(id, epochs, epochs_colnames) {
+sleep_spiral_server <- function(id, epochs, epochs_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)

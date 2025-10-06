@@ -1,3 +1,8 @@
+---
+title: "Composite Phase Deviation"
+output: html_document
+---
+
 ##### Definition
 
 Composite Phase Deviation (CPD) uses the chronotype to assess the regularity of sleep over several days. The steps to calculate CPD from chronotype are as follows:
@@ -7,7 +12,7 @@ Composite Phase Deviation (CPD) uses the chronotype to assess the regularity of 
 - **(4c)** Vector length from origin (i.e. perfectly regular sleep) using mistiming and irregularity as dimensions
 - **(4d)** Average vector length across all sleep episodes
 
-![Formulas to compute Composite Phase Deviation](./CPD_1.png)
+![Formulas to compute Composite Phase Deviation](../../resources/CPD_1.png)
 
 ⚠ CPD calculation is only valid if there is a single sleep episode per night. Check there are no sessions shown in the compliance tab.
 

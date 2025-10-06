@@ -1,4 +1,4 @@
-export_data_module <- function(id) {
+export_data_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::h5("Raw Data"),

@@ -1,4 +1,4 @@
-summary_module_ui <- function(id) {
+summary_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::h5(shiny::strong("Sessions")),

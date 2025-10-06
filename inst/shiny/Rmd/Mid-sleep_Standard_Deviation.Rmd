@@ -1,3 +1,8 @@
+---
+title: "Mid-sleep Standard Deviation"
+output: html_document
+---
+
 ##### Definition
 
 The standard deviation of the mid-sleep time gives a measure of the variation in sleep pattern.

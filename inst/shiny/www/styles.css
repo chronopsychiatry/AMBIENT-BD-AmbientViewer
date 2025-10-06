@@ -1,0 +1,11 @@
+/* Force some buttons to be small instead of taking up the whole width */
+.small-btn {
+  width: 50px !important;
+  min-width: 0 !important;
+  display: inline-block !important;
+}
+
+/* Remove white space below top navbar */
+.container-fluid.html-fill-item.html-fill-container {
+  display: none !important;
+}

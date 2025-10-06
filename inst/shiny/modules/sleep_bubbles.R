@@ -1,4 +1,4 @@
-sleep_bubbles_module_ui <- function(id) {
+sleep_bubbles_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::selectInput(
@@ -20,7 +20,7 @@ sleep_bubbles_module_ui <- function(id) {
   )
 }
 
-sleep_bubbles_module_server <- function(id, sessions, sessions_colnames) {
+sleep_bubbles_server <- function(id, sessions, sessions_colnames) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)

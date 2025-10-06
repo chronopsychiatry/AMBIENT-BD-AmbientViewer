@@ -1,6 +1,6 @@
 test_that("sleep_bubbles module works", {
   shiny::testServer(
-    sleep_bubbles_module_server,
+    sleep_bubbles_server,
     args = list(sessions = shiny::reactive(example_sessions)),
     {
       plot <- session$getReturned()

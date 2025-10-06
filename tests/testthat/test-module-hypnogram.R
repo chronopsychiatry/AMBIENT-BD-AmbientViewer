@@ -1,6 +1,6 @@
 test_that("hypnogram module works", {
   shiny::testServer(
-    hypnogram_module_server,
+    hypnogram_server,
     args = list(epochs = shiny::reactive(example_epochs)),
     {
       plot <- session$getReturned()
