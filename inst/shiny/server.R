@@ -1,5 +1,21 @@
 function(input, output, session) {
 
+  # Init log window
+  init_log_msg <- function() {
+    intro <- "***WELCOME TO Ambient Viewer***"
+    brk <- paste(rep("------", 14), collapse = "")
+    expl <- "Please find messages for the user in this log window."
+    log_init <- gsub(".{4}$", "", paste(intro, brk, expl, brk, "", sep = "<br>"))
+    log_init
+  }
+  logger <- reactiveVal(init_log_msg())
+
+  # Write out logs to the log Window
+  observeEvent(logger(), {
+    shinyjs::html(id = "logHeader", html = logger(), add = FALSE)
+    shinyjs::js$scrollLogger()
+  })
+
   # Footer text
   output$footer_text <- renderText({
     paste0(

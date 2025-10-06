@@ -1,6 +1,9 @@
 input_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::hr(),
+    shiny::actionButton(ns("load_example_data"), "Load Example Data"),
+    shiny::hr(),
     shiny::div(
       style = "margin-bottom: -0.6rem;",
       shiny::fileInput(
@@ -9,8 +12,6 @@ input_ui <- function(id) {
         accept = c(".csv")
       )
     ),
-    shiny::actionButton(ns("load_example_sessions"), "Load Example Sessions"),
-    shiny::br(), shiny::br(),
     shiny::actionButton(ns("open_session_col_names"), "Set Session Columns"),
     shiny::br(), shiny::br(),
     shiny::div(
@@ -21,16 +22,22 @@ input_ui <- function(id) {
         accept = c(".csv")
       )
     ),
-    shiny::actionButton(ns("load_example_epochs"), "Load Example Epochs"),
-    shiny::br(), shiny::br(),
     shiny::actionButton(ns("open_epoch_col_names"), "Set Epoch Columns"),
-    shiny::br(), shiny::br()
   )
 }
 
 input_server <- function(id, session) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+    # Example data----
+    shiny::observeEvent(input$load_example_data, {
+      logging::loginfo("Loading example session and epochs data")
+      sessions_data(AmbientViewer::example_sessions)
+      epochs_data(AmbientViewer::example_epochs)
+      sessions_colnames(get_session_colnames(sessions_data()))
+      epochs_colnames(get_epoch_colnames(epochs_data()))
+    })
 
     # Sessions ----
     sessions_data <- shiny::reactiveVal()
@@ -42,13 +49,6 @@ input_server <- function(id, session) {
       logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
       data <- load_sessions(input$sessions_file$datapath)
       logging::loginfo(paste0("Detected session data type: ", data$.data_type[1]))
-      sessions_data(data)
-      sessions_colnames(get_session_colnames(data))
-    })
-
-    shiny::observeEvent(input$load_example_sessions, {
-      logging::loginfo("Loading example sessions data")
-      data <- AmbientViewer::example_sessions
       sessions_data(data)
       sessions_colnames(get_session_colnames(data))
     })
@@ -119,13 +119,6 @@ input_server <- function(id, session) {
       if (data$.data_type[1] == "somnofy_v1") {
         data$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
       }
-      epochs_data(data)
-      epochs_colnames(get_epoch_colnames(data))
-    })
-
-    shiny::observeEvent(input$load_example_epochs, {
-      logging::loginfo("Loading example epochs data")
-      data <- AmbientViewer::example_epochs
       epochs_data(data)
       epochs_colnames(get_epoch_colnames(data))
     })

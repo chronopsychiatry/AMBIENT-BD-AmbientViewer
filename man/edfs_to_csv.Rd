@@ -4,7 +4,11 @@
 \alias{edfs_to_csv}
 \title{Convert EDF files in a folder to a single CSV}
 \usage{
-edfs_to_csv(folder_in = ".", file_out = "edf_summary.csv")
+edfs_to_csv(
+  folder_in = ".",
+  filter_pattern = NULL,
+  file_out = "edf_summary.csv"
+)
 }
 \arguments{
 \item{folder_in}{The input folder containing EDF files. Default is the current directory.}

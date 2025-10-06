@@ -15,7 +15,7 @@ annotation_server <- function(id, sessions, sessions_colnames, annotations) {
 
     output$annotations_text <- shiny::renderUI({
       shiny::HTML(paste0(
-        "<br/><p>Select sessions to annotate by clicking on the table below.</p>",
+        "<p>Select sessions to annotate by clicking on the table below.</p>",
         "<p>Use the search bar to control which sessions are shown in the table.</p>",
         "<p>Type your annotation in the text box and click 'Apply' to save it.</p>"
       ))

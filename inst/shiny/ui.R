@@ -11,16 +11,20 @@ tagList(
     id = "tabs",
     header = tagList(
       shinyjs::useShinyjs(),
+      shinyjs::extendShinyjs(
+        script = file.path("resources", "js", "shinyjs-funcs.js"),
+        functions = c("scrollLogger")
+      ),
       tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
       ),
     ),
     title = "Ambient Viewer",
     window_title = "Ambient Viewer",
-    bslib::nav_panel("Select Data", value = "select_data"),
+    bslib::nav_panel("Intro", value = "intro"),
+    bslib::nav_panel("Import Data", value = "import_data"),
     bslib::nav_panel("Filtering", value = "filtering"),
     bslib::nav_panel("Export Data", value = "export_data"),
-    bslib::nav_panel("About", NULL),
     bslib::nav_menu("Support",
                     HTML('<a href="https://github.com/chronopsychiatry/AMBIENT-BD-AmbientViewer/issues" target="_blank">GitHub Issues</a>'),
                     HTML('<a href="mailto: daniel.thedie@ed.ac.uk" target="_blank">Send Email</a>')),
@@ -32,22 +36,23 @@ tagList(
       open = "always",
       div(class = "sidebar_container",
         conditionalPanel(
-          condition = "input.tabs == 'select_data'",
-          h4("Data Input"),
+          condition = "input.tabs == 'intro'",
+          includeMarkdown("Rmd/text_intro_tab.Rmd"),
+        ),
+        conditionalPanel(
+          condition = "input.tabs == 'import_data'",
+          h3("Data Input"),
           input_ui("input"),
-          br()
         ),
         conditionalPanel(
           condition = "input.tabs == 'filtering'",
-          h4("Filtering"),
+          h3("Filtering"),
           filtering_ui("filtering"),
-          br()
         ),
         conditionalPanel(
           condition = "input.tabs == 'export_data'",
-          h4("Data export"),
+          h3("Data export"),
           export_data_ui("export_data"),
-          br()
         )
       )
     ),

@@ -1,0 +1,26 @@
+---
+title: "Introduction"
+output: html_document
+---
+
+## Introduction
+
+### Data types
+
+- **Sessions**: each row represents a sleep session. The session data is expected to contain sleep onset and wakeup times
+- **Epochs**: each row represents a time epoch (e.g. 30 seconds). The epoch data is expected to contain timestamps and sleep stage annotations
+
+### Workflow
+
+1. Import data
+  - Supported formats: .csv, .txt, .edf, .rec, .xlsx
+  - Session and epoch data can be imported separately or together
+  - Column names for essential variables (e.g. timestamps, sleep stages) can be specified
+2. Filter data
+  - Filter sessions to exclude spurious sleep events
+  - When sessions are filtered, the corresponding epochs are filtered as well
+3. Visualise data
+  - When sessions and epochs are filtered, the tables and visualisations are updated accordingly
+4. Export filtered data
+  - Data can be exported as CSV files for further analyses
+  - A sleep report in PDF format can be generated

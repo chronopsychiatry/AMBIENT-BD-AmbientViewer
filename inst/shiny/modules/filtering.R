@@ -1,22 +1,29 @@
 filtering_ui <- function(id) {
   ns <- shiny::NS(id)
-  bslib::accordion(
-    bslib::accordion_panel(
-      "Date",
-      shiny::uiOutput(ns("date_range_slider"))
-    ),
-    bslib::accordion_panel(
-      "Subject",
-      shiny::uiOutput(ns("subject_select")),
-      shiny::uiOutput(ns("sex_select")),
-      shiny::uiOutput(ns("age_range_slider"))
-    ),
-    bslib::accordion_panel(
-      "Sleep",
-      shiny::uiOutput(ns("sleep_onset_range")),
-      shiny::uiOutput(ns("time_in_bed_slider"))
-    ),
-    open = NULL
+  shiny::tagList(
+    shiny::HTML("Nights that have more than one session will be displayed in the
+    <b>Compliance</b> tab (tab will be red if it contains any sessions)."),
+    shiny::br(), shiny::br(),
+    shiny::HTML("Sessions that have been filtered out will be displayed in the <b>Filtering</b> tab."),
+    shiny::hr(),
+    bslib::accordion(
+      bslib::accordion_panel(
+        "Date",
+        shiny::uiOutput(ns("date_range_slider"))
+      ),
+      bslib::accordion_panel(
+        "Subject",
+        shiny::uiOutput(ns("subject_select")),
+        shiny::uiOutput(ns("sex_select")),
+        shiny::uiOutput(ns("age_range_slider"))
+      ),
+      bslib::accordion_panel(
+        "Sleep",
+        shiny::uiOutput(ns("sleep_onset_range")),
+        shiny::uiOutput(ns("time_in_bed_slider"))
+      ),
+      open = NULL
+    )
   )
 }
 
@@ -27,7 +34,8 @@ filtering_tab <- function(id) {
     shiny::tableOutput(ns("removed_sessions")),
     shiny::downloadButton(
       outputId = ns("download_removed_sessions"),
-      label = ""
+      label = NULL,
+      class = "small-btn"
     )
   )
 }
@@ -151,7 +159,6 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
       to_time <- if (!is.null(input$time_range[2])) paste0(input$time_range[2], ":00") else NULL
 
       df <- sessions() |>
-        # tidyr::drop_na(dplyr::all_of(unname(unlist(col)))) |>  # Dropping rows with NA is problematic if one column is all-NAs
         remove_sessions_no_sleep(col_names = col)
 
       if (!"display" %in% colnames(df)) {
@@ -209,7 +216,7 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
       shiny::req(removed_sessions())
       if (nrow(removed_sessions()) > 0) {
         shiny::HTML(paste0(
-          "<br/><p>The filtering table below shows sessions that were removed by filtering.</p>",
+          "<p>The filtering table below shows sessions that were removed by filtering.</p>",
           "<p>", nrow(removed_sessions()), " sessions have been removed.</p>"
         ))
       }

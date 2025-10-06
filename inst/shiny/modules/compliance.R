@@ -5,7 +5,8 @@ compliance_ui <- function(id) {
     shiny::tableOutput(ns("compliance_table")),
     shiny::downloadButton(
       outputId = ns("download_compliance"),
-      label = ""
+      label = NULL,
+      class = "small-btn"
     )
   )
 }
@@ -35,7 +36,7 @@ compliance_server <- function(id, sessions, sessions_colnames) {
     output$compliance_text <- shiny::renderUI({
       shiny::req(compliance_table())
       if (nrow(compliance_table()) > 0) {
-        shiny::HTML("<br/><p>The compliance table below lists nights where multiple sessions have been recorded.</p>")
+        shiny::HTML("<p>The compliance table below lists nights where multiple sessions have been recorded.</p>")
       }
     })
 

@@ -1,7 +1,7 @@
 export_data_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::h5("Raw Data"),
+    shiny::h4("Raw Data"),
     shiny::downloadButton(
       outputId = ns("download_sessions"),
       label = "Sessions"
@@ -12,7 +12,7 @@ export_data_ui <- function(id) {
     ),
     shiny::br(),
     shiny::br(),
-    shiny::h5("Subject Report"),
+    shiny::h4("Subject Report"),
     shiny::p("(Somnofy data only)"),
     shiny::textInput(
       inputId = ns("title"),
