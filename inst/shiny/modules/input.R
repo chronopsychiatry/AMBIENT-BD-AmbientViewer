@@ -26,51 +26,52 @@ input_ui <- function(id) {
   )
 }
 
-input_server <- function(id, session) {
+input_server <- function(id, session, common) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Example data----
     shiny::observeEvent(input$load_example_data, {
-      logging::loginfo("Loading example session and epochs data")
-      sessions_data(AmbientViewer::example_sessions)
-      epochs_data(AmbientViewer::example_epochs)
-      sessions_colnames(get_session_colnames(sessions_data()))
-      epochs_colnames(get_epoch_colnames(epochs_data()))
+      common$logger |> write_log("Loaded example session and epoch data", type = "complete")
+
+      common$sessions(AmbientViewer::example_sessions)
+      common$epochs(AmbientViewer::example_epochs)
+      common$sessions_colnames(get_session_colnames(common$sessions()))
+      common$epochs_colnames(get_epoch_colnames(common$epochs()))
     })
 
     # Sessions ----
-    sessions_data <- shiny::reactiveVal()
-    sessions_colnames <- shiny::reactiveVal()
-    annotations <- shiny::reactiveVal()
-
     shiny::observeEvent(input$sessions_file, {
       shiny::req(input$sessions_file)
-      logging::loginfo(paste0("Loading sessions file: ", input$sessions_file$name))
+      common$logger |> write_log(paste0("Loading session file: ", input$sessions_file$name), type = "starting")
       data <- load_sessions(input$sessions_file$datapath)
-      logging::loginfo(paste0("Detected session data type: ", data$.data_type[1]))
-      sessions_data(data)
-      sessions_colnames(get_session_colnames(data))
+      if (data$.data_type[1] == "none") {
+        common$logger |> write_log("Could not detect session data type. Please set column names.", type = "warning")
+      } else {
+        common$logger |> write_log(paste0("Detected session data type: ", data$.data_type[1]), type = "info")
+      }
+      common$sessions(data)
+      common$sessions_colnames(get_session_colnames(data))
     })
 
     sessions <- shiny::reactive({
-      shiny::req(sessions_data())
-      data <- sessions_data()
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      data <- common$sessions()
+      col <- common$sessions_colnames()
       if (!is.null(col$session_start) && (is.null(col$night) || !"night" %in% colnames(data))) {
         data <- group_sessions_by_night(data, col_names = list(session_start = col$session_start))
-        set_colname(sessions_colnames, "night", "night")
+        set_colname(common$sessions_colnames, "night", "night")
       }
       if (!is.null(data$annotation)) {
-        annotations(data.frame(
-          id = data[[sessions_colnames()$id]],
+        common$annotations(data.frame(
+          id = data[[common$sessions_colnames()$id]],
           annotation = as.character(data$annotation),
           stringsAsFactors = FALSE
         ))
       } else {
         data$annotation <- ""
-        annotations(data.frame(
-          id = data[[sessions_colnames()$id]],
+        common$annotations(data.frame(
+          id = data[[common$sessions_colnames()$id]],
           annotation = "",
           stringsAsFactors = FALSE
         ))
@@ -83,7 +84,7 @@ input_server <- function(id, session) {
       show_colnames_modal(
         ns = ns,
         colnames_list = colnames(sessions()),
-        current_map = sessions_colnames(),
+        current_map = common$sessions_colnames(),
         title = "Set Session Column Names",
         save_id = "save_session_col_names",
         reset_id = "reset_session_col_names"
@@ -91,45 +92,46 @@ input_server <- function(id, session) {
     })
 
     shiny::observeEvent(input$reset_session_col_names, {
-      sessions_colnames(get_session_colnames(sessions()))
+      common$sessions_colnames(get_session_colnames(sessions()))
       shiny::removeModal()
     })
 
     shiny::observeEvent(input$save_session_col_names, {
       shiny::req(sessions())
-      keys <- names(sessions_colnames())
+      keys <- names(common$sessions_colnames())
       vals <- lapply(keys, function(key) {
         val <- input[[paste0("col_", key)]]
         if (identical(val, "-")) NULL else val
       })
-      sessions_colnames(stats::setNames(vals, keys))
+      common$sessions_colnames(stats::setNames(vals, keys))
       shiny::removeModal()
     })
 
 
     # Epochs ----
-    epochs_colnames <- shiny::reactiveVal()
-    epochs_data <- shiny::reactiveVal()
-
     shiny::observeEvent(input$epochs_file, {
       shiny::req(input$epochs_file)
-      logging::loginfo(paste0("Loading epochs file: ", input$epochs_file$name))
+      common$logger |> write_log(paste0("Loading epoch file: ", input$epochs_file$name), type = "starting")
       data <- load_epochs(input$epochs_file$datapath)
-      logging::loginfo(paste0("Detected epoch data type: ", data$.data_type[1]))
+      if (data$.data_type[1] == "none") {
+        common$logger |> write_log("Could not detect epoch data type. Please set column names.", type = "warning")
+      } else {
+        common$logger |> write_log(paste0("Detected epoch data type: ", data$.data_type[1]), type = "info")
+      }
       if (data$.data_type[1] == "somnofy_v1") {
         data$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
       }
-      epochs_data(data)
-      epochs_colnames(get_epoch_colnames(data))
+      common$epochs(data)
+      common$epochs_colnames(get_epoch_colnames(data))
     })
 
     epochs <- shiny::reactive({
-      shiny::req(epochs_data())
-      data <- epochs_data()
-      col <- epochs_colnames()
+      shiny::req(common$epochs())
+      data <- common$epochs()
+      col <- common$epochs_colnames()
       if (!is.null(col$timestamp) && (is.null(col$night) || !"night" %in% colnames(data))) {
         data <- group_epochs_by_night(data, col_names = list(timestamp = col$timestamp))
-        set_colname(epochs_colnames, "night", "night")
+        set_colname(common$epochs_colnames, "night", "night")
       }
       data
     })
@@ -139,7 +141,7 @@ input_server <- function(id, session) {
       show_colnames_modal(
         ns = ns,
         colnames_list = colnames(epochs()),
-        current_map = epochs_colnames(),
+        current_map = common$epochs_colnames(),
         title = "Set Epoch Column Names",
         save_id = "save_epoch_col_names",
         reset_id = "reset_epoch_col_names"
@@ -147,27 +149,19 @@ input_server <- function(id, session) {
     })
 
     shiny::observeEvent(input$reset_epoch_col_names, {
-      epochs_colnames(get_epoch_colnames(epochs()))
+      common$epochs_colnames(get_epoch_colnames(epochs()))
       shiny::removeModal()
     })
 
     shiny::observeEvent(input$save_epoch_col_names, {
-      keys <- names(epochs_colnames())
+      keys <- names(common$epochs_colnames())
       vals <- lapply(keys, function(key) {
         val <- input[[paste0("col_", key)]]
         if (identical(val, "-")) NULL else val
       })
-      epochs_colnames(stats::setNames(vals, keys))
+      common$epochs_colnames(stats::setNames(vals, keys))
       shiny::removeModal()
     })
-
-    list(
-      sessions = sessions,
-      epochs = epochs,
-      sessions_colnames = sessions_colnames,
-      epochs_colnames = epochs_colnames,
-      annotations = annotations
-    )
   })
 }
 
@@ -195,7 +189,7 @@ show_colnames_modal <- function(
       title = title,
       size = "l",
       easyClose = TRUE,
-      footer = tagList(
+      footer = shiny::tagList(
         shiny::actionButton(ns(reset_id), "Reset"),
         shiny::modalButton("Cancel"),
         shiny::actionButton(ns(save_id), "Save")

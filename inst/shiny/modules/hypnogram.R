@@ -5,7 +5,8 @@ hypnogram_ui <- function(id) {
     shiny::plotOutput(ns("hypnogram_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
-      label = NULL
+      label = NULL,
+      class = "small-btn"
     ),
     shiny::radioButtons(
       inputId = ns("download_format"),
@@ -16,7 +17,7 @@ hypnogram_ui <- function(id) {
   )
 }
 
-hypnogram_server <- function(id, epochs, epochs_colnames) {
+hypnogram_server <- function(id, epochs, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     hypnogram_plot <- shiny::reactive({
@@ -25,12 +26,12 @@ hypnogram_server <- function(id, epochs, epochs_colnames) {
       if (nrow(epochs) == 0) {
         return(NULL)
       }
-      col <- epochs_colnames()
+      col <- common$epochs_colnames()
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
         shiny::need(!is.null(col$sleep_stage), "'sleep_stage' column was not specified.")
       )
-      plot_hypnogram(epochs = epochs, col_names = epochs_colnames())
+      plot_hypnogram(epochs = epochs, col_names = common$epochs_colnames())
     })
 
     output$hypnogram_plot <- shiny::renderPlot({
@@ -40,6 +41,7 @@ hypnogram_server <- function(id, epochs, epochs_colnames) {
 
     output$download_plot <- get_plot_download_handler(
       session = session,
+      common = common,
       output_plot = hypnogram_plot,
       format = shiny::reactive(input$download_format),
       width = 12,

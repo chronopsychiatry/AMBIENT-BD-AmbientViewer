@@ -90,6 +90,14 @@ chronotype <- function(sessions, col_names = NULL) {
       .groups = "drop"
     )
 
+  if (nrow(data[!data$is_workday, ]) == 0 || nrow(data[data$is_workday, ]) == 0) {
+    cli::cli_warn(c(
+      "!" = "No free day sessions found or no workday sessions found",
+      "i" = "Exiting."
+    ))
+    return(NA)
+  }
+
   chronotype <- data[!data$is_workday, ]$chronotype
   sleep_period_free <- data[!data$is_workday, ]$sleep_period
   sleep_period_work <- data[data$is_workday, ]$sleep_period

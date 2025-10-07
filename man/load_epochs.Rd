@@ -20,6 +20,7 @@ The function loads the epoch data from a CSV file and groups the epochs by night
 }
 \seealso{
 Other data loading: 
-\code{\link{load_sessions}()}
+\code{\link{load_sessions}()},
+\code{\link{read_edf_sessions}()}
 }
 \concept{data loading}

@@ -8,7 +8,7 @@ sleep_regularity_ui <- function(id) {
   )
 }
 
-sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epochs_colnames) {
+sleep_regularity_server <- function(id, sessions, epochs, common) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -46,18 +46,18 @@ sleep_regularity_server <- function(id, sessions, epochs, sessions_colnames, epo
     metric_values_sessions <- shiny::reactive({
       if (is.null(sessions()) || nrow(sessions()) == 0) return(rep(NA, length(metric_names_sessions)))
       c(
-        sd_time(sessions()[[sessions_colnames()$time_at_midsleep]], unit = "hour"),
-        social_jet_lag(sessions(), col_names = sessions_colnames()),
-        composite_phase_deviation(sessions(), col_names = sessions_colnames()),
-        chronotype(sessions(), col_names = sessions_colnames())
+        sd_time(sessions()[[common$sessions_colnames()$time_at_midsleep]], unit = "hour"),
+        social_jet_lag(sessions(), col_names = common$sessions_colnames()),
+        composite_phase_deviation(sessions(), col_names = common$sessions_colnames()),
+        chronotype(sessions(), col_names = common$sessions_colnames())
       )
     })
 
     metric_values_epochs <- shiny::reactive({
       if (is.null(epochs()) || nrow(epochs()) == 0) return(rep(NA, length(metric_names_epochs)))
       c(
-        interdaily_stability(epochs(), col_names = epochs_colnames()),
-        sleep_regularity_index(epochs(), col_names = epochs_colnames())
+        interdaily_stability(epochs(), col_names = common$epochs_colnames()),
+        sleep_regularity_index(epochs(), col_names = common$epochs_colnames())
       )
     })
 

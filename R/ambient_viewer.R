@@ -4,9 +4,6 @@
 #' @import shiny
 #' @export
 ambient_viewer <- function() {
-
-  logging::basicConfig()
-
   app_path <- system.file("shiny", package = "AmbientViewer")
   shiny::runApp(app_path)
 }

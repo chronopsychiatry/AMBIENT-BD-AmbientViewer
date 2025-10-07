@@ -10,7 +10,7 @@ annotation_ui <- function(id) {
   )
 }
 
-annotation_server <- function(id, sessions, sessions_colnames, annotations) {
+annotation_server <- function(id, sessions, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$annotations_text <- shiny::renderUI({
@@ -23,19 +23,19 @@ annotation_server <- function(id, sessions, sessions_colnames, annotations) {
 
     shiny::observe({
       shiny::req(sessions())
-      col <- sessions_colnames()
+      col <- common$sessions_colnames()
       current_sessions <- sessions()
-      ann <- annotations()
+      ann <- common$annotations()
       new_ids <- setdiff(current_sessions[[col$id]], ann$id)
       if (length(new_ids) > 0) {
         ann <- rbind(ann, data.frame(id = new_ids, annotation = "", stringsAsFactors = FALSE))
       }
-      annotations(ann)
+      common$annotations(ann)
     })
 
     annotation_table <- shiny::reactive({
-      shiny::req(sessions(), annotations(), sessions_colnames())
-      make_annotation_table(sessions(), annotations(), sessions_colnames())
+      shiny::req(sessions(), common$annotations(), common$sessions_colnames())
+      make_annotation_table(sessions(), common$annotations(), common$sessions_colnames())
     })
 
     output$annotation_table <- DT::renderDT({
@@ -53,21 +53,21 @@ annotation_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     shiny::observeEvent(input$apply_annotation, {
-      col <- sessions_colnames()
-      ann <- annotations()
+      col <- common$sessions_colnames()
+      ann <- common$annotations()
       selected <- input$annotation_table_rows_selected
       if (length(selected) > 0) {
         selected_ids <- sessions()[sessions()$display, ][[col$id]][selected]
         ann$annotation[match(selected_ids, ann$id)] <- input$annotation_text
-        annotations(ann)
+        common$annotations(ann)
       }
     })
 
     updated_sessions <- shiny::reactive({
-      req(sessions(), annotations())
-      col <- sessions_colnames()
+      shiny::req(sessions(), common$annotations())
+      col <- common$sessions_colnames()
       s <- sessions()
-      ann <- annotations()
+      ann <- common$annotations()
       s$annotation <- ann$annotation[match(s[[col$id]], ann$id)]
       s
     })

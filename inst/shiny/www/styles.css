@@ -9,3 +9,43 @@
 .container-fluid.html-fill-item.html-fill-container {
   display: none !important;
 }
+
+/* Logger styling options */
+#logHeader {
+	position:relative;
+	min-height:90px;
+	background: inherit;
+	z-index:10;
+}
+#logContent {
+  position:absolute;
+  z-index: 5;
+}
+#messageLog {
+  height:150px;
+  width:350px;
+  padding:5px;
+  overflow:auto;
+  border:1px solid black;
+  background: white
+}
+
+.log_start{
+  color:CornflowerBlue;
+}
+
+.log_end{
+  color:green;
+}
+
+.log_info{
+  color:blue;
+}
+
+.log_warn{
+  color:orange;
+}
+
+.log_error{
+  color:red;
+}

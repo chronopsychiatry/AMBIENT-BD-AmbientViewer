@@ -26,7 +26,8 @@ timeseries_ui <- function(id) {
     shiny::plotOutput(ns("timeseries_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
-      label = NULL
+      label = NULL,
+      class = "small-btn"
     ),
     shiny::radioButtons(
       inputId = ns("download_format"),
@@ -37,17 +38,17 @@ timeseries_ui <- function(id) {
   )
 }
 
-timeseries_server <- function(id, epochs, epochs_colnames) {
+timeseries_server <- function(id, epochs, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
-    update_variable_dropdown(epochs, epochs_colnames, plot_options, input, session)
-    update_colorby_dropdown(epochs, epochs_colnames, plot_options, input, session)
+    update_variable_dropdown(epochs, common$epochs_colnames, plot_options, input, session)
+    update_colorby_dropdown(epochs, common$epochs_colnames, plot_options, input, session)
 
     timeseries_plot <- shiny::reactive({
       shiny::req(input$variable, epochs())
       epochs <- epochs()[epochs()$display, ]
-      col <- epochs_colnames()
+      col <- common$epochs_colnames()
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
         shiny::need(!is.null(col$night), "'night' column was not specified.")
@@ -57,7 +58,7 @@ timeseries_server <- function(id, epochs, epochs_colnames) {
         variable = input$variable,
         color_by = input$colorby,
         exclude_zero = input$exclude_zero,
-        col_names = epochs_colnames()
+        col_names = common$epochs_colnames()
       )
     })
 
@@ -68,6 +69,7 @@ timeseries_server <- function(id, epochs, epochs_colnames) {
 
     output$download_plot <- get_plot_download_handler(
       session = session,
+      common = common,
       output_plot = timeseries_plot,
       format = shiny::reactive(input$download_format),
       width = 12,

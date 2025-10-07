@@ -25,7 +25,8 @@ timeseries_sessions_ui <- function(id) {
     plotly::plotlyOutput(ns("timeseries_sessions_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
-      label = NULL
+      label = NULL,
+      class = "small-btn"
     ),
     shiny::radioButtons(
       inputId = ns("download_format"),
@@ -36,17 +37,17 @@ timeseries_sessions_ui <- function(id) {
   )
 }
 
-timeseries_sessions_server <- function(id, sessions, sessions_colnames) {
+timeseries_sessions_server <- function(id, sessions, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
-    update_variable_dropdown(sessions, sessions_colnames, plot_options, input, session)
-    update_colorby_dropdown(sessions, sessions_colnames, plot_options, input, session)
+    update_variable_dropdown(sessions, common$sessions_colnames, plot_options, input, session)
+    update_colorby_dropdown(sessions, common$sessions_colnames, plot_options, input, session)
 
     timeseries_sessions_plot <- shiny::reactive({
       shiny::req(input$variable, sessions())
       sessions <- sessions()[sessions()$display, ]
-      col <- sessions_colnames()
+      col <- common$sessions_colnames()
       shiny::validate(
         shiny::need(!is.null(col$night), "'night' column was not specified.")
       )
@@ -55,7 +56,7 @@ timeseries_sessions_server <- function(id, sessions, sessions_colnames) {
         variable = input$variable,
         color_by = input$colorby,
         exclude_zero = input$exclude_zero,
-        col_names = sessions_colnames()
+        col_names = common$sessions_colnames()
       )
     })
 
@@ -66,6 +67,7 @@ timeseries_sessions_server <- function(id, sessions, sessions_colnames) {
 
     output$download_plot <- get_plot_download_handler(
       session = session,
+      common = common,
       output_plot = timeseries_sessions_plot,
       format = shiny::reactive(input$download_format),
       width = 12,

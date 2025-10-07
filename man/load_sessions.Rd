@@ -20,6 +20,7 @@ The function loads the session data from a CSV file and groups the sessions by n
 }
 \seealso{
 Other data loading: 
-\code{\link{load_epochs}()}
+\code{\link{load_epochs}()},
+\code{\link{read_edf_sessions}()}
 }
 \concept{data loading}

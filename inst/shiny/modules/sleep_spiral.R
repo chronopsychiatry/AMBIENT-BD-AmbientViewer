@@ -10,7 +10,8 @@ sleep_spiral_ui <- function(id) {
     shiny::plotOutput(ns("sleep_spiral_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
-      label = NULL
+      label = NULL,
+      class = "small-btn"
     ),
     shiny::radioButtons(
       inputId = ns("download_format"),
@@ -21,11 +22,11 @@ sleep_spiral_ui <- function(id) {
   )
 }
 
-sleep_spiral_server <- function(id, epochs, epochs_colnames) {
+sleep_spiral_server <- function(id, epochs, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(epochs, epochs_colnames, plot_options, input, session)
+    update_colorby_dropdown(epochs, common$epochs_colnames, plot_options, input, session)
 
     sleep_spiral_plot <- shiny::reactive({
       shiny::req(epochs())
@@ -33,7 +34,7 @@ sleep_spiral_server <- function(id, epochs, epochs_colnames) {
       if (nrow(epochs) == 0) {
         return(NULL)
       }
-      col <- epochs_colnames()
+      col <- common$epochs_colnames()
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
         shiny::need(!is.null(col$sleep_stage), "'sleep_stage' column was not specified.")
@@ -41,7 +42,7 @@ sleep_spiral_server <- function(id, epochs, epochs_colnames) {
       plot_sleep_spiral(
         epochs = epochs,
         color_by = input$colorby,
-        col_names = epochs_colnames()
+        col_names = common$epochs_colnames()
       )
     })
 
@@ -52,6 +53,7 @@ sleep_spiral_server <- function(id, epochs, epochs_colnames) {
 
     output$download_plot <- get_plot_download_handler(
       session = session,
+      common = common,
       output_plot = sleep_spiral_plot,
       format = shiny::reactive(input$download_format),
       width = 8,

@@ -11,22 +11,19 @@ compliance_ui <- function(id) {
   )
 }
 
-compliance_server <- function(id, sessions, sessions_colnames) {
+compliance_server <- function(id, sessions, common) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
       shiny::req(sessions())
-      if (is.null(sessions_colnames()$night)) {
+      if (is.null(common$sessions_colnames()$night)) {
         shiny::HTML("'Night' column was not specified.<br/>Please set a column name for night.")
       }
-      shiny::validate(shiny::need(!is.null(sessions_colnames()$night), message = FALSE))
-      get_compliance_table(sessions(), sessions_colnames())
+      shiny::validate(shiny::need(!is.null(common$sessions_colnames()$night), message = FALSE))
+      get_compliance_table(sessions(), common$sessions_colnames())
     })
 
     output$compliance_table <- shiny::renderTable({
       shiny::req(compliance_table())
-      if (nrow(compliance_table()) == 0) {
-        logging::loginfo("Compliance table is empty (there are no duplicate sessions on the same night).")
-      }
       shiny::validate(
         shiny::need(nrow(compliance_table()) > 0, "There are no duplicate sessions on the same night.")
       )
@@ -52,13 +49,14 @@ compliance_server <- function(id, sessions, sessions_colnames) {
     shiny::observe({
       shiny::req(sessions())
       shiny::validate(
-        shiny::need(!is.null(sessions_colnames()$night), message = FALSE)
+        shiny::need(!is.null(common$sessions_colnames()$night), message = FALSE)
       )
       output_table <- sessions() |>
         dplyr::filter(.data$display) |>
-        get_non_complying_sessions(col_names = sessions_colnames())
+        get_non_complying_sessions(col_names = common$sessions_colnames())
       output$download_compliance <- get_table_download_handler(
         session = session,
+        common = common,
         output_table = output_table,
         output_name = "compliance"
       )

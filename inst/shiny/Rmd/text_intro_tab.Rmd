@@ -3,8 +3,6 @@ title: "Introduction"
 output: html_document
 ---
 
-## Introduction
-
 ### Data types
 
 - **Sessions**: each row represents a sleep session. The session data is expected to contain sleep onset and wakeup times

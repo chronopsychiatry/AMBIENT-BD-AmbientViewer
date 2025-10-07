@@ -59,7 +59,7 @@
   subject_id = "subject_id",
   sex = NULL,
   birth_year = NULL,
-  device_id = "device_id",
+  device_id = NULL,
   session_start = "startTime",
   session_end = "endTime",
   time_at_sleep_onset = "startTime",
@@ -73,7 +73,7 @@
 )
 
 .sessions_col_none <- list(
-  id = "id_default",
+  id = "session_id",
   subject_id = NULL,
   sex = NULL,
   birth_year = NULL,

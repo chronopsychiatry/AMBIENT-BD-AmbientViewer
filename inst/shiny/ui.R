@@ -12,7 +12,7 @@ tagList(
     header = tagList(
       shinyjs::useShinyjs(),
       shinyjs::extendShinyjs(
-        script = file.path("resources", "js", "shinyjs-funcs.js"),
+        script = file.path("shinyjs-funcs.js"),
         functions = c("scrollLogger")
       ),
       tags$head(
@@ -53,6 +53,20 @@ tagList(
           condition = "input.tabs == 'export_data'",
           h3("Data export"),
           export_data_ui("export_data"),
+        ),
+        hr(),
+        conditionalPanel(
+          condition = "input.tabs != 'intro'",
+          div(
+            strong("Log window"),
+            div(style = "margin-top: 5px"),
+            div(
+              id = "messageLog",
+              div(id = "logHeader", div(id = "logContent"))
+            ),
+            br(),
+            textOutput("logger")
+          )
         )
       )
     ),

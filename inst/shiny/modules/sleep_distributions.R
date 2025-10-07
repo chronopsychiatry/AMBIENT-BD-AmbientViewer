@@ -17,7 +17,8 @@ sleep_distributions_ui <- function(id) {
     shiny::plotOutput(ns("sleep_distribution_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
-      label = NULL
+      label = NULL,
+      class = "small-btn"
     ),
     shiny::radioButtons(
       inputId = ns("download_format"),
@@ -28,12 +29,12 @@ sleep_distributions_ui <- function(id) {
   )
 }
 
-sleep_distributions_server <- function(id, sessions, sessions_colnames) {
+sleep_distributions_server <- function(id, sessions, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$binwidth_slider <- shiny::renderUI({
       shiny::req(sessions())
-      col <- sessions_colnames()
+      col <- common$sessions_colnames()
       if (input$plot_type == "Histogram") {
         shiny::sliderInput(
           session$ns("binwidth"),
@@ -49,7 +50,7 @@ sleep_distributions_server <- function(id, sessions, sessions_colnames) {
 
     output$adjust_slider <- shiny::renderUI({
       shiny::req(sessions())
-      col <- sessions_colnames()
+      col <- common$sessions_colnames()
       if (input$plot_type == "Density") {
         shiny::sliderInput(
           session$ns("adjust"),
@@ -66,7 +67,7 @@ sleep_distributions_server <- function(id, sessions, sessions_colnames) {
     sleep_distribution_plot <- shiny::reactive({
       shiny::req(input$plot_type, sessions())
       sessions <- sessions()[sessions()$display, ]
-      col <- sessions_colnames()
+      col <- common$sessions_colnames()
       shiny::validate(
         shiny::need(!is.null(col$time_at_sleep_onset), "'time_at_sleep_onset' column was not specified."),
         shiny::need(!is.null(col$time_at_midsleep), "'time_at_midsleep' column was not specified."),
@@ -75,15 +76,15 @@ sleep_distributions_server <- function(id, sessions, sessions_colnames) {
       )
       switch(input$plot_type,
         "Boxplot" = {
-          sleeptimes_boxplot(sessions, sessions_colnames())
+          sleeptimes_boxplot(sessions, common$sessions_colnames())
         },
         "Histogram" = {
           shiny::req(input$binwidth)
-          sleeptimes_histogram(sessions, sessions_colnames(), binwidth = input$binwidth)
+          sleeptimes_histogram(sessions, common$sessions_colnames(), binwidth = input$binwidth)
         },
         "Density" = {
           shiny::req(input$adjust)
-          sleeptimes_density(sessions, sessions_colnames(), adjust = input$adjust)
+          sleeptimes_density(sessions, common$sessions_colnames(), adjust = input$adjust)
         }
       )
     })
@@ -95,6 +96,7 @@ sleep_distributions_server <- function(id, sessions, sessions_colnames) {
 
     output$download_plot <- get_plot_download_handler(
       session = session,
+      common = common,
       output_plot = sleep_distribution_plot,
       format = shiny::reactive(input$download_format),
       width = 12,

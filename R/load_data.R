@@ -2,7 +2,8 @@
 #'
 #' @param sessions_file The path to the sessions file
 #' @returns A dataframe containing the session data
-#' @details The function loads the session data from a CSV file and groups the sessions by night.
+#' @details The function loads the session data from a file and groups the sessions by night.
+#' Supported formats: CSV, Excel, EDF.
 #' @export
 #' @family data loading
 load_sessions <- function(sessions_file) {
@@ -13,7 +14,23 @@ load_sessions <- function(sessions_file) {
     ))
   }
 
-  sessions <- utils::read.csv(sessions_file) |>
+  file_ext <- tolower(tools::file_ext(sessions_file))
+  if (file_ext == "csv") {
+    sessions <- utils::read.csv(sessions_file)
+  } else if (file_ext %in% c("xls", "xlsx")) {
+    sessions <- readxl::read_excel(sessions_file) |>
+      as.data.frame()
+  } else if (file_ext %in% c("edf", "rec")) {
+    sessions <- read_edf_sessions(sessions_file) |>
+      dplyr::mutate(session_id = dplyr::row_number())
+  } else {
+    cli::cli_abort(c(
+      "!" = "Unsupported file type: {.val {file_ext}}",
+      "i" = "Please provide a CSV or Excel file."
+    ))
+  }
+
+  sessions <- sessions |>
     dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., "")))
 
   if (nrow(sessions) == 0) {
@@ -21,7 +38,7 @@ load_sessions <- function(sessions_file) {
       "!" = "Sessions table is empty",
       "i" = "Returning NULL"
     ))
-    return()
+    return(NULL)
   }
 
   fmt <- get_sessions_format(sessions)
@@ -33,7 +50,7 @@ load_sessions <- function(sessions_file) {
     sessions |> group_sessions_by_night()
   } else {
     sessions |>
-      dplyr::mutate(id_default = dplyr::row_number())
+      dplyr::mutate(session_id = dplyr::row_number())
   }
 }
 
@@ -41,11 +58,12 @@ load_sessions <- function(sessions_file) {
 #'
 #' @param epochs_file The path to the epochs file
 #' @returns A dataframe containing the epoch data
-#' @details The function loads the epoch data from a CSV file and groups the epochs by night.
+#' @details The function loads the epoch data from a file and groups the epochs by night.
+#' Supported formats: CSV, Excel, EDF.
 #' @export
 #' @family data loading
 #' @importFrom rlang .data
-load_epochs <- function(epochs_file) {
+load_epochs <- function(epochs_file, timestamp = "timestamp", annotation = "annotation") {
   if (!file.exists(epochs_file)) {
     cli::cli_abort(c(
       "!" = "Epochs file not found: {.file {epochs_file}}",
@@ -53,7 +71,22 @@ load_epochs <- function(epochs_file) {
     ))
   }
 
-  epochs <- utils::read.csv(epochs_file) |>
+  file_ext <- tolower(tools::file_ext(epochs_file))
+  if (file_ext == "csv") {
+    epochs <- utils::read.csv(epochs_file)
+  } else if (file_ext %in% c("xls", "xlsx")) {
+    epochs <- readxl::read_excel(epochs_file) |>
+      as.data.frame()
+  } else if (file_ext %in% c("edf", "rec")) {
+    epochs <- read_edf_epochs(epochs_file, timestamp, annotation)
+  } else {
+    cli::cli_abort(c(
+      "!" = "Unsupported file type: {.val {file_ext}}",
+      "i" = "Please provide a CSV or Excel file."
+    ))
+  }
+
+  epochs <- epochs |>
     dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., "")))
 
   if (nrow(epochs) == 0) {

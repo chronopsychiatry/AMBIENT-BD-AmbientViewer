@@ -9,3 +9,7 @@ source("download_handlers.R")
 # Source all app modules
 modules <- list.files("modules", pattern = "\\.R$", full.names = TRUE)
 for (m in modules) source(m)
+
+# Initialise common
+source(system.file("shiny", "common.R", package = "AmbientViewer"))
+common <- common_class$new()

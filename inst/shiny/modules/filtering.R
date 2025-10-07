@@ -40,15 +40,15 @@ filtering_tab <- function(id) {
   )
 }
 
-filtering_server <- function(id, sessions, sessions_colnames, annotations) {
+filtering_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$date_range_slider <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- sessions_colnames()
-      if (!is.null(col$night) && nrow(sessions()) > 0) {
-        min_date <- min(sessions()[[col$night]], na.rm = TRUE)
-        max_date <- max(sessions()[[col$night]], na.rm = TRUE)
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
+      if (!is.null(col$night) && nrow(common$sessions()) > 0) {
+        min_date <- min(common$sessions()[[col$night]], na.rm = TRUE)
+        max_date <- max(common$sessions()[[col$night]], na.rm = TRUE)
         shiny::sliderInput(
           inputId = session$ns("date_range"),
           label = "Date Range:",
@@ -62,10 +62,10 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     output$subject_select <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
       if (!is.null(col$subject_id)) {
-        subject_choices <- unique(sessions()[[col$subject_id]])
+        subject_choices <- unique(common$sessions()[[col$subject_id]])
         shinyWidgets::pickerInput(
           inputId = session$ns("subject_filter"),
           label = "Subjects:",
@@ -81,10 +81,10 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     output$age_range_slider <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
       if (!is.null(col$birth_year)) {
-        birth_years <- sessions()[[col$birth_year]]
+        birth_years <- common$sessions()[[col$birth_year]]
         birth_years <- birth_years[!is.na(birth_years)]
         if (length(birth_years) > 0) {
           min_age <- lubridate::year(Sys.Date()) - max(birth_years)
@@ -102,10 +102,10 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     output$sex_select <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
       if (!is.null(col$sex)) {
-        sex_choices <- unique(sessions()[[col$sex]])
+        sex_choices <- unique(common$sessions()[[col$sex]])
         shinyWidgets::pickerInput(
           inputId = session$ns("sex_filter"),
           label = "Sex:",
@@ -121,8 +121,8 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     output$time_in_bed_slider <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
       if (!is.null(col$time_in_bed)) {
         shiny::sliderInput(
           inputId = session$ns("time_in_bed"),
@@ -138,8 +138,8 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     output$sleep_onset_range <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
       if (!is.null(col$time_at_sleep_onset)) {
         shinyWidgets::sliderTextInput(
           inputId = session$ns("time_range"),
@@ -152,13 +152,13 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
     })
 
     filtered_sessions <- shiny::reactive({
-      shiny::req(sessions())
-      col <- sessions_colnames()
+      shiny::req(common$sessions())
+      col <- common$sessions_colnames()
 
       from_time <- if (!is.null(input$time_range[1])) paste0(input$time_range[1], ":00") else NULL
       to_time <- if (!is.null(input$time_range[2])) paste0(input$time_range[2], ":00") else NULL
 
-      df <- sessions() |>
+      df <- common$sessions() |>
         remove_sessions_no_sleep(col_names = col)
 
       if (!"display" %in% colnames(df)) {
@@ -193,10 +193,10 @@ filtering_server <- function(id, sessions, sessions_colnames, annotations) {
 
     removed_sessions <- shiny::reactive({
       shiny::req(filtered_sessions())
-      col <- sessions_colnames()
+      col <- common$sessions_colnames()
       filtered_sessions() |>
-        dplyr::mutate(annotation = annotations()$annotation[match(.data[[col$id]], annotations()$id)]) |>
-        get_removed_sessions_table(col_names = sessions_colnames())
+        dplyr::mutate(annotation = common$annotations()$annotation[match(.data[[col$id]], common$annotations()[[col$id]])]) |>
+        get_removed_sessions_table(col_names = common$sessions_colnames())
     })
 
     output$removed_sessions <- shiny::renderTable({

@@ -1,4 +1,4 @@
-get_plot_download_handler <- function(session, output_plot, format, width = 8, height = 6) {
+get_plot_download_handler <- function(session, common, output_plot, format, width = 8, height = 6) {
   shiny::downloadHandler(
     filename = function() {
       paste0("plot_", Sys.Date(), ".", format())
@@ -7,7 +7,7 @@ get_plot_download_handler <- function(session, output_plot, format, width = 8, h
       shiny::req(output_plot())
       plot <- output_plot()
 
-      logging::loginfo(paste0("Exporting plot in ", format(), " format."))
+      common$logger |> write_log(paste0("Exporting plot in ", format(), " format."), type = "info")
 
       if (FALSE) svglite::svglite # Adding this for now to keep R CMD check happy
       ggplot2::ggsave(filename = file, plot = plot, device = format(), bg = "white", width = width, height = height)
@@ -15,19 +15,19 @@ get_plot_download_handler <- function(session, output_plot, format, width = 8, h
   )
 }
 
-get_table_download_handler <- function(session, output_table, output_name = "") {
+get_table_download_handler <- function(session, common, output_table, output_name = "") {
   shiny::downloadHandler(
     filename = function() {
       paste0(output_name, "_", Sys.Date(), ".csv")
     },
     content = function(file) {
       readr::write_csv(output_table, file)
-      logging::loginfo(paste0("Exporting table: ", output_name, " (", nrow(output_table), " rows)"))
+      common$logger |> write_log(paste0("Exporting table: ", output_name, " (", nrow(output_table), " rows)"), type = "info")
     }
   )
 }
 
-get_report_download_handler <- function(session, sessions, title) {
+get_report_download_handler <- function(session, sessions, common, title) {
   shiny::downloadHandler(
     filename = function() {
       paste0("Sleep_report_", Sys.Date(), ".pdf")
@@ -36,6 +36,7 @@ get_report_download_handler <- function(session, sessions, title) {
       tmpfile <- tempfile(fileext = ".pdf")
       sleep_report(sessions = sessions, title = title(), output_file = tmpfile)
       file.copy(tmpfile, file)
+      common$logger |> write_log(paste0("Sleep report generated"), type = "complete")
     },
     contentType = "application/pdf"
   )
