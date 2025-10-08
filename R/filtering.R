@@ -108,19 +108,20 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
 #' @family filtering
 #' @examples
 #' filtered_sessions <- filter_by_age_range(example_sessions_v1, min_age = 11, max_age = 18)
-filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL, flag_only = FALSE) {
+filter_by_age_range <- function(sessions, min_age = NULL, max_age = NULL, col_names = NULL, flag_only = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0) {
     return(sessions)
   }
 
-  min_age <- if (is.null(min_age)) lubridate::year(Sys.Date()) - max(sessions[[col$birth_year]]) else min_age
-  max_age <- if (is.null(max_age)) lubridate::year(Sys.Date()) - min(sessions[[col$birth_year]]) else max_age
-
   if (is.null(col$birth_year)) {
     cli::cli_abort(c("!" = "The sessions table does not contain a birth year column."))
   }
+
+  min_age <- if (is.null(min_age)) min(lubridate::year(sessions[[col$session_start]]) - sessions[[col$birth_year]]) else min_age
+  max_age <- if (is.null(max_age)) max(lubridate::year(sessions[[col$session_start]]) - sessions[[col$birth_year]]) else max_age
+
   if (min_age > max_age) {
     cli::cli_abort(c("!" = "min_age must be before max_age."))
   }
@@ -130,8 +131,8 @@ filter_by_age_range <- function(sessions, min_age, max_age, col_names = NULL, fl
   }
 
   sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                             sessions[[col$birth_year]] >= (lubridate::year(Sys.Date()) - max_age) &
-                               sessions[[col$birth_year]] <= (lubridate::year(Sys.Date()) - min_age))
+                             sessions[[col$birth_year]] >= (lubridate::year(sessions[[col$session_start]]) - max_age) &
+                               sessions[[col$birth_year]] <= (lubridate::year(sessions[[col$session_start]]) - min_age))
 
   if (flag_only) {
     sessions
