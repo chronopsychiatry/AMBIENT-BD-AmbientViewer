@@ -24,7 +24,7 @@ sessions <- data.frame(
 sessions_v1 <- data.frame(
   session_id = c("A", "B", "C", "D", "E"),
   subject_id = c("sub_A", "sub_A", "sub_A", "sub_B", "sub_C"),
-  birth_year = lubridate::year(Sys.Date()) - c(11, 12, 14, 20, 30),
+  birth_year = 2025 - c(11, 12, 14, 20, 30),
   sex = c("Male", "Female", "Other", "Female", "Male"),
   session_start = c(
     "2025-03-10T19:30:00.000000+00:00",
