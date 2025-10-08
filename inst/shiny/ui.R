@@ -41,17 +41,14 @@ tagList(
         ),
         conditionalPanel(
           condition = "input.tabs == 'import_data'",
-          h3("Data Input"),
           input_ui("input"),
         ),
         conditionalPanel(
           condition = "input.tabs == 'filtering'",
-          h3("Filtering"),
           filtering_ui("filtering"),
         ),
         conditionalPanel(
           condition = "input.tabs == 'export_data'",
-          h3("Data export"),
           export_data_ui("export_data"),
         ),
         hr(),

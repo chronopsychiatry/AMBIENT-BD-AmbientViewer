@@ -1,9 +1,8 @@
 input_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::hr(),
+    shiny::h4("1. Load data"),
     shiny::actionButton(ns("load_example_data"), "Load Example Data"),
-    shiny::hr(),
     shiny::div(
       style = "margin-bottom: -0.6rem;",
       shiny::fileInput(
@@ -12,8 +11,6 @@ input_ui <- function(id) {
         accept = c(".csv")
       )
     ),
-    shiny::actionButton(ns("open_session_col_names"), "Set Session Columns"),
-    shiny::br(), shiny::br(),
     shiny::div(
       style = "margin-bottom: -0.6rem;",
       shiny::fileInput(
@@ -22,6 +19,9 @@ input_ui <- function(id) {
         accept = c(".csv")
       )
     ),
+    shiny::h4("2. Set column names"),
+    shiny::actionButton(ns("open_session_col_names"), "Set Session Columns"),
+    shiny::br(), shiny::br(),
     shiny::actionButton(ns("open_epoch_col_names"), "Set Epoch Columns"),
   )
 }
