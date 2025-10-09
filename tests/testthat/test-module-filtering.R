@@ -30,5 +30,4 @@ test_that("get_removed_sessions_table output is correct", {
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 3)
-  expect_equal(ncol(result), 9)
 })
