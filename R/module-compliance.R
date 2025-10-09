@@ -94,6 +94,7 @@ make_sessions_display_table <- function(sessions, col_names = NULL) {
     dplyr::select(
       dplyr::any_of(c(
         col$id,
+        col$subject_id,
         "night",
         "start",
         "sleep_onset",
