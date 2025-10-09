@@ -152,7 +152,9 @@ remove_sessions_no_sleep <- function(sessions, col_names = NULL) {
 #' duplicate_sessions <- get_non_complying_sessions(example_sessions)
 get_non_complying_sessions <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
-  sessions[sessions[[col$night]] %in% sessions[[col$night]][duplicated(sessions[[col$night]])], ]
+  dup_mask <- duplicated(sessions[, c(col$night, col$subject_id)]) |
+    duplicated(sessions[, c(col$night, col$subject_id)], fromLast = TRUE)
+  sessions[dup_mask, ]
 }
 
 #' Get a table of sessions that were removed during filtering
