@@ -1,3 +1,10 @@
+/* Main panel */
+.main-panel-wrapper {
+  min-height: 70vh;      /* Ensures it grows with content */
+  max-height: 85vh;      /* Adjust as needed */
+  overflow-y: auto;      /* Adds vertical scroll if content overflows */
+}
+
 /* Force some buttons to be small instead of taking up the whole width */
 .small-btn {
   width: 50px !important;
@@ -8,6 +15,15 @@
 /* Remove white space below top navbar */
 .container-fluid.html-fill-item.html-fill-container {
   display: none !important;
+}
+
+/* Help icon styling */
+.colnames-help {
+  color: #007bff;
+  cursor: help;
+  font-size: 1.5em;
+  vertical-align: middle;
+  margin-left: 6px;
 }
 
 /* Logger styling options */
@@ -48,4 +64,24 @@
 
 .log_error{
   color:red;
+}
+
+/* Radio buttons for input selection */
+.btn.btn-outline-secondary{
+  border: 1px solid #999;
+  color: #6c757d;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.btn-check:checked + .btn.btn-outline-secondary {
+  background-color: #999 !important;
+  color: #fff !important;
+  border: 1px solid #999 !important;
+}
+
+.btn.btn-outline-secondary:hover {
+  color: #6c757d;
+  border: 1px solid #999;
 }

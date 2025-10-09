@@ -1,4 +1,61 @@
-# Sessions ----
+# Long names ----
+.sessions_long <- list(
+  id = "Session ID",
+  subject_id = "Subject ID",
+  sex = "Sex",
+  birth_year = "Birth Year",
+  device_id = "Device Serial Number",
+  session_start = "Session Start",
+  session_end = "Session End",
+  time_at_sleep_onset = "Time at Sleep Onset",
+  time_at_midsleep = "Time at Midsleep",
+  time_at_wakeup = "Time at Wakeup",
+  sleep_onset_latency = "Sleep Onset Latency",
+  sleep_period = "Sleep Period",
+  time_in_bed = "Time in Bed",
+  is_workday = "Workdays/Free Days",
+  night = "Night"
+)
+
+.epochs_long <- list(
+  timestamp = "Timestamp",
+  session_id = "Session ID",
+  signal_quality = "Signal Quality",
+  sleep_stage = "Sleep Stage",
+  night = "Night",
+  is_asleep = "Asleep/Awake"
+)
+
+# Help tooltip texts ----
+.sessions_help <- list(
+  id = "Unique identifier for each session.",
+  subject_id = "Unique identifier for each subject.",
+  sex = NULL,
+  birth_year = NULL,
+  device_id = "Unique identifier for the recording device.",
+  session_start = paste0("Start time of the session (YYYY-MM-DD HH:MM:SS).",
+                         " If \"night\" is not provided, it will be calculated from session start."),
+  session_end = "End time of the session (YYYY-MM-DD HH:MM:SS).",
+  time_at_sleep_onset = "Time at Sleep Onset (YYYY-MM-DD HH:MM:SS).",
+  time_at_midsleep = "Time at Midsleep (YYYY-MM-DD HH:MM:SS).",
+  time_at_wakeup = "Time at Wakeup (YYYY-MM-DD HH:MM:SS).",
+  sleep_onset_latency = "Time between session start and sleep onset (in seconds).",
+  sleep_period = "Total time spent asleep during the session (in seconds).",
+  time_in_bed = "Total time spent in bed during the session (in seconds).",
+  is_workday = "Logical variable indicating if the session is on a workday (TRUE) or weekend (FALSE).",
+  night = "Night (from 12pm to 12pm) the session belongs to (YYYY-MM-DD). If not provided, it will be calculated from session_start."
+)
+
+.epochs_help <- list(
+  timestamp = "Timestamp of the epoch (YYYY-MM-DD HH:MM:SS). If \"night\" is not provided, it will be calculated from timestamp.",
+  session_id = "Identifier linking the epoch to a session in the sessions dataframe.",
+  signal_quality = "Signal quality of the epoch.",
+  sleep_stage = "Sleep stage of the epoch.",
+  night = "Night (from 12pm to 12pm) the epoch belongs to (YYYY-MM-DD). If not provided, it will be calculated from timestamp.",
+  is_asleep = "Logical variable indicating if the epoch is classified as asleep (TRUE) or awake (FALSE)."
+)
+
+# Session formats ----
 
 .sessions_col_somnofy_v2 <- list(
   id = "id",
@@ -90,7 +147,7 @@
   night = NULL
 )
 
-# Epochs ----
+# Epoch formats ----
 
 .epochs_col_somnofy_v2 <- list(
   timestamp = "timestamp",

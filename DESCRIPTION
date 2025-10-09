@@ -33,6 +33,7 @@ Imports:
     scales,
     shiny,
     shinyalert,
+    shinyFiles,
     shinyjs,
     shinyWidgets,
     stringr,

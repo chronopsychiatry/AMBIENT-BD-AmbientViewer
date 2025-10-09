@@ -82,7 +82,7 @@ load_epochs <- function(epochs_file, timestamp = "timestamp", annotation = "anno
   } else {
     cli::cli_abort(c(
       "!" = "Unsupported file type: {.val {file_ext}}",
-      "i" = "Please provide a CSV or Excel file."
+      "i" = "Please provide a CSV, Excel or EDF file."
     ))
   }
 
@@ -155,7 +155,6 @@ get_sessions_format <- function(sessions) {
   } else {
     cli::cli_warn(c(
       "!" = "Could not infer the Sessions data type.",
-      "i" = "Please check the csv file contains session data.",
       "i" = "Setting all column names to NULL."
     ))
     "none"
@@ -172,7 +171,6 @@ get_epochs_format <- function(epochs) {
   } else {
     cli::cli_warn(c(
       "!" = "Could not infer the Epochs data type.",
-      "i" = "Please check the csv file contains epoch data.",
       "i" = "Setting all column names to NULL."
     ))
     "none"

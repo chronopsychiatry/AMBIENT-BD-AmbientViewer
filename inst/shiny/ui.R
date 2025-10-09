@@ -69,7 +69,8 @@ tagList(
     ),
 
     # Main panel ----
-    mainPanel(
+    div(
+      class = "main_panel",
 
       # Tabset for tables ----
       bslib::navset_card_tab(
@@ -93,12 +94,12 @@ tagList(
         bslib::nav_panel("Session Timeseries", timeseries_sessions_ui("timeseries_sessions")),
         bslib::nav_panel("Epoch Timeseries", timeseries_ui("timeseries"))
       )
-    )
-  ),
+    ),
 
-  # Footer ----
-  div(
-    style = "text-align: left; margin-top: 5px; font-size: 12px; color: #555;",
-    textOutput("footer_text")
+    # Footer ----
+    div(
+      style = "text-align: left; margin-top: 5px; font-size: 12px; color: #555;",
+      textOutput("footer_text")
+    )
   )
 )
