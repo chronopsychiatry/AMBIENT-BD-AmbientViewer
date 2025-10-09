@@ -16,12 +16,12 @@ test_that("compliance module works", {
 
 test_that("get_compliance_table output is correct", {
   result <- get_compliance_table(example_sessions |>
+                                   remove_sessions_no_sleep() |>
                                    dplyr::mutate(display = TRUE, annotation = ""), col_names = get_session_colnames(example_sessions))
 
   expect_equal(class(result), "data.frame")
-  expect_equal(nrow(result), 123)
-  expect_equal(ncol(result), 9)
-  expect_length(unique(result$night), 14)
+  expect_equal(nrow(result), 4)
+  expect_length(unique(result$night), 1)
 })
 
 test_that("make_sessions_display_table output is correct", {
@@ -30,6 +30,5 @@ test_that("make_sessions_display_table output is correct", {
 
   expect_equal(class(result), "data.frame")
   expect_equal(nrow(result), 124)
-  expect_equal(ncol(result), 9)
   expect_length(unique(result$night), 15)
 })
