@@ -96,6 +96,7 @@ make_annotation_table <- function(sessions, annotations, sessions_colnames) {
     dplyr::select(
       dplyr::any_of(c(
         "annotation",
+        col$subject_id,
         "start",
         "sleep_onset",
         "wakeup",
