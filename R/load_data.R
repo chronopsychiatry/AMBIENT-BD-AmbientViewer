@@ -114,6 +114,47 @@ load_epochs <- function(epochs_file, timestamp = "timestamp", annotation = "anno
   }
 }
 
+#' Load session data in batch mode
+#'
+#' @param folder_path The path to the folder containing session files
+#' @param pattern An optional pattern to filter files in the folder
+#' @returns A dataframe containing the combined session data from all files in the folder
+#' @family data loading
+#' @export
+load_sessions_batch <- function(folder_path, pattern = "") {
+  if (!dir.exists(folder_path)) {
+    cli::cli_abort(c(
+      "!" = "Folder not found: {.file {folder_path}}",
+      "i" = "Please check the folder path."
+    ))
+  }
+
+  all_files <- list.files(folder_path, full.names = TRUE)
+
+  if (pattern != "") {
+    all_files <- all_files[grepl(pattern, basename(all_files))]
+  }
+
+  if (length(all_files) == 0) {
+    cli::cli_warn(c(
+      "!" = "No files found in folder: {.file {folder_path}} with pattern: {.val {pattern}}",
+      "i" = "Returning NULL"
+    ))
+    return(NULL)
+  }
+
+  all_sessions <- data.frame()
+  for (f in all_files) {
+    sessions <- load_sessions(f)
+    if (!is.null(sessions)) {
+      sessions <- sessions |>
+        dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+      all_sessions <- dplyr::bind_rows(all_sessions, sessions)
+    }
+  }
+  all_sessions
+}
+
 #' Set the data type for a dataframe
 #'
 #' @param df The dataframe to set the data type for

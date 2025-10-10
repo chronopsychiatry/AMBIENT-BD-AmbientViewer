@@ -25,7 +25,8 @@ input_sessions_ui <- function(id) {
         label = "Filename pattern:",
         value = ""
       ),
-      shinyFiles::shinyDirButton(ns("folder_select"), "Choose folder", "Please select the folder containing the session files")
+      shinyFiles::shinyDirButton(ns("folder_select"), "Choose folder", "Please select the folder containing the session files"),
+      shiny::actionButton(ns("load_sessions_batch"), "Load Batch Session Data")
     ),
     shiny::conditionalPanel(
       condition = paste0("input['", ns("session_input_type"), "'] == 'Build from Epoch data'"),
@@ -51,7 +52,7 @@ input_sessions_server <- function(id, session, common) {
     volumes <- shinyFiles::getVolumes()()
     shinyFiles::shinyDirChoose(input, "folder_select", roots = volumes, session = session)
 
-    shiny::observeEvent(input$folder_select, {
+    shiny::observeEvent(input$load_sessions_batch, {
       folder_path <- shinyFiles::parseDirPath(roots = volumes, input$folder_select)
       if (length(folder_path) == 0) return()
       common$logger |> write_log(paste0("Batch-loading session files from: ", folder_path), type = "starting")
@@ -75,10 +76,10 @@ init_annotations <- function(sessions, common) {
 }
 
 check_session_datatype <- function(sessions, common) {
-  if (data$.data_type[1] == "none") {
+  if (sessions$.data_type[1] == "none") {
     common$logger |> write_log("Could not detect session data type. Please set column names.", type = "warning")
   } else {
-    common$logger |> write_log(paste0("Detected session data type: ", data$.data_type[1]), type = "complete")
+    common$logger |> write_log(paste0("Detected session data type: ", sessions$.data_type[1]), type = "complete")
     common$logger |> write_log("Column names were set automatically", type = "info")
   }
 }
