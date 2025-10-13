@@ -6,8 +6,8 @@
 \usage{
 filter_by_age_range(
   sessions,
-  min_age,
-  max_age,
+  min_age = NULL,
+  max_age = NULL,
   col_names = NULL,
   flag_only = FALSE
 )

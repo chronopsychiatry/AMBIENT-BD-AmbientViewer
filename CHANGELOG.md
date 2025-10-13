@@ -1,5 +1,13 @@
 # Ambient Viewer Changelog
 
+## 0.0.10 (13/10/2025)
+
+### Fixed
+
+- For the "age" filter, age is now calculated from the time of data collection, and not the current date
+- The compliance table shows sessions as duplicates only if they're from the same night *and* the same subject
+- Subject ID was added as a column in the annotation table
+
 ## 0.0.9 (25/09/2025)
 
 ### Data formats
