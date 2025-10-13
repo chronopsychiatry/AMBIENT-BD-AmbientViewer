@@ -10,7 +10,7 @@ annotation_ui <- function(id) {
   )
 }
 
-annotation_server <- function(id, sessions, common) {
+annotation_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$annotations_text <- shiny::renderUI({
@@ -22,11 +22,10 @@ annotation_server <- function(id, sessions, common) {
     })
 
     shiny::observe({
-      shiny::req(sessions())
+      shiny::req(common$sessions())
       col <- common$sessions_colnames()
-      current_sessions <- sessions()
       ann <- common$annotations()
-      new_ids <- setdiff(current_sessions[[col$id]], ann$id)
+      new_ids <- setdiff(common$sessions()[[col$id]], ann$id)
       if (length(new_ids) > 0) {
         ann <- rbind(ann, data.frame(id = new_ids, annotation = "", stringsAsFactors = FALSE))
       }
@@ -34,8 +33,8 @@ annotation_server <- function(id, sessions, common) {
     })
 
     annotation_table <- shiny::reactive({
-      shiny::req(sessions(), common$annotations(), common$sessions_colnames())
-      make_annotation_table(sessions(), common$annotations(), common$sessions_colnames())
+      shiny::req(common$sessions(), common$annotations(), common$sessions_colnames())
+      make_annotation_table(common$sessions(), common$annotations(), common$sessions_colnames())
     })
 
     output$annotation_table <- DT::renderDT({
@@ -47,7 +46,7 @@ annotation_server <- function(id, sessions, common) {
           dom = "lftip",              # Show length menu, filter, table, info, and pagination
           pageLength = 50,            # Default page length
           lengthMenu = c(25, 50, 100, 200, 500), # Choices for page length
-          paging = TRUE                # Enable pagination
+          paging = TRUE               # Enable pagination
         )
       )
     })
@@ -57,22 +56,35 @@ annotation_server <- function(id, sessions, common) {
       ann <- common$annotations()
       selected <- input$annotation_table_rows_selected
       if (length(selected) > 0) {
-        selected_ids <- sessions()[sessions()$display, ][[col$id]][selected]
+        selected_ids <- common$sessions()[common$sessions()$display, ][[col$id]][selected]
         ann$annotation[match(selected_ids, ann$id)] <- input$annotation_text
         common$annotations(ann)
       }
     })
 
     updated_sessions <- shiny::reactive({
-      shiny::req(sessions(), common$annotations())
+      shiny::req(common$sessions(), common$annotations())
       col <- common$sessions_colnames()
-      s <- sessions()
+      s <- common$sessions()
       ann <- common$annotations()
       s$annotation <- ann$annotation[match(s[[col$id]], ann$id)]
       s
     })
 
-    updated_sessions
+    shiny::observe({
+      shiny::req(common$sessions(), common$epochs())
+      common$epochs(annotate_epochs_from_sessions(
+        sessions = common$sessions(),
+        epochs = common$epochs(),
+        session_colnames = common$sessions_colnames(),
+        epoch_colnames = common$epochs_colnames()
+      ))
+    })
+
+    shiny::observe({
+      shiny::req(updated_sessions())
+      common$sessions(updated_sessions())
+    })
   })
 }
 

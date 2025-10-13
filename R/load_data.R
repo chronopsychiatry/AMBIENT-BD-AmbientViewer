@@ -147,8 +147,8 @@ load_sessions_batch <- function(folder_path, pattern = "") {
   for (f in all_files) {
     sessions <- load_sessions(f)
     if (!is.null(sessions)) {
-      sessions <- sessions |>
-        dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+      sessions <- sessions
+        # dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
       all_sessions <- dplyr::bind_rows(all_sessions, sessions)
     }
   }

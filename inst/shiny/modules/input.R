@@ -26,10 +26,12 @@ input_server <- function(id, session, common) {
     shiny::observeEvent(input$load_example_data, {
       common$logger |> write_log("Loaded example session and epoch data", type = "complete")
 
-      common$sessions(AmbientViewer::example_sessions)
-      common$epochs(AmbientViewer::example_epochs)
-      common$sessions_colnames(get_session_colnames(common$sessions()))
-      common$epochs_colnames(get_epoch_colnames(common$epochs()))
+      session_data <- AmbientViewer::example_sessions
+      epoch_data <- AmbientViewer::example_epochs
+      common$sessions_colnames(get_session_colnames(session_data))
+      common$epochs_colnames(get_epoch_colnames(epoch_data))
+      common$sessions(init_sessions(session_data, common))
+      common$epochs(epoch_data)
     })
 
     # Sessions ----
@@ -60,8 +62,14 @@ input_server <- function(id, session, common) {
         if (identical(val, "")) NULL else val
       })
       common$sessions_colnames(stats::setNames(vals, keys))
+      if (!is.null(common$sessions_colnames()$night)) {
+        sessions <- common$sessions()
+        night_col <- common$sessions_colnames()$night
+        sessions[[night_col]] <- as.Date(sessions[[night_col]])
+        common$sessions(sessions)
+      }
       if (is.null(common$sessions_colnames()$night) && !is.null(common$sessions_colnames()$session_start)) {
-        sessions <- sessions() |>
+        sessions <- common$sessions() |>
           group_sessions_by_night(col_names = common$sessions_colnames())
         set_colname(common$sessions_colnames, "night", "night")
         common$sessions(sessions)

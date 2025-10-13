@@ -28,47 +28,31 @@ function(input, output, session) {
   input_server("input", session, common)
 
   # Filtering module
-  filtered_sessions <- filtering_server("filtering", common)
-  filtered_epochs <- reactive({
-    req(common$epochs(), filtered_sessions())
-    filter_epochs_from_sessions(
-      common$epochs(),
-      filtered_sessions(),
-      session_col_names = common$sessions_colnames(),
-      epoch_col_names = common$epochs_colnames(),
-      flag_only = TRUE
-    )
-  })
+  filtering_server("filtering", common)
 
   # Annotation module
-  annotated_sessions <- annotation_server("annotation", filtered_sessions, common)
-  annotated_epochs <- reactive(annotate_epochs_from_sessions(
-    annotated_sessions(),
-    filtered_epochs(),
-    common$sessions_colnames(),
-    common$epochs_colnames()
-  ))
+  annotation_server("annotation", common)
 
   # Compliance module
-  compliance_server("compliance", annotated_sessions, common)
+  compliance_server("compliance", common$sessions, common)
 
   # Summary table module
-  summary_server("summary", annotated_sessions, annotated_epochs, common)
+  summary_server("summary", common$sessions, common$epochs, common)
 
   # Sleep regularity module
-  sleep_regularity_server("sleep_regularity", annotated_sessions, annotated_epochs, common)
+  sleep_regularity_server("sleep_regularity", common$sessions, common$epochs, common)
 
   # Export data module
-  export_data_server("export_data", annotated_sessions, annotated_epochs, common)
+  export_data_server("export_data", common$sessions, common$epochs, common)
 
   # Plotting modules
-  sleep_clock_server("sleep_clock", annotated_sessions, common)
-  sleep_spiral_server("sleep_spiral", annotated_epochs, common)
-  bedtimes_waketimes_server("bedtimes_waketimes", annotated_sessions, common)
-  sleep_distributions_server("sleep_distributions", annotated_sessions, common)
-  sleep_bubbles_server("sleep_bubbles", annotated_sessions, common)
-  hypnogram_server("hypnogram", annotated_epochs, common)
-  timeseries_sessions_server("timeseries_sessions", annotated_sessions, common)
-  timeseries_server("timeseries", annotated_epochs, common)
+  sleep_clock_server("sleep_clock", common$sessions, common)
+  sleep_spiral_server("sleep_spiral", common$epochs, common)
+  bedtimes_waketimes_server("bedtimes_waketimes", common$sessions, common)
+  sleep_distributions_server("sleep_distributions", common$sessions, common)
+  sleep_bubbles_server("sleep_bubbles", common$sessions, common)
+  hypnogram_server("hypnogram", common$epochs, common)
+  timeseries_sessions_server("timeseries_sessions", common$sessions, common)
+  timeseries_server("timeseries", common$epochs, common)
 
 }

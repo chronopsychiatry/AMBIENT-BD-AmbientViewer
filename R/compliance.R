@@ -4,30 +4,25 @@
 #' @param min_time_in_bed The minimum time in bed in hours
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `time_in_bed`
-#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
-#' @returns The sessions dataframe with only the sessions that meet the minimum time in bed requirement
+#' @param return_mask If TRUE, return a logical vector indicating which sessions meet the minimum time in bed requirement
+#' @returns The sessions dataframe with only the sessions that meet the minimum time in bed requirement, or a logical vector if `return_mask` is TRUE
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- set_min_time_in_bed(example_sessions, 2)
-set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, flag_only = FALSE) {
+set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   if (nrow(sessions) == 0 || is.null(min_time_in_bed)) {
     return(sessions)
   }
 
-  if (!"display" %in% colnames(sessions)) {
-    sessions$display <- TRUE
-  }
+  mask <- sessions[[col$time_in_bed]] >= min_time_in_bed * 60 * 60
 
-  sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                             sessions[[col$time_in_bed]] >= min_time_in_bed * 60 * 60)
-
-  if (flag_only) {
-    sessions
+  if (return_mask) {
+    mask
   } else {
-    sessions[sessions$display, ]
+    sessions[mask, ]
   }
 }
 
@@ -38,36 +33,30 @@ set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, fla
 #' @param to_time Include sessions that started before this time (in format HH:MM)
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `session_start`
-#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
-#' @returns The sessions dataframe with only the sessions that started within the specified time range
+#' @param return_mask If TRUE, returns a logical vector indicating which sessions meet the time range requirement
+#' @returns The sessions dataframe with only the sessions that started within the specified time range, or a logical vector if `return_mask` is TRUE
 #' @export
 #' @family filtering
 #' @seealso [set_session_sleep_onset_range()] to filter sessions based on sleep onset time.
 #' @examples
 #' filtered_sessions <- set_session_start_time_range(example_sessions, "22:00", "06:00")
-set_session_start_time_range <- function(sessions, from_time, to_time, col_names = NULL, flag_only = FALSE) {
+set_session_start_time_range <- function(sessions, from_time, to_time, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
   session_times <- parse_time(sessions[[col$session_start]]) |> stats::update(year = 0, month = 1, day = 1)
   from_time <- if (is.null(from_time)) min(session_times) else parse_time(from_time)
   to_time <- if (is.null(to_time)) max(session_times) else parse_time(to_time)
 
-  if (!"display" %in% colnames(sessions)) {
-    sessions$display <- TRUE
-  }
-
   if (from_time <= to_time) {
-    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                               session_times >= from_time & session_times <= to_time)
+    mask <- session_times >= from_time & session_times <= to_time
   } else {
-    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                               session_times >= from_time | session_times <= to_time)
+    mask <- session_times >= from_time | session_times <= to_time
   }
 
-  if (flag_only) {
-    sessions
+  if (return_mask) {
+    mask
   } else {
-    sessions[sessions$display, ]
+    sessions[mask, ]
   }
 }
 
@@ -78,14 +67,15 @@ set_session_start_time_range <- function(sessions, from_time, to_time, col_names
 #' @param to_time Include sessions where sleep started before this time (in format HH:MM)
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `time_at_sleep_onset`
-#' @param flag_only If TRUE, only flags the filtered sessions without removing them from the table
-#' @returns The sessions dataframe with only the sessions where sleep started within the specified time range
+#' @param return_mask If TRUE, returns a logical vector indicating which sessions meet the sleep onset time range requirement
+#' @returns The sessions dataframe with only the sessions where sleep started within the specified time range,
+#' or a logical vector if `return_mask` is TRUE
 #' @export
 #' @family filtering
 #' @seealso [set_session_start_time_range()] to filter sessions based on start time.
 #' @examples
 #' filtered_sessions <- set_session_sleep_onset_range(example_sessions, "22:00", "06:00")
-set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_names = NULL, flag_only = FALSE) {
+set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
   sessions <- remove_sessions_no_sleep(sessions)
 
@@ -97,22 +87,16 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
   from_time <- if (is.null(from_time)) min(session_times) else parse_time(from_time)
   to_time <- if (is.null(to_time)) max(session_times) else parse_time(to_time)
 
-  if (!"display" %in% colnames(sessions)) {
-    sessions$display <- TRUE
-  }
-
   if (from_time <= to_time) {
-    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                               session_times >= from_time & session_times <= to_time)
+    mask <- session_times >= from_time & session_times <= to_time
   } else {
-    sessions$display <- ifelse(sessions$display == FALSE, FALSE,
-                               session_times >= from_time | session_times <= to_time)
+    mask <- session_times >= from_time | session_times <= to_time
   }
 
-  if (flag_only) {
-    sessions
+  if (return_mask) {
+    mask
   } else {
-    sessions[sessions$display, ]
+    sessions[mask, ]
   }
 }
 
@@ -121,23 +105,26 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
 #' @param sessions The sessions dataframe
 #' @param col_names A list to override default column names. This function uses columns:
 #' - `sleep_period`
-#' @returns The sessions dataframe with only the sessions that have a sleep period greater than 0
+#' @param return_mask If TRUE, returns a logical vector indicating which sessions have a sleep period greater than 0
+#' @returns The sessions dataframe with only the sessions that have a sleep period greater than 0, or a logical vector if `return_mask` is TRUE
 #' @export
 #' @family filtering
 #' @examples
 #' filtered_sessions <- remove_sessions_no_sleep(example_sessions)
-remove_sessions_no_sleep <- function(sessions, col_names = NULL) {
+remove_sessions_no_sleep <- function(sessions, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
-  if (nrow(sessions) == 0 || is.null(col$sleep_period)) {
-    cli::cli_warn(c(
-      "!" = "No sleep period column found in the sessions dataframe.",
-      "i" = "Returning the original sessions dataframe."
-    ))
+  if (nrow(sessions) == 0) {
     return(sessions)
   }
 
-  sessions[sessions[[col$sleep_period]] > 0, ]
+  mask <- sessions[[col$sleep_period]] > 0
+
+  if (return_mask) {
+    mask
+  } else {
+    sessions[mask, ]
+  }
 }
 
 #' Get non-complying sessions (i.e. where there is more than one session on the same day)
