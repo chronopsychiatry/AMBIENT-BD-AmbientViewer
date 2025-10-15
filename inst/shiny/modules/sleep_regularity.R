@@ -8,21 +8,18 @@ sleep_regularity_ui <- function(id) {
   )
 }
 
-sleep_regularity_server <- function(id, sessions, epochs, common) {
+sleep_regularity_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    sessions_in <- sessions
-    epochs_in <- epochs
-
     sessions <- shiny::reactive({
-      shiny::req(sessions_in())
-      sessions_in()[sessions_in()$display, ]
+      shiny::req(common$sessions(), common$session_filters())
+      apply_filters(common$sessions(), common$session_filters())
     })
 
     epochs <- shiny::reactive({
-      shiny::req(epochs_in())
-      epochs_in()[epochs_in()$display, ]
+      shiny::req(common$epochs(), common$epoch_filters())
+      apply_filters(common$epochs(), common$epoch_filters())
     })
 
     metric_names_sessions <- c(

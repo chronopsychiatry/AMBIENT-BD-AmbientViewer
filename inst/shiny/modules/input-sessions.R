@@ -35,7 +35,7 @@ input_sessions_ui <- function(id) {
   )
 }
 
-input_sessions_server <- function(id, session, common) {
+input_sessions_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     # Single file upload ----
@@ -67,7 +67,7 @@ input_sessions_server <- function(id, session, common) {
 init_sessions <- function(sessions, common) {
   col <- common$sessions_colnames()
   sessions$annotation <- ""
-  common$session_filters <- data.frame(row.names = sessions[[col$id]])
+  common$session_filters(data.frame(row.names = sessions[[col$id]]))
   common$annotations(data.frame(
     id = sessions[[col$id]],
     annotation = "",

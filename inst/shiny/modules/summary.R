@@ -14,19 +14,23 @@ summary_ui <- function(id) {
   )
 }
 
-summary_server <- function(id, sessions, epochs, common) {
+summary_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     sessions_summary_table <- shiny::reactive({
-      shiny::req(sessions())
-      sessions <- sessions()[sessions()$display, ]
-      get_sessions_summary(sessions, col_names = common$sessions_colnames())
+      shiny::req(common$sessions())
+      get_sessions_summary(
+        apply_filters(common$sessions()),
+        col_names = common$sessions_colnames()
+      )
     })
 
     epochs_summary_table <- shiny::reactive({
-      shiny::req(epochs())
-      epochs <- epochs()[epochs()$display, ]
-      get_epochs_summary(epochs, col_names = common$epochs_colnames())
+      shiny::req(common$epochs())
+      get_epochs_summary(
+        apply_filters(common$epochs()),
+        col_names = common$epochs_colnames()
+      )
     })
 
     output$sessions_summary_table <- shiny::renderTable({

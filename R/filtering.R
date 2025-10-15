@@ -78,7 +78,7 @@ filter_by_night_range <- function(sessions, from_night, to_night, col_names = NU
              sessions[[col$night]] <= lubridate::as_date(to_night))
 
   if (return_mask) {
-    sessions
+    mask
   } else {
     sessions[mask, ]
   }
@@ -121,7 +121,7 @@ filter_by_age_range <- function(sessions, min_age = NULL, max_age = NULL, col_na
              sessions[[col$birth_year]] <= (lubridate::year(sessions[[col$session_start]]) - min_age))
 
   if (return_mask) {
-    sessions
+    mask
   } else {
     sessions[mask, ]
   }
@@ -154,7 +154,7 @@ filter_by_sex <- function(sessions, sex, col_names = NULL, return_mask = FALSE) 
   mask <- sessions[[col$sex]] %in% sex
 
   if (return_mask) {
-    sessions
+    mask
   } else {
     sessions[mask, ]
   }
@@ -189,7 +189,7 @@ select_subjects <- function(sessions, subject_ids, col_names = NULL, return_mask
   mask <- sessions[[col$subject_id]] %in% subject_ids
 
   if (return_mask) {
-    sessions
+    mask
   } else {
     sessions[mask, ]
   }
@@ -224,7 +224,7 @@ select_devices <- function(sessions, device_ids, col_names = NULL, return_mask =
   mask <- sessions[[col$device_id]] %in% device_ids
 
   if (return_mask) {
-    sessions
+    mask
   } else {
     sessions[mask, ]
   }

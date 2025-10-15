@@ -154,40 +154,40 @@ filtering_server <- function(id, common) {
     shiny::observe({
       shiny::req(common$sessions())
       col <- common$sessions_colnames()
+      filters <- common$session_filters()
 
       from_time <- if (!is.null(input$time_range[1])) paste0(input$time_range[1], ":00") else NULL
       to_time <- if (!is.null(input$time_range[2])) paste0(input$time_range[2], ":00") else NULL
 
       if (!is.null(col$sleep_period)) {
-        filters <- common$session_filters()
         filters$no_sleep <- common$sessions() |>
           remove_sessions_no_sleep(col_names = col, return_mask = TRUE)
-        common$session_filters(filters)
       }
       if (!is.null(col$night)) {
-        common$session_filters()$night <- common$sessions() |>
+        filters$night <- common$sessions() |>
           filter_by_night_range(input$date_range[1], input$date_range[2], col_names = col, return_mask = TRUE)
       }
       if (!is.null(col$time_at_sleep_onset)) {
-        common$session_filters()$sleep_onset <- common$sessions() |>
+        filters$sleep_onset <- common$sessions() |>
           set_session_sleep_onset_range(from_time, to_time, col_names = col, return_mask = TRUE)
       }
       if (!is.null(col$time_in_bed)) {
-        common$session_filters()$time_in_bed <- common$sessions() |>
+        filters$time_in_bed <- common$sessions() |>
           set_min_time_in_bed(input$time_in_bed, col_names = col, return_mask = TRUE)
       }
       if (!is.null(col$birth_year)) {
-        common$session_filters()$age <- common$sessions() |>
+        filters$age <- common$sessions() |>
           filter_by_age_range(input$age_range[1], input$age_range[2], col_names = col, return_mask = TRUE)
       }
       if (!is.null(col$sex)) {
-        common$session_filters()$sex <- common$sessions() |>
+        filters$sex <- common$sessions() |>
           filter_by_sex(input$sex_filter, col_names = col, return_mask = TRUE)
       }
       if (!is.null(col$subject_id)) {
-        common$session_filters()$subject_id <- common$sessions() |>
+        filters$subject_id <- common$sessions() |>
           select_subjects(input$subject_filter, col_names = col, return_mask = TRUE)
       }
+      common$session_filters(filters)
     })
 
     removed_sessions <- shiny::reactive({
@@ -226,13 +226,15 @@ filtering_server <- function(id, common) {
 
     shiny::observe({
       shiny::req(common$epochs(), common$sessions())
-      common$epoch_filters()$from_sessions(filter_epochs_from_sessions(
-        common$epochs(),
-        common$sessions(),
+      filters <- common$epoch_filters()
+      filters$from_sessions <- filter_epochs_from_sessions(
+        epochs = common$epochs(),
+        sessions = apply_filters(common$sessions(), common$session_filters()),
         session_col_names = common$sessions_colnames(),
         epoch_col_names = common$epochs_colnames(),
         return_mask = TRUE
-      ))
+      )
+      common$epoch_filters(filters)
     })
 
   })

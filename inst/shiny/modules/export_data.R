@@ -26,12 +26,12 @@ export_data_ui <- function(id) {
   )
 }
 
-export_data_server <- function(id, sessions, epochs, common) {
+export_data_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     shiny::observe({
-      shiny::req(sessions())
-      sessions <- sessions()[sessions()$display, ]
+      shiny::req(common$sessions())
+      sessions <- apply_filters(common$sessions(), common$session_filters())
       output$download_sessions <- get_table_download_handler(
         session = session,
         common = common,
@@ -41,8 +41,8 @@ export_data_server <- function(id, sessions, epochs, common) {
     })
 
     shiny::observe({
-      shiny::req(epochs())
-      epochs <- epochs()[epochs()$display, ]
+      shiny::req(common$epochs())
+      epochs <- apply_filters(common$epochs(), common$epoch_filters())
       output$download_epochs <- get_table_download_handler(
         session = session,
         common = common,
@@ -52,11 +52,10 @@ export_data_server <- function(id, sessions, epochs, common) {
     })
 
     shiny::observe({
-      shiny::req(sessions())
-      sessions <- sessions()[sessions()$display, ]
+      shiny::req(common$sessions())
+      sessions <- apply_filters(common$sessions(), common$session_filters())
       output$download_report <- get_report_download_handler(
         session = session,
-        sessions = sessions,
         common = common,
         title = shiny::reactive(input$title)
       )

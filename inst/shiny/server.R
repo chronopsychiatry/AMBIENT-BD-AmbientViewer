@@ -25,7 +25,7 @@ function(input, output, session) {
   })
 
   # Data loading module
-  input_server("input", session, common)
+  input_server("input", common)
 
   # Filtering module
   filtering_server("filtering", common)
@@ -34,19 +34,19 @@ function(input, output, session) {
   annotation_server("annotation", common)
 
   # Compliance module
-  compliance_server("compliance", common$sessions, common)
+  compliance_server("compliance", common)
 
   # Summary table module
-  summary_server("summary", common$sessions, common$epochs, common)
+  summary_server("summary", common)
 
   # Sleep regularity module
-  sleep_regularity_server("sleep_regularity", common$sessions, common$epochs, common)
+  sleep_regularity_server("sleep_regularity", common)
 
   # Export data module
-  export_data_server("export_data", common$sessions, common$epochs, common)
+  export_data_server("export_data", common)
 
   # Plotting modules
-  sleep_clock_server("sleep_clock", common$sessions, common)
+  sleep_clock_server("sleep_clock", common)
   sleep_spiral_server("sleep_spiral", common$epochs, common)
   bedtimes_waketimes_server("bedtimes_waketimes", common$sessions, common)
   sleep_distributions_server("sleep_distributions", common$sessions, common)

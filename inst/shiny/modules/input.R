@@ -18,7 +18,7 @@ input_ui <- function(id) {
   )
 }
 
-input_server <- function(id, session, common) {
+input_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -35,7 +35,7 @@ input_server <- function(id, session, common) {
     })
 
     # Sessions ----
-    input_sessions_server("sessions_input_panel", session, common)
+    input_sessions_server("sessions_input_panel", common)
 
 
     shiny::observeEvent(input$open_session_col_names, {

@@ -11,15 +11,15 @@ compliance_ui <- function(id) {
   )
 }
 
-compliance_server <- function(id, sessions, common) {
+compliance_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
-      shiny::req(sessions())
+      shiny::req(common$sessions())
       if (is.null(common$sessions_colnames()$night)) {
         shiny::HTML("'Night' column was not specified.<br/>Please set a column name for night.")
       }
       shiny::validate(shiny::need(!is.null(common$sessions_colnames()$night), message = FALSE))
-      get_compliance_table(sessions(), common$sessions_colnames())
+      get_compliance_table(common$sessions(), common$sessions_colnames())
     })
 
     output$compliance_table <- shiny::renderTable({
@@ -47,11 +47,11 @@ compliance_server <- function(id, sessions, common) {
     })
 
     shiny::observe({
-      shiny::req(sessions())
+      shiny::req(common$sessions())
       shiny::validate(
         shiny::need(!is.null(common$sessions_colnames()$night), message = FALSE)
       )
-      output_table <- sessions() |>
+      output_table <- common$sessions() |>
         dplyr::filter(.data$display) |>
         get_non_complying_sessions(col_names = common$sessions_colnames())
       output$download_compliance <- get_table_download_handler(
@@ -65,9 +65,9 @@ compliance_server <- function(id, sessions, common) {
 }
 
 #' @importFrom rlang .data
-get_compliance_table <- function(sessions, col_names = NULL) {
-  sessions |>
-    dplyr::filter(.data$display) |>
+get_compliance_table <- function(common, col_names = NULL) {
+  common$sessions |>
+    apply_filters(common$session_filters()) |>
     get_non_complying_sessions(col_names = col_names) |>
     make_sessions_display_table(col_names = col_names)
 }

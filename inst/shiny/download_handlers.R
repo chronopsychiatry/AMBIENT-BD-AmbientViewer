@@ -27,14 +27,14 @@ get_table_download_handler <- function(session, common, output_table, output_nam
   )
 }
 
-get_report_download_handler <- function(session, sessions, common, title) {
+get_report_download_handler <- function(session, common, title) {
   shiny::downloadHandler(
     filename = function() {
       paste0("Sleep_report_", Sys.Date(), ".pdf")
     },
     content = function(file) {
       tmpfile <- tempfile(fileext = ".pdf")
-      sleep_report(sessions = sessions, title = title(), output_file = tmpfile)
+      sleep_report(sessions = common$sessions, title = title(), output_file = tmpfile)
       file.copy(tmpfile, file)
       common$logger |> write_log(paste0("Sleep report generated"), type = "complete")
     },

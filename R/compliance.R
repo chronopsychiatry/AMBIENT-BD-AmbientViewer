@@ -77,15 +77,14 @@ set_session_start_time_range <- function(sessions, from_time, to_time, col_names
 #' filtered_sessions <- set_session_sleep_onset_range(example_sessions, "22:00", "06:00")
 set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
-  sessions <- remove_sessions_no_sleep(sessions)
 
   if (nrow(sessions) == 0) {
     return(sessions)
   }
 
   session_times <- parse_time(sessions[[col$time_at_sleep_onset]]) |> stats::update(year = 0, month = 1, day = 1)
-  from_time <- if (is.null(from_time)) min(session_times) else parse_time(from_time)
-  to_time <- if (is.null(to_time)) max(session_times) else parse_time(to_time)
+  from_time <- if (is.null(from_time)) min(session_times, na.rm = TRUE) else parse_time(from_time)
+  to_time <- if (is.null(to_time)) max(session_times, na.rm = TRUE) else parse_time(to_time)
 
   if (from_time <= to_time) {
     mask <- session_times >= from_time & session_times <= to_time
