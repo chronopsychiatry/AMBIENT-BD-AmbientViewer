@@ -21,15 +21,15 @@ sleep_bubbles_ui <- function(id) {
   )
 }
 
-sleep_bubbles_server <- function(id, sessions, common) {
+sleep_bubbles_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(sessions, common$sessions_colnames, plot_options, input, session)
+    update_colorby_dropdown(common$sessions, common$sessions_colnames, common$session_filters, plot_options, input, session)
 
     sleep_bubbles_plot <- shiny::reactive({
-      shiny::req(sessions())
-      sessions <- sessions()[sessions()$display, ]
+      shiny::req(common$sessions(), common$session_filters())
+      sessions <- apply_filters(common$sessions(), common$session_filters())
       if (nrow(sessions) == 0) {
         return(NULL)
       }
@@ -42,7 +42,7 @@ sleep_bubbles_server <- function(id, sessions, common) {
       plot_sleep_bubbles(
         sessions = sessions,
         color_by = input$colorby,
-        col_names = common$sessions_colnames()
+        col_names = col
       )
     })
 

@@ -22,15 +22,15 @@ sleep_spiral_ui <- function(id) {
   )
 }
 
-sleep_spiral_server <- function(id, epochs, common) {
+sleep_spiral_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(epochs, common$epochs_colnames, plot_options, input, session)
+    update_colorby_dropdown(common$epochs, common$epochs_colnames, common$epoch_filters, plot_options, input, session)
 
     sleep_spiral_plot <- shiny::reactive({
-      shiny::req(epochs())
-      epochs <- epochs()[epochs()$display, ]
+      shiny::req(common$epochs(), common$epoch_filters())
+      epochs <- apply_filters(common$epochs(), common$epoch_filters())
       if (nrow(epochs) == 0) {
         return(NULL)
       }
@@ -42,7 +42,7 @@ sleep_spiral_server <- function(id, epochs, common) {
       plot_sleep_spiral(
         epochs = epochs,
         color_by = input$colorby,
-        col_names = common$epochs_colnames()
+        col_names = col
       )
     })
 

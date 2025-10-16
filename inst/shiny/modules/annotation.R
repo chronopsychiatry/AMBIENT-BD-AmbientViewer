@@ -33,8 +33,8 @@ annotation_server <- function(id, common) {
     })
 
     annotation_table <- shiny::reactive({
-      shiny::req(common$sessions(), common$annotations(), common$sessions_colnames())
-      make_annotation_table(common$sessions(), common$annotations(), common$sessions_colnames())
+      shiny::req(common$sessions(), common$annotations(), common$sessions_colnames(), common$session_filters())
+      make_annotation_table(common)
     })
 
     output$annotation_table <- DT::renderDT({
@@ -88,13 +88,13 @@ annotation_server <- function(id, common) {
   })
 }
 
-make_annotation_table <- function(sessions, annotations, sessions_colnames) {
-  col <- sessions_colnames
-  sessions <- sessions |>
-    dplyr::filter(.data$display)
+make_annotation_table <- function(common) {
+  col <- common$sessions_colnames()
+  sessions <- common$sessions() |>
+    apply_filters(common$session_filters())
   sessions |>
     dplyr::mutate(
-      annotation = annotations$annotation[match(.data[[col$id]], annotations$id)],
+      annotation = common$annotations()$annotation[match(.data[[col$id]], common$annotations()$id)],
       start = parse_time(get_col(sessions, col$session_start)) |> format("%Y-%m-%d %H:%M"),
       sleep_onset = parse_time(get_col(sessions, col$time_at_sleep_onset)) |> format("%H:%M"),
       wakeup = parse_time(get_col(sessions, col$time_at_wakeup)) |> format("%H:%M"),

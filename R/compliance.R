@@ -13,11 +13,9 @@
 set_min_time_in_bed <- function(sessions, min_time_in_bed, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
-  if (nrow(sessions) == 0 || is.null(min_time_in_bed)) {
-    return(sessions)
-  }
-
   mask <- sessions[[col$time_in_bed]] >= min_time_in_bed * 60 * 60
+
+  mask[is.na(mask)] <- FALSE
 
   if (return_mask) {
     mask
@@ -53,6 +51,8 @@ set_session_start_time_range <- function(sessions, from_time, to_time, col_names
     mask <- session_times >= from_time | session_times <= to_time
   }
 
+  mask[is.na(mask)] <- FALSE
+
   if (return_mask) {
     mask
   } else {
@@ -78,10 +78,6 @@ set_session_start_time_range <- function(sessions, from_time, to_time, col_names
 set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
-  if (nrow(sessions) == 0) {
-    return(sessions)
-  }
-
   session_times <- parse_time(sessions[[col$time_at_sleep_onset]]) |> stats::update(year = 0, month = 1, day = 1)
   from_time <- if (is.null(from_time)) min(session_times, na.rm = TRUE) else parse_time(from_time)
   to_time <- if (is.null(to_time)) max(session_times, na.rm = TRUE) else parse_time(to_time)
@@ -91,6 +87,8 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
   } else {
     mask <- session_times >= from_time | session_times <= to_time
   }
+
+  mask[is.na(mask)] <- FALSE
 
   if (return_mask) {
     mask
@@ -113,11 +111,9 @@ set_session_sleep_onset_range <- function(sessions, from_time, to_time, col_name
 remove_sessions_no_sleep <- function(sessions, col_names = NULL, return_mask = FALSE) {
   col <- get_session_colnames(sessions, col_names)
 
-  if (nrow(sessions) == 0) {
-    return(sessions)
-  }
-
   mask <- sessions[[col$sleep_period]] > 0
+
+  mask[is.na(mask)] <- FALSE
 
   if (return_mask) {
     mask
@@ -158,9 +154,7 @@ get_non_complying_sessions <- function(sessions, col_names = NULL) {
 #' removed_sessions <- get_removed_sessions(example_sessions, filtered_sessions)
 get_removed_sessions <- function(sessions, filtered_sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
-  if (nrow(sessions) == 0 || nrow(filtered_sessions) == 0) {
-    return(sessions)
-  }
+
   if (nrow(filtered_sessions) > nrow(sessions)) {
     cli::cli_abort(c(
       "!" = "There are more rows in filtered sessions than in sessions.",

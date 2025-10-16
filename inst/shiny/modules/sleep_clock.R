@@ -25,10 +25,10 @@ sleep_clock_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(sessions, common$sessions_colnames, plot_options, input, session)
+    update_colorby_dropdown(common$sessions_colnames, plot_options, input, session)
 
     sleep_clock_plot <- shiny::reactive({
-      shiny::req(common$sessions())
+      shiny::req(common$sessions(), common$session_filters())
       sessions <- apply_filters(common$sessions(), common$session_filters())
       if (nrow(sessions) == 0) {
         return(NULL)

@@ -29,12 +29,10 @@ sleep_distributions_ui <- function(id) {
   )
 }
 
-sleep_distributions_server <- function(id, sessions, common) {
+sleep_distributions_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     output$binwidth_slider <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- common$sessions_colnames()
       if (input$plot_type == "Histogram") {
         shiny::sliderInput(
           session$ns("binwidth"),
@@ -49,8 +47,6 @@ sleep_distributions_server <- function(id, sessions, common) {
     })
 
     output$adjust_slider <- shiny::renderUI({
-      shiny::req(sessions())
-      col <- common$sessions_colnames()
       if (input$plot_type == "Density") {
         shiny::sliderInput(
           session$ns("adjust"),
@@ -65,8 +61,8 @@ sleep_distributions_server <- function(id, sessions, common) {
     })
 
     sleep_distribution_plot <- shiny::reactive({
-      shiny::req(input$plot_type, sessions())
-      sessions <- sessions()[sessions()$display, ]
+      shiny::req(input$plot_type, common$sessions(), common$session_filters())
+      sessions <- apply_filters(common$sessions(), common$session_filters())
       col <- common$sessions_colnames()
       shiny::validate(
         shiny::need(!is.null(col$time_at_sleep_onset), "'time_at_sleep_onset' column was not specified."),
@@ -76,15 +72,15 @@ sleep_distributions_server <- function(id, sessions, common) {
       )
       switch(input$plot_type,
         "Boxplot" = {
-          sleeptimes_boxplot(sessions, common$sessions_colnames())
+          sleeptimes_boxplot(sessions, col)
         },
         "Histogram" = {
           shiny::req(input$binwidth)
-          sleeptimes_histogram(sessions, common$sessions_colnames(), binwidth = input$binwidth)
+          sleeptimes_histogram(sessions, col, binwidth = input$binwidth)
         },
         "Density" = {
           shiny::req(input$adjust)
-          sleeptimes_density(sessions, common$sessions_colnames(), adjust = input$adjust)
+          sleeptimes_density(sessions, col, adjust = input$adjust)
         }
       )
     })

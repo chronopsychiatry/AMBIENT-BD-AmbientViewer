@@ -17,12 +17,12 @@ hypnogram_ui <- function(id) {
   )
 }
 
-hypnogram_server <- function(id, epochs, common) {
+hypnogram_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     hypnogram_plot <- shiny::reactive({
-      shiny::req(epochs())
-      epochs <- epochs()[epochs()$display, ]
+      shiny::req(common$epochs(), common$epoch_filters())
+      epochs <- apply_filters(common$epochs(), common$epoch_filters())
       if (nrow(epochs) == 0) {
         return(NULL)
       }
@@ -31,7 +31,7 @@ hypnogram_server <- function(id, epochs, common) {
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
         shiny::need(!is.null(col$sleep_stage), "'sleep_stage' column was not specified.")
       )
-      plot_hypnogram(epochs = epochs, col_names = common$epochs_colnames())
+      plot_hypnogram(epochs = epochs, col_names = col)
     })
 
     output$hypnogram_plot <- shiny::renderPlot({

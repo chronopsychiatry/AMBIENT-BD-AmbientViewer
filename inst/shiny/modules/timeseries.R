@@ -38,16 +38,16 @@ timeseries_ui <- function(id) {
   )
 }
 
-timeseries_server <- function(id, epochs, common) {
+timeseries_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
-    update_variable_dropdown(epochs, common$epochs_colnames, plot_options, input, session)
-    update_colorby_dropdown(epochs, common$epochs_colnames, plot_options, input, session)
+    update_variable_dropdown(common$epochs, common$epochs_colnames, common$epoch_filters, plot_options, input, session)
+    update_colorby_dropdown(common$epochs, common$epochs_colnames, common$epoch_filters, plot_options, input, session)
 
     timeseries_plot <- shiny::reactive({
-      shiny::req(input$variable, epochs())
-      epochs <- epochs()[epochs()$display, ]
+      shiny::req(input$variable, common$epochs(), common$epoch_filters())
+      epochs <- apply_filters(common$epochs(), common$epoch_filters)
       col <- common$epochs_colnames()
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
@@ -58,7 +58,7 @@ timeseries_server <- function(id, epochs, common) {
         variable = input$variable,
         color_by = input$colorby,
         exclude_zero = input$exclude_zero,
-        col_names = common$epochs_colnames()
+        col_names = col
       )
     })
 

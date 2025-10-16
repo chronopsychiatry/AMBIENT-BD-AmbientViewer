@@ -44,8 +44,7 @@ input_sessions_server <- function(id, common) {
       common$logger |> write_log(paste0("Loading session file: ", input$sessions_file$name), type = "starting")
       data <- load_sessions(input$sessions_file$datapath)
       check_session_datatype(data, common)
-      common$sessions_colnames(get_session_colnames(data))
-      common$sessions(init_sessions(data, common))
+      init_sessions(data, common)
     })
 
     # Batch file upload ----
@@ -58,22 +57,23 @@ input_sessions_server <- function(id, common) {
       common$logger |> write_log(paste0("Batch-loading session files from: ", folder_path), type = "starting")
       data <- load_sessions_batch(folder_path, input$batch_file_pattern)
       check_session_datatype(data, common)
-      common$sessions_colnames(get_session_colnames(data))
-      common$sessions(init_sessions(data, common))
+      init_sessions(data, common)
     })
   })
 }
 
 init_sessions <- function(sessions, common) {
   col <- common$sessions_colnames()
+  common$sessions(sessions)
+  common$sessions_colnames(get_session_colnames(sessions))
   sessions$annotation <- ""
-  common$session_filters(data.frame(row.names = sessions[[col$id]]))
+  common$session_filters(data.frame(no_sleep = rep(TRUE, length(sessions[[col$id]])),
+                                    row.names = sessions[[col$id]]))
   common$annotations(data.frame(
     id = sessions[[col$id]],
     annotation = "",
     stringsAsFactors = FALSE
   ))
-  sessions
 }
 
 check_session_datatype <- function(sessions, common) {

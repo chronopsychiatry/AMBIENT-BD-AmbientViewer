@@ -26,11 +26,10 @@ input_server <- function(id, common) {
     shiny::observeEvent(input$load_example_data, {
       common$logger |> write_log("Loaded example session and epoch data", type = "complete")
 
-      session_data <- AmbientViewer::example_sessions
+      init_sessions(AmbientViewer::example_sessions, common)
+
       epoch_data <- AmbientViewer::example_epochs
-      common$sessions_colnames(get_session_colnames(session_data))
       common$epochs_colnames(get_epoch_colnames(epoch_data))
-      common$sessions(init_sessions(session_data, common))
       common$epochs(epoch_data)
     })
 

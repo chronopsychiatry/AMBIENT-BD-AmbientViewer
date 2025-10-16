@@ -163,7 +163,7 @@ filtering_server <- function(id, common) {
         filters$no_sleep <- common$sessions() |>
           remove_sessions_no_sleep(col_names = col, return_mask = TRUE)
       }
-      if (!is.null(col$night)) {
+      if (!is.null(col$night) && !is.null(input$date_range)) {
         filters$night <- common$sessions() |>
           filter_by_night_range(input$date_range[1], input$date_range[2], col_names = col, return_mask = TRUE)
       }
@@ -171,19 +171,19 @@ filtering_server <- function(id, common) {
         filters$sleep_onset <- common$sessions() |>
           set_session_sleep_onset_range(from_time, to_time, col_names = col, return_mask = TRUE)
       }
-      if (!is.null(col$time_in_bed)) {
+      if (!is.null(col$time_in_bed) && !is.null(input$time_in_bed)) {
         filters$time_in_bed <- common$sessions() |>
           set_min_time_in_bed(input$time_in_bed, col_names = col, return_mask = TRUE)
       }
-      if (!is.null(col$birth_year)) {
+      if (!is.null(col$birth_year) && !is.null(input$age_range)) {
         filters$age <- common$sessions() |>
           filter_by_age_range(input$age_range[1], input$age_range[2], col_names = col, return_mask = TRUE)
       }
-      if (!is.null(col$sex)) {
+      if (!is.null(col$sex) && !is.null(input$sex_filter)) {
         filters$sex <- common$sessions() |>
           filter_by_sex(input$sex_filter, col_names = col, return_mask = TRUE)
       }
-      if (!is.null(col$subject_id)) {
+      if (!is.null(col$subject_id) && !is.null(input$subject_filter)) {
         filters$subject_id <- common$sessions() |>
           select_subjects(input$subject_filter, col_names = col, return_mask = TRUE)
       }
@@ -225,7 +225,7 @@ filtering_server <- function(id, common) {
     })
 
     shiny::observe({
-      shiny::req(common$epochs(), common$sessions())
+      shiny::req(common$epochs(), common$sessions(), common$session_filters(), common$epoch_filters())
       filters <- common$epoch_filters()
       filters$from_sessions <- filter_epochs_from_sessions(
         epochs = common$epochs(),
@@ -247,9 +247,9 @@ get_removed_sessions_table <- function(common) {
 }
 
 apply_filters <- function(df_in, filters) {
-  df_in()[apply(filters, 1, all), ]
+  df_in[apply(filters, 1, all), ]
 }
 
 get_removed_rows <- function(df_in, filters) {
-  df_in()[!apply(filters, 1, all), ]
+  df_in[!apply(filters, 1, all), ]
 }
