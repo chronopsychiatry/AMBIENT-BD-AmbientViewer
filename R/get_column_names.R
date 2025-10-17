@@ -8,17 +8,8 @@ get_session_colnames <- function(sessions, col_names = NULL) {
     ))
   }
 
-  # If the sessions data frame is empty, try to infer the format from the column names
   if (nrow(sessions) == 0) {
-    fmt <- get_sessions_format(sessions)
-    if (is.null(fmt)) {
-      cli::cli_abort(c(
-        "!" = "The sessions data frame is empty and data type could not be inferred.",
-        "i" = "Check that your input data contains session data."
-      ))
-    } else {
-      return(get(paste0(".sessions_col_", fmt)))
-    }
+    return("none")
   }
 
   if (".data_type" %in% colnames(sessions)) {

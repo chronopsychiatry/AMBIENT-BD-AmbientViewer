@@ -5,12 +5,7 @@ input_ui <- function(id) {
     shiny::actionButton(ns("load_example_data"), "Load Example Data"),
     input_sessions_ui(ns("sessions_input_panel")),
     shiny::hr(),
-    shiny::h5("Epochs"),
-    shiny::fileInput(
-      ns("epochs_file"),
-      NULL,
-      accept = c(".csv")
-    ),
+    input_epochs_ui(ns("epochs_input_panel")),
     shiny::h4("2. Set column names"),
     shiny::actionButton(ns("open_session_col_names"), "Set Session Columns"),
     shiny::br(), shiny::br(),
@@ -24,18 +19,13 @@ input_server <- function(id, common) {
 
     # Example data----
     shiny::observeEvent(input$load_example_data, {
-      common$logger |> write_log("Loaded example session and epoch data", type = "complete")
-
       init_sessions(AmbientViewer::example_sessions, common)
-
-      epoch_data <- AmbientViewer::example_epochs
-      common$epochs_colnames(get_epoch_colnames(epoch_data))
-      common$epochs(epoch_data)
+      init_epochs(AmbientViewer::example_epochs, common)
+      common$logger |> write_log("Loaded example session and epoch data", type = "complete")
     })
 
     # Sessions ----
     input_sessions_server("sessions_input_panel", common)
-
 
     shiny::observeEvent(input$open_session_col_names, {
       shiny::req(common$sessions())
@@ -78,33 +68,7 @@ input_server <- function(id, common) {
 
 
     # Epochs ----
-    shiny::observeEvent(input$epochs_file, {
-      shiny::req(input$epochs_file)
-      common$logger |> write_log(paste0("Loading epoch file: ", input$epochs_file$name), type = "starting")
-      data <- load_epochs(input$epochs_file$datapath)
-      if (data$.data_type[1] == "none") {
-        common$logger |> write_log("Could not detect epoch data type. Please set column names.", type = "warning")
-      } else {
-        common$logger |> write_log(paste0("Detected epoch data type: ", data$.data_type[1]), type = "complete")
-        common$logger |> write_log("Column names were set automatically", type = "info")
-      }
-      if (data$.data_type[1] == "somnofy_v1") {
-        data$session_id <- stringr::str_extract(input$epochs_file$name, "^[^.]+")
-      }
-      common$epochs(data)
-      common$epochs_colnames(get_epoch_colnames(data))
-    })
-
-    epochs <- shiny::reactive({
-      shiny::req(common$epochs())
-      data <- common$epochs()
-      col <- common$epochs_colnames()
-      if (!is.null(col$timestamp) && (is.null(col$night))) {
-        data <- group_epochs_by_night(data, col_names = list(timestamp = col$timestamp))
-        set_colname(common$epochs_colnames, "night", "night")
-      }
-      data
-    })
+    input_epochs_server("epochs_input_panel", common)
 
     shiny::observeEvent(input$open_epoch_col_names, {
       shiny::req(epochs())

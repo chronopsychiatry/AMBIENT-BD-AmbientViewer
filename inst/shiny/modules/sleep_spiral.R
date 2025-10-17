@@ -26,7 +26,7 @@ sleep_spiral_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(common$epochs, common$epochs_colnames, common$epoch_filters, plot_options, input, session)
+    update_colorby_dropdown(common$epochs_colnames, plot_options, input, session)
 
     sleep_spiral_plot <- shiny::reactive({
       shiny::req(common$epochs(), common$epoch_filters())

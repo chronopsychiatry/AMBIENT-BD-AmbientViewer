@@ -152,7 +152,7 @@ filtering_server <- function(id, common) {
     })
 
     shiny::observe({
-      shiny::req(common$sessions())
+      shiny::req(common$sessions(), common$session_filters())
       col <- common$sessions_colnames()
       filters <- common$session_filters()
 

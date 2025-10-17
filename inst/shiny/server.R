@@ -47,12 +47,12 @@ function(input, output, session) {
 
   # Plotting modules
   sleep_clock_server("sleep_clock", common)
-  # sleep_spiral_server("sleep_spiral", common)
-  # bedtimes_waketimes_server("bedtimes_waketimes", common)
-  # sleep_distributions_server("sleep_distributions", common)
-  # sleep_bubbles_server("sleep_bubbles", common)
-  # hypnogram_server("hypnogram", common)
-  # timeseries_sessions_server("timeseries_sessions", common)
-  # timeseries_server("timeseries", common)
+  sleep_spiral_server("sleep_spiral", common)
+  bedtimes_waketimes_server("bedtimes_waketimes", common)
+  sleep_distributions_server("sleep_distributions", common)
+  sleep_bubbles_server("sleep_bubbles", common)
+  hypnogram_server("hypnogram", common)
+  timeseries_sessions_server("timeseries_sessions", common)
+  timeseries_server("timeseries", common)
 
 }
