@@ -21,7 +21,7 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
   scol <- get_session_colnames(sessions, session_col_names)
   ecol <- get_epoch_colnames(epochs, epoch_col_names)
 
-  if (is.null(scol$session_start) || is.null(scol$session_end) || is.null(ecol$timestamp)) {
+  if (is.null(ecol$session_id) || is.null(scol$id)) {
     mask <- rep(FALSE, nrow(epochs))
     if (return_mask) {
       return(mask)
@@ -35,10 +35,9 @@ filter_epochs_from_sessions <- function(epochs, sessions, session_col_names = NU
                     "i" = "Returning an empty epoch table."))
   }
 
-  mask <- vapply(epochs[[ecol$timestamp]], function(et) {
-    any(et >= sessions[[scol$session_start]] & et <= sessions[[scol$session_end]])
-  }, logical(1))
+  mask <- epochs[[ecol$session_id]] %in% sessions[[scol$id]]
 
+  # If there are unmatched session_ids, set display to FALSE
   mask[is.na(mask)] <- FALSE
 
   if (return_mask) {

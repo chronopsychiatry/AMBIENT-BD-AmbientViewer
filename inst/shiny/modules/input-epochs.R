@@ -2,10 +2,21 @@ input_epochs_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::h5("Epochs"),
-    shiny::fileInput(
-      ns("epochs_file"),
-      NULL,
-      accept = c(".csv")
+    shinyWidgets::radioGroupButtons(
+      inputId = ns("epoch_input_type"),
+      label = NULL,
+      choices = c("Single file upload", "Batch upload"),
+      direction = "vertical",
+      status = "outline-secondary",
+      width = "100%"
+    ),
+    shiny::conditionalPanel(
+      condition = paste0("input['", ns("epoch_input_type"), "'] == 'Single file upload'"),
+      shiny::fileInput(
+        inputId = ns("epochs_file"),
+        label = NULL,
+        accept = c(".csv", ".xls", ".xlsx", ".edf", ".rec")
+      )
     )
   )
 }
@@ -29,10 +40,13 @@ input_epochs_server <- function(id, common) {
 
 init_epochs <- function(epochs, common) {
   col <- get_epoch_colnames(epochs)
+  res <- clean_epochs(epochs, col_names = col)
+  epochs <- res$epochs
+  col <- res$col
   epochs$annotation <- ""
   common$epochs(epochs)
   common$epochs_colnames(col)
-  common$epoch_filters(data.frame(from_sessions = rep(TRUE, length(epochs[[col$timestamp]]))))
+  common$epoch_filters(data.frame(from_sessions = rep(TRUE, nrow(epochs))))
 }
 
 check_epoch_datatype <- function(epochs, common) {

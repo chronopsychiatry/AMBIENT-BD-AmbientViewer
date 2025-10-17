@@ -22,6 +22,8 @@ start time, duration, and calculates end time and midsleep time.
 \seealso{
 Other data loading: 
 \code{\link{load_epochs}()},
-\code{\link{load_sessions}()}
+\code{\link{load_sessions}()},
+\code{\link{load_sessions_batch}()},
+\code{\link{read_edf_epochs}()}
 }
 \concept{data loading}

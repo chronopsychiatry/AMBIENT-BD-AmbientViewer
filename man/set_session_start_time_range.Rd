@@ -9,7 +9,7 @@ set_session_start_time_range(
   from_time,
   to_time,
   col_names = NULL,
-  flag_only = FALSE
+  return_mask = FALSE
 )
 }
 \arguments{
@@ -24,10 +24,10 @@ set_session_start_time_range(
 \item \code{session_start}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions meet the time range requirement}
 }
 \value{
-The sessions dataframe with only the sessions that started within the specified time range
+The sessions dataframe with only the sessions that started within the specified time range, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Set session start time range

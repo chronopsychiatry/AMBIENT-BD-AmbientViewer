@@ -4,7 +4,7 @@
 \alias{select_subjects}
 \title{Select subjects by ID}
 \usage{
-select_subjects(sessions, subject_ids, col_names = NULL, flag_only = FALSE)
+select_subjects(sessions, subject_ids, col_names = NULL, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -16,10 +16,10 @@ select_subjects(sessions, subject_ids, col_names = NULL, flag_only = FALSE)
 \item \code{subject_id}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions belong to the specified subjects}
 }
 \value{
-The sessions dataframe with only the sessions that belong to the specified subjects
+The sessions dataframe with only the sessions that belong to the specified subjects, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Select subjects by ID

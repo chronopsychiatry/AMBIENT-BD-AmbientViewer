@@ -8,7 +8,7 @@ set_min_time_in_bed(
   sessions,
   min_time_in_bed,
   col_names = NULL,
-  flag_only = FALSE
+  return_mask = FALSE
 )
 }
 \arguments{
@@ -21,10 +21,10 @@ set_min_time_in_bed(
 \item \code{time_in_bed}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, return a logical vector indicating which sessions meet the minimum time in bed requirement}
 }
 \value{
-The sessions dataframe with only the sessions that meet the minimum time in bed requirement
+The sessions dataframe with only the sessions that meet the minimum time in bed requirement, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Set minimum time in bed

@@ -2,10 +2,17 @@ annotation_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::uiOutput(ns("annotations_text")),
-    shiny::fluidRow(
-      shiny::column(4, shiny::textInput(ns("annotation_text"), NULL, placeholder = "Annotation")),
-      shiny::column(8, shiny::actionButton(ns("apply_annotation"), "Apply"))
+    shiny::textInput(ns("annotation_text"), NULL, placeholder = "Annotation"),
+    shiny::div(
+      style = "display: flex; gap: 0.5em;",
+      shiny::actionButton(ns("apply_annotation"), "Apply"),
+      shiny::actionButton(ns("reset_annotations"), "Reset")
     ),
+    # shiny::fluidRow(
+    #   shiny::column(2, shiny::textInput(ns("annotation_text"), NULL, placeholder = "Annotation"))
+    #   # shiny::column(1, shiny::actionButton(ns("apply_annotation"), "Apply")),
+    #   # shiny::column(1, shiny::actionButton(ns("reset_annotations"), "Reset"))
+    # ),
     DT::DTOutput(ns("annotation_table"))
   )
 }
@@ -21,25 +28,10 @@ annotation_server <- function(id, common) {
       ))
     })
 
-    shiny::observe({
-      shiny::req(common$sessions())
-      col <- common$sessions_colnames()
-      ann <- common$annotations()
-      new_ids <- setdiff(common$sessions()[[col$id]], ann$id)
-      if (length(new_ids) > 0) {
-        ann <- rbind(ann, data.frame(id = new_ids, annotation = "", stringsAsFactors = FALSE))
-      }
-      common$annotations(ann)
-    })
-
-    annotation_table <- shiny::reactive({
-      shiny::req(common$sessions(), common$annotations(), common$sessions_colnames(), common$session_filters())
-      make_annotation_table(common)
-    })
-
     output$annotation_table <- DT::renderDT({
+      shiny::req(common$sessions(), common$session_filters(), common$annotations())
       DT::datatable(
-        annotation_table(),
+        make_annotation_table(common),
         rownames = FALSE,
         selection = "multiple",
         options = list(
@@ -51,26 +43,40 @@ annotation_server <- function(id, common) {
       )
     })
 
+    # Record new annotations ----
     shiny::observeEvent(input$apply_annotation, {
       col <- common$sessions_colnames()
       ann <- common$annotations()
+      sessions <- apply_filters(common$sessions(), common$session_filters())
       selected <- input$annotation_table_rows_selected
       if (length(selected) > 0) {
-        selected_ids <- common$sessions()[common$sessions()$display, ][[col$id]][selected]
+        selected_ids <- sessions[[col$id]][selected]
         ann$annotation[match(selected_ids, ann$id)] <- input$annotation_text
         common$annotations(ann)
       }
     })
 
-    updated_sessions <- shiny::reactive({
+    # Reset all annotations ----
+    shiny::observeEvent(input$reset_annotations, {
+      ann <- common$annotations()
+      sessions <- common$sessions()
+      ann$annotation <- ""
+      sessions$annotation <- ""
+      common$sessions(sessions)
+      common$annotations(ann)
+    })
+
+    # Update annotations in sessions table ----
+    shiny::observe({
       shiny::req(common$sessions(), common$annotations())
       col <- common$sessions_colnames()
       s <- common$sessions()
       ann <- common$annotations()
       s$annotation <- ann$annotation[match(s[[col$id]], ann$id)]
-      s
+      common$sessions(s)
     })
 
+    # Apply annotations to epochs table ----
     shiny::observe({
       shiny::req(common$sessions(), common$epochs())
       common$epochs(annotate_epochs_from_sessions(
@@ -81,10 +87,6 @@ annotation_server <- function(id, common) {
       ))
     })
 
-    shiny::observe({
-      shiny::req(updated_sessions())
-      common$sessions(updated_sessions())
-    })
   })
 }
 

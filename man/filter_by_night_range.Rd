@@ -9,7 +9,7 @@ filter_by_night_range(
   from_night,
   to_night,
   col_names = NULL,
-  flag_only = FALSE
+  return_mask = FALSE
 )
 }
 \arguments{
@@ -24,10 +24,10 @@ filter_by_night_range(
 \item \code{night}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions meet the night range requirement}
 }
 \value{
-The sessions dataframe with only the sessions that fall within the specified night range
+The sessions dataframe with only the sessions that fall within the specified night range, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Filter sessions for nights within a night range

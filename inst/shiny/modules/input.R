@@ -8,7 +8,6 @@ input_ui <- function(id) {
     input_epochs_ui(ns("epochs_input_panel")),
     shiny::h4("2. Set column names"),
     shiny::actionButton(ns("open_session_col_names"), "Set Session Columns"),
-    shiny::br(), shiny::br(),
     shiny::actionButton(ns("open_epoch_col_names"), "Set Epoch Columns"),
   )
 }
@@ -51,18 +50,11 @@ input_server <- function(id, common) {
         if (identical(val, "")) NULL else val
       })
       common$sessions_colnames(stats::setNames(vals, keys))
-      if (!is.null(common$sessions_colnames()$night)) {
-        sessions <- common$sessions()
-        night_col <- common$sessions_colnames()$night
-        sessions[[night_col]] <- as.Date(sessions[[night_col]])
-        common$sessions(sessions)
-      }
-      if (is.null(common$sessions_colnames()$night) && !is.null(common$sessions_colnames()$session_start)) {
-        sessions <- common$sessions() |>
-          group_sessions_by_night(col_names = common$sessions_colnames())
-        set_colname(common$sessions_colnames, "night", "night")
-        common$sessions(sessions)
-      }
+      res <- clean_sessions(common$sessions(), col_names = common$sessions_colnames())
+      sessions <- res$sessions
+      col <- res$col
+      common$sessions(sessions)
+      common$sessions_colnames(col)
       shiny::removeModal()
     })
 
@@ -94,12 +86,11 @@ input_server <- function(id, common) {
         if (identical(val, "")) NULL else val
       })
       common$epochs_colnames(stats::setNames(vals, keys))
-      if (is.null(common$epochs_colnames()$night) && !is.null(common$epochs_colnames()$timestamp)) {
-        epochs <- epochs() |>
-          group_epochs_by_night(col_names = common$epochs_colnames())
-        set_colname(common$epochs_colnames, "night", "night")
-        common$epochs(epochs)
-      }
+      res <- clean_epochs(common$epochs(), col_names = common$epochs_colnames())
+      epochs <- res$epochs
+      col <- res$col
+      common$epochs(epochs)
+      common$epochs_colnames(col)
       shiny::removeModal()
     })
   })

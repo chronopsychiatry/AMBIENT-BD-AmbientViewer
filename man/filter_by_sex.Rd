@@ -4,7 +4,7 @@
 \alias{filter_by_sex}
 \title{Filter by sex}
 \usage{
-filter_by_sex(sessions, sex, col_names = NULL, flag_only = FALSE)
+filter_by_sex(sessions, sex, col_names = NULL, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -16,10 +16,10 @@ filter_by_sex(sessions, sex, col_names = NULL, flag_only = FALSE)
 \item \code{sex}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions belong to the specified sex}
 }
 \value{
-The sessions dataframe with only the sessions that belong to the specified sex
+The sessions dataframe with only the sessions that belong to the specified sex, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Filter by sex

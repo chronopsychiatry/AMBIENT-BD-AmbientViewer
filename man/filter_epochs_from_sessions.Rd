@@ -9,7 +9,7 @@ filter_epochs_from_sessions(
   sessions,
   session_col_names = NULL,
   epoch_col_names = NULL,
-  flag_only = FALSE
+  return_mask = FALSE
 )
 }
 \arguments{
@@ -19,18 +19,19 @@ filter_epochs_from_sessions(
 
 \item{session_col_names}{A list to override default session column names. This function uses columns:
 \itemize{
-\item \code{id}
+\item \code{session_start}
+\item \code{session_end}
 }}
 
 \item{epoch_col_names}{A list to override default epoch column names. This function uses columns:
 \itemize{
-\item \code{session_id}
+\item \code{timestamp}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered epochs without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which epochs belong to the specified sessions}
 }
 \value{
-The epochs dataframe with only the epochs that belong to the specified sessions
+The epochs dataframe with only the epochs that belong to the specified sessions, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Filter epochs based on session IDs

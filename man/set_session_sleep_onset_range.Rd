@@ -9,7 +9,7 @@ set_session_sleep_onset_range(
   from_time,
   to_time,
   col_names = NULL,
-  flag_only = FALSE
+  return_mask = FALSE
 )
 }
 \arguments{
@@ -24,10 +24,11 @@ set_session_sleep_onset_range(
 \item \code{time_at_sleep_onset}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions meet the sleep onset time range requirement}
 }
 \value{
-The sessions dataframe with only the sessions where sleep started within the specified time range
+The sessions dataframe with only the sessions where sleep started within the specified time range,
+or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Set sleep onset time range

@@ -131,7 +131,7 @@ chronotype <- function(sessions, col_names = NULL) {
 #' composite_phase_deviation(example_sessions)
 #' @importFrom rlang .data
 composite_phase_deviation <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions)
+  col <- get_session_colnames(sessions, col_names)
 
   chronotype <- chronotype(sessions, col_names)
 

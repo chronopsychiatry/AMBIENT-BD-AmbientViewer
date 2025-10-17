@@ -4,7 +4,7 @@
 \alias{remove_sessions_no_sleep}
 \title{Remove sessions with no sleep}
 \usage{
-remove_sessions_no_sleep(sessions, col_names = NULL)
+remove_sessions_no_sleep(sessions, col_names = NULL, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -13,9 +13,11 @@ remove_sessions_no_sleep(sessions, col_names = NULL)
 \itemize{
 \item \code{sleep_period}
 }}
+
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions have a sleep period greater than 0}
 }
 \value{
-The sessions dataframe with only the sessions that have a sleep period greater than 0
+The sessions dataframe with only the sessions that have a sleep period greater than 0, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Remove sessions with no sleep

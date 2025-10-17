@@ -55,82 +55,27 @@
   is_asleep = "Logical variable indicating if the epoch is classified as asleep (TRUE) or awake (FALSE)."
 )
 
-# Session formats ----
-
-.sessions_col_somnofy_v2 <- list(
-  id = "id",
-  subject_id = "subject_id",
-  sex = NULL,
-  birth_year = NULL,
-  device_id = "device_serial_number",
-  session_start = "session_start",
-  session_end = "session_end",
-  time_at_sleep_onset = "time_at_sleep_onset",
-  time_at_midsleep = "time_at_midsleep",
-  time_at_wakeup = "time_at_wakeup",
-  sleep_onset_latency = "sleep_onset_latency",
-  sleep_period = "sleep_period",
-  time_in_bed = "time_in_bed",
-  is_workday = "is_workday",
-  night = "night"
-)
-
-.sessions_col_somnofy_v1 <- list(
-  id = "session_id",
-  subject_id = "user_id",
-  sex = "sex",
-  birth_year = "birth_year",
-  device_id = NULL,
-  session_start = "session_start",
-  session_end = "session_end",
-  time_at_sleep_onset = "time_at_sleep_onset",
-  time_at_midsleep = "time_at_midsleep",
-  time_at_wakeup = "time_at_wakeup",
-  sleep_onset_latency = "sleep_onset_latency",
-  sleep_period = "sleep_period",
-  time_in_bed = "time_in_bed",
-  is_workday = "is_workday",
-  night = "night"
-)
-
-.sessions_col_ggir <- list(
-  id = "window_number",
-  subject_id = "ID",
-  sex = NULL,
-  birth_year = NULL,
-  device_id = NULL,
-  session_start = "session_start",
-  session_end = "session_end",
-  time_at_sleep_onset = "sleeponset_ts",
-  time_at_midsleep = "midsleep_ts",
-  time_at_wakeup = "wakeup_ts",
-  sleep_onset_latency = NULL,
-  sleep_period = "sleep_period",
-  time_in_bed = "time_in_bed",
-  is_workday = "is_workday",
-  night = "calendar_date"
-)
-
-.sessions_col_edf <- list(
-  id = "session_id",
-  subject_id = "subject_id",
-  sex = NULL,
-  birth_year = NULL,
-  device_id = NULL,
-  session_start = "startTime",
-  session_end = "endTime",
-  time_at_sleep_onset = "startTime",
-  time_at_midsleep = "midsleep",
-  time_at_wakeup = "endTime",
-  sleep_onset_latency = NULL,
-  sleep_period = "sleep_period",
-  time_in_bed = "sleep_period",
-  is_workday = "is_workday",
-  night = "night"
+# Session column name presets ----
+.sessions_col_presets <- list(
+  id = c("id", "window_number"),
+  subject_id = c("subject_id", "user_id", "ID"),
+  sex = c("sex"),
+  birth_year = c("birth_year"),
+  device_id = c("device_serial_number"),
+  session_start = c("session_start"),
+  session_end = c("session_end"),
+  time_at_sleep_onset = c("time_at_sleep_onset", "sleeponset_ts"),
+  time_at_midsleep = c("time_at_midsleep"),
+  time_at_wakeup = c("time_at_wakeup", "wakeup_ts"),
+  sleep_onset_latency = c("sleep_onset_latency"),
+  sleep_period = c("sleep_period"),
+  time_in_bed = c("time_in_bed"),
+  is_workday = c("is_workday", "daytype"),
+  night = c("calendar_date")
 )
 
 .sessions_col_none <- list(
-  id = "session_id",
+  id = NULL,
   subject_id = NULL,
   sex = NULL,
   birth_year = NULL,
@@ -147,33 +92,14 @@
   night = NULL
 )
 
-# Epoch formats ----
-
-.epochs_col_somnofy_v2 <- list(
-  timestamp = "timestamp",
-  session_id = "session_id",
-  signal_quality = "signal_quality_mean",
-  sleep_stage = "sleep_stage",
-  night = "night",
-  is_asleep = "is_asleep"
-)
-
-.epochs_col_somnofy_v1 <- list(
-  timestamp = "timestamp",
-  session_id = "session_id",
-  signal_quality = "signal_quality_mean",
-  sleep_stage = "sleep_stage",
-  night = "night",
-  is_asleep = "is_asleep"
-)
-
-.epochs_col_ggir <- list(
-  timestamp = "timenum",
-  session_id = "window",
-  signal_quality = NULL,
-  sleep_stage = "class_id",
-  night = "night",
-  is_asleep = "is_asleep"
+# Epoch column name presets ----
+.epochs_col_presets <- list(
+  timestamp = c("timestamp", "timenum"),
+  session_id = c("session_id", "window"),
+  signal_quality = c("signal_quality_mean"),
+  sleep_stage = c("sleep_stage", "class_id"),
+  night = c(""),
+  is_asleep = c("")
 )
 
 .epochs_col_none <- list(

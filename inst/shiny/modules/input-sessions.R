@@ -43,7 +43,6 @@ input_sessions_server <- function(id, common) {
       shiny::req(input$sessions_file)
       common$logger |> write_log(paste0("Loading session file: ", input$sessions_file$name), type = "starting")
       data <- load_sessions(input$sessions_file$datapath)
-      check_session_datatype(data, common)
       init_sessions(data, common)
     })
 
@@ -56,7 +55,6 @@ input_sessions_server <- function(id, common) {
       if (length(folder_path) == 0) return()
       common$logger |> write_log(paste0("Batch-loading session files from: ", folder_path), type = "starting")
       data <- load_sessions_batch(folder_path, input$batch_file_pattern)
-      check_session_datatype(data, common)
       init_sessions(data, common)
     })
   })
@@ -64,23 +62,17 @@ input_sessions_server <- function(id, common) {
 
 init_sessions <- function(sessions, common) {
   col <- get_session_colnames(sessions)
+  res <- clean_sessions(sessions, col_names = col)
+  sessions <- res$sessions
+  col <- res$col
   sessions$annotation <- ""
   common$sessions(sessions)
   common$sessions_colnames(col)
-  common$session_filters(data.frame(no_sleep = rep(TRUE, length(sessions[[col$id]])),
-                                    row.names = sessions[[col$id]]))
+  common$session_filters(data.frame(no_sleep = rep(TRUE, nrow(sessions))))
   common$annotations(data.frame(
     id = sessions[[col$id]],
+
     annotation = "",
     stringsAsFactors = FALSE
   ))
-}
-
-check_session_datatype <- function(sessions, common) {
-  if (sessions$.data_type[1] == "none") {
-    common$logger |> write_log("Could not detect session data type. Please set column names.", type = "warning")
-  } else {
-    common$logger |> write_log(paste0("Detected session data type: ", sessions$.data_type[1]), type = "complete")
-    common$logger |> write_log("Column names were set automatically", type = "info")
-  }
 }

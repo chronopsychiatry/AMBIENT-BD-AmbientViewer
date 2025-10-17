@@ -4,7 +4,7 @@
 \alias{select_devices}
 \title{Select devices by ID}
 \usage{
-select_devices(sessions, device_ids, col_names = NULL, flag_only = FALSE)
+select_devices(sessions, device_ids, col_names = NULL, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -16,10 +16,10 @@ select_devices(sessions, device_ids, col_names = NULL, flag_only = FALSE)
 \item \code{device_id}
 }}
 
-\item{flag_only}{If TRUE, only flags the filtered sessions without removing them from the table}
+\item{return_mask}{If TRUE, returns a logical vector indicating which sessions were recorded by the specified devices}
 }
 \value{
-The sessions dataframe with only the sessions recorded by the specified devices
+The sessions dataframe with only the sessions recorded by the specified devices, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Select devices by ID
