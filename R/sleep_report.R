@@ -79,7 +79,7 @@ sleep_duration_distribution <- function(sessions, col_names = NULL, adjust = 1) 
   col <- get_session_colnames(sessions, col_names)
 
   plot_data <- sessions |>
-    remove_sessions_no_sleep() |>
+    remove_sessions_no_sleep(col_names = col) |>
     dplyr::filter(!is.na(.data[[col$sleep_period]])) |>
     dplyr::mutate(sleep_period = as.numeric(.data[[col$sleep_period]]) / 3600)
 

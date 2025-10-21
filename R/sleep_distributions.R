@@ -169,7 +169,7 @@ sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
 #' @importFrom rlang .data
 prepare_sleeptimes_data <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
-  sessions <- remove_sessions_no_sleep(sessions)
+  sessions <- remove_sessions_no_sleep(sessions, col_names = col)
   plot_data <- tidyr::pivot_longer(
     sessions,
     cols = dplyr::all_of(c(col$time_at_sleep_onset, col$time_at_midsleep, col$time_at_wakeup)),

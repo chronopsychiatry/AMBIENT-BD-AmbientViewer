@@ -37,7 +37,8 @@ sleep_bubbles_server <- function(id, common) {
       shiny::validate(
         shiny::need(!is.null(col$time_at_sleep_onset), "'time_at_sleep_onset' column was not specified."),
         shiny::need(!is.null(col$time_at_wakeup), "'time_at_wakeup' column was not specified."),
-        shiny::need(!is.null(col$night), "'night' column was not specified.")
+        shiny::need(!is.null(col$night), "'night' column was not specified."),
+        shiny::need(!is.null(col$sleep_period), "'sleep_period' column was not specified.")
       )
       plot_sleep_bubbles(
         sessions = sessions,

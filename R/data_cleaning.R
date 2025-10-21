@@ -76,7 +76,7 @@ clean_sessions <- function(sessions, col_names = NULL) {
     col$time_at_midsleep <- "time_at_midsleep"
   }
   # Create is_workday if possible
-  if (col$is_workday == "daytype") {
+  if (col$is_workday == "daytype" && !is.logical(sessions[[col$is_workday]])) {
     sessions[[col$is_workday]] <- ifelse(sessions$daytype == "WD", TRUE, FALSE) # Parse GGIR format
   } else if (!is.null(col$session_start)) {
     sessions$is_workday <- !(weekdays(sessions[[col$session_start]]) %in% c("Saturday", "Sunday"))
@@ -87,7 +87,7 @@ clean_sessions <- function(sessions, col_names = NULL) {
     sessions[[col$sleep_period]] <- as.numeric(sessions[[col$sleep_period]])
   }
   # For GGIR data: convert dur_spt_sleep_min to sleep_period in seconds
-  if (col$sleep_period == "dur_spt_sleep_min") {
+  if (!is.null(col$sleep_period) && col$sleep_period == "dur_spt_sleep_min") {
     sessions[[col$sleep_period]] <- sessions$dur_spt_sleep_min * 60
   }
   list(sessions = sessions, col = col)

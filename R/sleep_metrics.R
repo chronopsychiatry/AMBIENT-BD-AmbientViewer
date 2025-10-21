@@ -81,7 +81,7 @@ chronotype <- function(sessions, col_names = NULL) {
   col <- get_session_colnames(sessions, col_names)
 
   data <- sessions |>
-    remove_sessions_no_sleep() |>
+    remove_sessions_no_sleep(col_names = col) |>
     dplyr::mutate(is_workday = as.logical(.data[[col$is_workday]])) |>
     dplyr::group_by(.data[[col$is_workday]]) |>
     dplyr::summarise(
@@ -90,7 +90,7 @@ chronotype <- function(sessions, col_names = NULL) {
       .groups = "drop"
     )
 
-  if (nrow(data[!data$is_workday, ]) == 0 || nrow(data[data$is_workday, ]) == 0) {
+  if (nrow(data[!data[[col$is_workday]], ]) == 0 || nrow(data[data[[col$is_workday]], ]) == 0) {
     cli::cli_warn(c(
       "!" = "No free day sessions found or no workday sessions found",
       "i" = "Exiting."
@@ -98,9 +98,9 @@ chronotype <- function(sessions, col_names = NULL) {
     return(NA)
   }
 
-  chronotype <- data[!data$is_workday, ]$chronotype
-  sleep_period_free <- data[!data$is_workday, ]$sleep_period
-  sleep_period_work <- data[data$is_workday, ]$sleep_period
+  chronotype <- data[!data[[col$is_workday]], ]$chronotype
+  sleep_period_free <- data[!data[[col$is_workday]], ]$sleep_period
+  sleep_period_work <- data[data[[col$is_workday]], ]$sleep_period
 
   # If the sleep duration on free days is greater than on workdays, we apply a correction
   # (see Roenneberg et al., 2019)
@@ -108,7 +108,7 @@ chronotype <- function(sessions, col_names = NULL) {
     chronotype
   } else {
     sleep_duration_all <- sessions |>
-      remove_sessions_no_sleep() |>
+      remove_sessions_no_sleep(col_names = col) |>
       dplyr::summarise(sleep_duration = mean(.data[[col$sleep_period]] / 3600, na.rm = TRUE)) |>
       dplyr::pull(.data$sleep_duration)
     chronotype - (sleep_period_free - sleep_duration_all) / 2
@@ -136,7 +136,7 @@ composite_phase_deviation <- function(sessions, col_names = NULL) {
   chronotype <- chronotype(sessions, col_names)
 
   sessions |>
-    remove_sessions_no_sleep() |>
+    remove_sessions_no_sleep(col_names = col) |>
     dplyr::arrange(.data[[col$night]]) |>
     dplyr::mutate(midsleep_h = time_to_hours(.data[[col$time_at_midsleep]]),
                   mistiming = chronotype - .data$midsleep_h,
@@ -170,7 +170,7 @@ sleep_regularity_index <- function(epochs, col_names = NULL) {
   p_same <- data.frame(timestamp = seq(min(epochs$timestamp), max(epochs$timestamp), by = 30)) |>
     dplyr::left_join(epochs, by = "timestamp") |>
     dplyr::mutate(is_asleep = ifelse(is.na(.data[[col$is_asleep]]), 0, .data[[col$is_asleep]]),
-                  is_asleep_nextday = dplyr::lead(.data$is_asleep, n = 24*60*2)) |> # 24h = 2880 epochs of 30s
+                  is_asleep_nextday = dplyr::lead(.data$is_asleep, n = 24 * 60 * 2)) |> # 24h = 2880 epochs of 30s
     dplyr::mutate(same_state = .data$is_asleep == .data$is_asleep_nextday) |>
     dplyr::summarise(p_same = mean(.data$same_state, na.rm = TRUE)) |>
     dplyr::pull(p_same)

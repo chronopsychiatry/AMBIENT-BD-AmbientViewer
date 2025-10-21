@@ -2,7 +2,9 @@ sleep_regularity_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::HTML("Click on metrics names for more information.<br>"),
+    shiny::h5("Sessions-based Sleep Regularity Metrics"),
     shiny::tableOutput(ns("sleep_sessions_regularity_table")),
+    shiny::h5("Epochs-based Sleep Regularity Metrics"),
     shiny::tableOutput(ns("sleep_epochs_regularity_table")),
     shiny::HTML("<span>Metrics based on <a href='https://doi.org/10.1093/sleep/zsab103' target='_blank'>Fischer et al. (2021)</a></span>")
   )
@@ -41,20 +43,32 @@ sleep_regularity_server <- function(id, common) {
     )
 
     metric_values_sessions <- shiny::reactive({
+      col <- common$sessions_colnames()
+      shiny::validate(
+        shiny::need(!is.null(col$time_at_midsleep), "'time_at_midsleep' column was not specified."),
+        shiny::need(!is.null(col$is_workday), "'is_workday' column was not specified."),
+        shiny::need(!is.null(col$night), "'night' column was not specified."),
+        shiny::need(!is.null(col$sleep_period), "'sleep_period' column was not specified.")
+      )
       if (is.null(sessions()) || nrow(sessions()) == 0) return(rep(NA, length(metric_names_sessions)))
       c(
-        sd_time(sessions()[[common$sessions_colnames()$time_at_midsleep]], unit = "hour"),
-        social_jet_lag(sessions(), col_names = common$sessions_colnames()),
-        composite_phase_deviation(sessions(), col_names = common$sessions_colnames()),
-        chronotype(sessions(), col_names = common$sessions_colnames())
+        sd_time(sessions()[[col$time_at_midsleep]], unit = "hour"),
+        social_jet_lag(sessions(), col_names = col),
+        composite_phase_deviation(sessions(), col_names = col),
+        chronotype(sessions(), col_names = col)
       )
     })
 
     metric_values_epochs <- shiny::reactive({
+      col <- common$epochs_colnames()
+      shiny::validate(
+        shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
+        shiny::need(!is.null(col$is_asleep), "'is_asleep' column was not specified."),
+      )
       if (is.null(epochs()) || nrow(epochs()) == 0) return(rep(NA, length(metric_names_epochs)))
       c(
-        interdaily_stability(epochs(), col_names = common$epochs_colnames()),
-        sleep_regularity_index(epochs(), col_names = common$epochs_colnames())
+        interdaily_stability(epochs(), col_names = col),
+        sleep_regularity_index(epochs(), col_names = col)
       )
     })
 

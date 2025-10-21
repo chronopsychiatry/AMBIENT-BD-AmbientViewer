@@ -68,7 +68,7 @@
   time_at_midsleep = c("time_at_midsleep"),
   time_at_wakeup = c("time_at_wakeup", "wakeup_ts"),
   sleep_onset_latency = c("sleep_onset_latency"),
-  sleep_period = c("sleep_period"),
+  sleep_period = c("sleep_period", "dur_spt_sleep_min"),
   time_in_bed = c("time_in_bed"),
   is_workday = c("is_workday", "daytype"),
   night = c("calendar_date")
