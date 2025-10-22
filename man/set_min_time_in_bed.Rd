@@ -4,22 +4,12 @@
 \alias{set_min_time_in_bed}
 \title{Set minimum time in bed}
 \usage{
-set_min_time_in_bed(
-  sessions,
-  min_time_in_bed,
-  col_names = NULL,
-  return_mask = FALSE
-)
+set_min_time_in_bed(sessions, min_time_in_bed, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{min_time_in_bed}{The minimum time in bed in hours}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{time_in_bed}
-}}
 
 \item{return_mask}{If TRUE, return a logical vector indicating which sessions meet the minimum time in bed requirement}
 }
@@ -28,6 +18,12 @@ The sessions dataframe with only the sessions that meet the minimum time in bed 
 }
 \description{
 Set minimum time in bed
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{time_in_bed}
+}
 }
 \examples{
 filtered_sessions <- set_min_time_in_bed(example_sessions, 2)

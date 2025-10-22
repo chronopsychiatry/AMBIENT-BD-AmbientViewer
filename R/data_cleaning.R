@@ -1,21 +1,17 @@
 #' Clean session data
 #'
 #' @param sessions A dataframe containing the session data
-#' @param col_names A named list mapping standard column names to the column names in the sessions dataframe
-#' @returns A list with two elements:
-#' - sessions: the cleaned-up sessions dataframe
-#' - col: the updated column names mapping
+#' @returns The cleaned-up sessions dataframe
 #' @examples
-#' res <- clean_sessions(AmbientViewer::example_sessions)
-#' sessions <- res$sessions
-#' col_names <- res$col
+#' epochs <- clean_sessions(AmbientViewer::example_sessions)
 #' @importFrom rlang .data
-clean_sessions <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions, col_names = col_names)
+clean_sessions <- function(sessions) {
+  col <- get_session_colnames(sessions)
 
   # Create session IDs if they do not exist
   if (is.null(col$id)) {
-    sessions$session_id <- dplyr::row_number()
+    sessions <- sessions |>
+      dplyr::mutate(session_id = dplyr::row_number())
     col$id <- "session_id"
   }
   # For GGIR data: parse start_end_window to session_start and session_end
@@ -76,9 +72,9 @@ clean_sessions <- function(sessions, col_names = NULL) {
     col$time_at_midsleep <- "time_at_midsleep"
   }
   # Create is_workday if possible
-  if (col$is_workday == "daytype" && !is.logical(sessions[[col$is_workday]])) {
+  if (identical(col$is_workday, "daytype") && !is.logical(sessions[[col$is_workday]])) {
     sessions[[col$is_workday]] <- ifelse(sessions$daytype == "WD", TRUE, FALSE) # Parse GGIR format
-  } else if (!is.null(col$session_start)) {
+  } else if (is.null(col$is_workday) && !is.null(col$session_start)) {
     sessions$is_workday <- !(weekdays(sessions[[col$session_start]]) %in% c("Saturday", "Sunday"))
     col$is_workday <- "is_workday"
   }
@@ -87,26 +83,22 @@ clean_sessions <- function(sessions, col_names = NULL) {
     sessions[[col$sleep_period]] <- as.numeric(sessions[[col$sleep_period]])
   }
   # For GGIR data: convert dur_spt_sleep_min to sleep_period in seconds
-  if (!is.null(col$sleep_period) && col$sleep_period == "dur_spt_sleep_min") {
-    sessions[[col$sleep_period]] <- sessions$dur_spt_sleep_min * 60
+  if (identical(col$sleep_period, "dur_spt_sleep_min")) {
+    sessions$dur_spt_sleep_sec <- sessions$dur_spt_sleep_min * 60
+    col$sleep_period <- "dur_spt_sleep_sec"
   }
-  list(sessions = sessions, col = col)
+  set_colnames(sessions, col)
 }
 
 #' Clean epoch data
 #'
 #' @param epochs A dataframe containing the epoch data
-#' @param col_names A named list mapping standard column names to the column names in the epochs dataframe
-#' @returns A list with two elements:
-#' - epochs: the cleaned-up epochs dataframe
-#' - col: the updated column name mapping
+#' @returns The cleaned-up epochs dataframe
 #' @examples
-#' res <- clean_epochs(AmbientViewer::example_epochs)
-#' epochs <- res$epochs
-#' col_names <- res$col
+#' epochs <- clean_epochs(AmbientViewer::example_epochs)
 #' @importFrom rlang .data
-clean_epochs <- function(epochs, col_names = NULL) {
-  col <- get_epoch_colnames(epochs, col_names = col_names)
+clean_epochs <- function(epochs) {
+  col <- get_epoch_colnames(epochs)
 
   # Somnofy_v1: if session IDs are missing, create them from filenames
   if (is.null(col$session_id)) {
@@ -114,11 +106,11 @@ clean_epochs <- function(epochs, col_names = NULL) {
     col$session_id <- "session_id"
   }
   # GGIR: parse timenum to POSIXct
-  if (col$timestamp == "timenum") {
+  if (identical(col$timestamp, "timenum")) {
     epochs[[col$timestamp]] <- as.POSIXct(epochs[[col$timestamp]], origin = "1970-01-01", tz = "Europe/London")
   }
   # Set is_asleep column
-  if (col$sleep_stage == "class_id") {  # GGIR format
+  if (identical(col$sleep_stage, "class_id")) {  # GGIR format
     epochs$is_asleep <- ifelse(epochs[[col$sleep_stage]] == 0, 1, 0) # is_asleep: 0 = awake, 1 = asleep
     col$is_asleep <- "is_asleep"
   } else if (col$sleep_stage == "sleep_stage") {  # Somnofy format
@@ -134,6 +126,5 @@ clean_epochs <- function(epochs, col_names = NULL) {
     epochs <- group_epochs_by_night(epochs)
     col$night <- "night"
   }
-
-  list(epochs = epochs, col = col)
+  set_colnames(epochs, col)
 }

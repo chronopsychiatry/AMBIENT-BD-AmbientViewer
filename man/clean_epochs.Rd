@@ -4,25 +4,17 @@
 \alias{clean_epochs}
 \title{Clean epoch data}
 \usage{
-clean_epochs(epochs, col_names = NULL)
+clean_epochs(epochs)
 }
 \arguments{
 \item{epochs}{A dataframe containing the epoch data}
-
-\item{col_names}{A named list mapping standard column names to the column names in the epochs dataframe}
 }
 \value{
-A list with two elements:
-\itemize{
-\item epochs: the cleaned-up epochs dataframe
-\item col: the updated column name mapping
-}
+The cleaned-up epochs dataframe
 }
 \description{
 Clean epoch data
 }
 \examples{
-res <- clean_epochs(AmbientViewer::example_epochs)
-epochs <- res$epochs
-col_names <- res$col
+epochs <- clean_epochs(AmbientViewer::example_epochs)
 }

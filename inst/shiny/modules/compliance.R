@@ -15,11 +15,12 @@ compliance_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
     compliance_table <- shiny::reactive({
       shiny::req(common$sessions(), common$session_filters())
-      if (is.null(common$sessions_colnames()$night)) {
+      col <- get_colnames(common$sessions())
+      if (is.null(col$night)) {
         shiny::HTML("'Night' column was not specified.<br/>Please set a column name for night.")
       }
-      shiny::validate(shiny::need(!is.null(common$sessions_colnames()$night), message = FALSE))
-      get_compliance_table(common, common$sessions_colnames())
+      shiny::validate(shiny::need(!is.null(col$night), message = FALSE))
+      get_compliance_table(common)
     })
 
     output$compliance_table <- shiny::renderTable({
@@ -48,12 +49,13 @@ compliance_server <- function(id, common) {
 
     shiny::observe({
       shiny::req(common$sessions(), common$session_filters())
+      col <- get_colnames(common$sessions())
       shiny::validate(
-        shiny::need(!is.null(common$sessions_colnames()$night), message = FALSE)
+        shiny::need(!is.null(col$night), message = FALSE)
       )
       output_table <- common$sessions() |>
         apply_filters(common$session_filters()) |>
-        get_non_complying_sessions(col_names = common$sessions_colnames())
+        get_non_complying_sessions()
       output$download_compliance <- get_table_download_handler(
         session = session,
         common = common,
@@ -65,15 +67,15 @@ compliance_server <- function(id, common) {
 }
 
 #' @importFrom rlang .data
-get_compliance_table <- function(common, col_names = NULL) {
+get_compliance_table <- function(common) {
   common$sessions() |>
     apply_filters(common$session_filters()) |>
-    get_non_complying_sessions(col_names = col_names) |>
-    make_sessions_display_table(col_names = col_names)
+    get_non_complying_sessions() |>
+    make_sessions_display_table()
 }
 
-make_sessions_display_table <- function(sessions, col_names = NULL) {
-  col <- col_names
+make_sessions_display_table <- function(sessions) {
+  col <- get_colnames(sessions)
   sessions <- sessions |>
     dplyr::mutate(
       start = parse_time(get_col(sessions, col$session_start)) |> format("%H:%M"),

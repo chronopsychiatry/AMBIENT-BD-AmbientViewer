@@ -8,7 +8,6 @@ filter_by_age_range(
   sessions,
   min_age = NULL,
   max_age = NULL,
-  col_names = NULL,
   return_mask = FALSE
 )
 }
@@ -19,11 +18,6 @@ filter_by_age_range(
 
 \item{max_age}{The maximum age of the subjects (inclusive)}
 
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{birth_year}
-}}
-
 \item{return_mask}{If TRUE, returns a logical vector indicating which sessions belong to subjects within the specified age range}
 }
 \value{
@@ -32,6 +26,12 @@ or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Filter sessions by age range
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{birth_year}
+}
 }
 \examples{
 filtered_sessions <- filter_by_age_range(example_sessions_v1, min_age = 11, max_age = 18)

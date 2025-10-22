@@ -8,11 +8,6 @@ annotation_ui <- function(id) {
       shiny::actionButton(ns("apply_annotation"), "Apply"),
       shiny::actionButton(ns("reset_annotations"), "Reset")
     ),
-    # shiny::fluidRow(
-    #   shiny::column(2, shiny::textInput(ns("annotation_text"), NULL, placeholder = "Annotation"))
-    #   # shiny::column(1, shiny::actionButton(ns("apply_annotation"), "Apply")),
-    #   # shiny::column(1, shiny::actionButton(ns("reset_annotations"), "Reset"))
-    # ),
     DT::DTOutput(ns("annotation_table"))
   )
 }
@@ -45,7 +40,7 @@ annotation_server <- function(id, common) {
 
     # Record new annotations ----
     shiny::observeEvent(input$apply_annotation, {
-      col <- common$sessions_colnames()
+      col <- get_colnames(common$sessions())
       ann <- common$annotations()
       sessions <- apply_filters(common$sessions(), common$session_filters())
       selected <- input$annotation_table_rows_selected
@@ -69,7 +64,7 @@ annotation_server <- function(id, common) {
     # Update annotations in sessions table ----
     shiny::observe({
       shiny::req(common$sessions(), common$annotations())
-      col <- common$sessions_colnames()
+      col <- get_colnames(common$sessions())
       s <- common$sessions()
       ann <- common$annotations()
       s$annotation <- ann$annotation[match(s[[col$id]], ann$id)]
@@ -81,9 +76,7 @@ annotation_server <- function(id, common) {
       shiny::req(common$sessions(), common$epochs())
       common$epochs(annotate_epochs_from_sessions(
         sessions = common$sessions(),
-        epochs = common$epochs(),
-        session_colnames = common$sessions_colnames(),
-        epoch_colnames = common$epochs_colnames()
+        epochs = common$epochs()
       ))
     })
 
@@ -91,7 +84,7 @@ annotation_server <- function(id, common) {
 }
 
 make_annotation_table <- function(common) {
-  col <- common$sessions_colnames()
+  col <- get_colnames(common$sessions())
   sessions <- common$sessions() |>
     apply_filters(common$session_filters())
   sessions |>
@@ -121,12 +114,12 @@ make_annotation_table <- function(common) {
     )
 }
 
-annotate_epochs_from_sessions <- function(sessions, epochs, session_colnames, epoch_colnames) {
+annotate_epochs_from_sessions <- function(sessions, epochs) {
   if (nrow(epochs) == 0) {
     return(epochs)
   }
-  scol <- session_colnames
-  ecol <- epoch_colnames
+  scol <- get_colnames(sessions)
+  ecol <- get_colnames(epochs)
 
   annotation_map <- stats::setNames(sessions$annotation, sessions[[scol$id]])
 

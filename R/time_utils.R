@@ -175,20 +175,21 @@ shift_times_by_12h <- function(times) {
 
 #' Create a grouping by night for epoch data
 #'
+#' The function creates a new column `night` that groups the epochs by night.
+#' Timepoints before 12 PM are considered part of the previous night.
+#'
 #' @param epochs The epochs dataframe
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `timestamp`
 #' @returns The epochs dataframe with the `night` column added
-#' @details The function creates a new column `night` that groups the epochs by night.
-#' Timepoints before 12 PM are considered part of the previous night.
 #' @importFrom rlang .data
 #' @export
 #' @seealso [group_sessions_by_night()] to group session data by night.
 #' @family time processing
 #' @examples
 #' epochs <- group_epochs_by_night(example_epochs)
-group_epochs_by_night <- function(epochs, col_names = NULL) {
-  col <- get_epoch_colnames(epochs, col_names)
+group_epochs_by_night <- function(epochs) {
+  col <- get_epoch_colnames(epochs)
   epochs |>
     tidyr::drop_na(dplyr::all_of(col$timestamp)) |>
     dplyr::mutate(
@@ -202,19 +203,20 @@ group_epochs_by_night <- function(epochs, col_names = NULL) {
 
 #' Create a grouping by night for session data
 #'
+#' The function creates a new column `night` that groups the sessions by night depending on their start time.
+#' Sessions that start before 12 PM are considered part of the previous night.
+#'
 #' @param sessions The sessions dataframe
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `session_start`
 #' @returns The sessions dataframe with the `night` column added
-#' @details The function creates a new column `night` that groups the sessions by night depending on their start time.
-#' Sessions that start before 12 PM are considered part of the previous night.
 #' @export
 #' @family time processing
 #' @seealso [group_epochs_by_night()] to group epoch data by night.
 #' @examples
 #' sessions <- group_sessions_by_night(example_sessions)
-group_sessions_by_night <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions, col_names)
+group_sessions_by_night <- function(sessions) {
+  col <- get_session_colnames(sessions)
   sessions |>
     tidyr::drop_na(dplyr::all_of(col$session_start)) |>
     dplyr::mutate(

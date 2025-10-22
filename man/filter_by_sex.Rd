@@ -4,17 +4,12 @@
 \alias{filter_by_sex}
 \title{Filter by sex}
 \usage{
-filter_by_sex(sessions, sex, col_names = NULL, return_mask = FALSE)
+filter_by_sex(sessions, sex, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
 
 \item{sex}{The sex to filter for (M, F, or NULL for both)}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{sex}
-}}
 
 \item{return_mask}{If TRUE, returns a logical vector indicating which sessions belong to the specified sex}
 }
@@ -23,6 +18,12 @@ The sessions dataframe with only the sessions that belong to the specified sex, 
 }
 \description{
 Filter by sex
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{sex}
+}
 }
 \examples{
 filtered_sessions <- filter_by_sex(example_sessions_v1, "M")

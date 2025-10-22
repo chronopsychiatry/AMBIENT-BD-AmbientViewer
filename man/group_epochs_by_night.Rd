@@ -4,25 +4,23 @@
 \alias{group_epochs_by_night}
 \title{Create a grouping by night for epoch data}
 \usage{
-group_epochs_by_night(epochs, col_names = NULL)
+group_epochs_by_night(epochs)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{timestamp}
-}}
 }
 \value{
 The epochs dataframe with the \code{night} column added
 }
 \description{
-Create a grouping by night for epoch data
-}
-\details{
 The function creates a new column \code{night} that groups the epochs by night.
 Timepoints before 12 PM are considered part of the previous night.
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{timestamp}
+}
 }
 \examples{
 epochs <- group_epochs_by_night(example_epochs)

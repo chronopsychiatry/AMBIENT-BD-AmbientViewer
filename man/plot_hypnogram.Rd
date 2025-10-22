@@ -4,22 +4,23 @@
 \alias{plot_hypnogram}
 \title{Plot Hypnogram}
 \usage{
-plot_hypnogram(epochs, col_names = NULL)
+plot_hypnogram(epochs)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{timestamp}
-\item \code{sleep_stage}
-}}
 }
 \value{
 A ggplot object showing the hypnogram as bars
 }
 \description{
 Plot Hypnogram
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{timestamp}
+\item \code{sleep_stage}
+}
 }
 \seealso{
 \code{\link[=plot_sleep_stages]{plot_sleep_stages()}} to show the proportion of each sleep stage per day

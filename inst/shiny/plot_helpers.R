@@ -1,7 +1,7 @@
 update_colorby_dropdown <- function(col_names, plot_options, input, session, input_id = "colorby") {
   shiny::observe({
 
-    col <- Filter(Negate(is.null), col_names())
+    col <- Filter(Negate(is.null), col_names)
     excluded_vars <- c(col$session_start, col$session_end, col$time_at_sleep_onset, col$time_at_wakeup,
                        col$sleep_period, col$time_in_bed, col$timestamp, col$signal_quality)
     available_vars <- setdiff(c("default", "annotation", unlist(col, use.names = FALSE)), excluded_vars)
@@ -28,10 +28,10 @@ update_colorby_dropdown <- function(col_names, plot_options, input, session, inp
   })
 }
 
-update_variable_dropdown <- function(df, col_names, plot_options, input, session, input_id = "variable") {
+update_variable_dropdown <- function(df, plot_options, input, session, input_id = "variable") {
   shiny::observe({
 
-    col <- Filter(Negate(is.null), col_names())
+    col <- Filter(Negate(is.null), get_colnames(df()))
     excluded_vars <- c(col$id, "state", col$subject_id, col$device_id, col$night, col$timestamp, "motion_data_count",
                        col$session_id, col$sleep_stage, "epoch_duration", ".data_type", "filename", "display")
     available_vars <- setdiff(names(df()), excluded_vars)

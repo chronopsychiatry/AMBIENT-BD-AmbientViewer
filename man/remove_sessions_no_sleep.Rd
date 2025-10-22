@@ -4,15 +4,10 @@
 \alias{remove_sessions_no_sleep}
 \title{Remove sessions with no sleep}
 \usage{
-remove_sessions_no_sleep(sessions, col_names = NULL, return_mask = FALSE)
+remove_sessions_no_sleep(sessions, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{sleep_period}
-}}
 
 \item{return_mask}{If TRUE, returns a logical vector indicating which sessions have a sleep period greater than 0}
 }
@@ -21,6 +16,12 @@ The sessions dataframe with only the sessions that have a sleep period greater t
 }
 \description{
 Remove sessions with no sleep
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{sleep_period}
+}
 }
 \examples{
 filtered_sessions <- remove_sessions_no_sleep(example_sessions)

@@ -4,13 +4,7 @@
 \alias{filter_by_night_range}
 \title{Filter sessions for nights within a night range}
 \usage{
-filter_by_night_range(
-  sessions,
-  from_night,
-  to_night,
-  col_names = NULL,
-  return_mask = FALSE
-)
+filter_by_night_range(sessions, from_night, to_night, return_mask = FALSE)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
@@ -19,11 +13,6 @@ filter_by_night_range(
 
 \item{to_night}{The end night of the range (inclusive) in YYYY-MM-DD format}
 
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{night}
-}}
-
 \item{return_mask}{If TRUE, returns a logical vector indicating which sessions meet the night range requirement}
 }
 \value{
@@ -31,6 +20,12 @@ The sessions dataframe with only the sessions that fall within the specified nig
 }
 \description{
 Filter sessions for nights within a night range
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{night}
+}
 }
 \examples{
 filtered_sessions <- filter_by_night_range(example_sessions, "2025-04-07", "2025-04-10")

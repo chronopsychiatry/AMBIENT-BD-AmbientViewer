@@ -63,7 +63,7 @@ sleep_distributions_server <- function(id, common) {
     sleep_distribution_plot <- shiny::reactive({
       shiny::req(input$plot_type, common$sessions(), common$session_filters())
       sessions <- apply_filters(common$sessions(), common$session_filters())
-      col <- common$sessions_colnames()
+      col <- get_colnames(common$sessions())
       shiny::validate(
         shiny::need(!is.null(col$time_at_sleep_onset), "'time_at_sleep_onset' column was not specified."),
         shiny::need(!is.null(col$time_at_midsleep), "'time_at_midsleep' column was not specified."),
@@ -73,15 +73,15 @@ sleep_distributions_server <- function(id, common) {
       )
       switch(input$plot_type,
         "Boxplot" = {
-          sleeptimes_boxplot(sessions, col)
+          sleeptimes_boxplot(sessions)
         },
         "Histogram" = {
           shiny::req(input$binwidth)
-          sleeptimes_histogram(sessions, col, binwidth = input$binwidth)
+          sleeptimes_histogram(sessions, binwidth = input$binwidth)
         },
         "Density" = {
           shiny::req(input$adjust)
-          sleeptimes_density(sessions, col, adjust = input$adjust)
+          sleeptimes_density(sessions, adjust = input$adjust)
         }
       )
     })

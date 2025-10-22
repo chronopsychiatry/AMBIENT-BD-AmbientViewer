@@ -1,15 +1,15 @@
 #' Plot boxplots for sleep onset, midsleep, and wakeup times
 #'
 #' @param sessions The sessions dataframe
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `time_at_sleep_onset`
 #' - `time_at_wakeup`
 #' - `time_at_midsleep`
 #' @returns A ggplot object with three horizontal boxplots (onset, midsleep, wakeup)
 #' @export
 #' @importFrom rlang .data
-sleeptimes_boxplot <- function(sessions, col_names = NULL) {
-  plot_data <- prepare_sleeptimes_data(sessions, col_names)
+sleeptimes_boxplot <- function(sessions) {
+  plot_data <- prepare_sleeptimes_data(sessions)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
   ggplot2::ggplot(plot_data, ggplot2::aes(y = .data$variable, x = .data$hour, color = .data$variable)) +
@@ -44,16 +44,16 @@ sleeptimes_boxplot <- function(sessions, col_names = NULL) {
 #' Plot histograms for sleep onset, midsleep, and wakeup times
 #'
 #' @param sessions The sessions dataframe
-#' @param col_names A list to override default column names. This function uses columns:
+#' @param binwidth The width of the bins for the histogram (default 0.25)
+#' @details This function uses columns:
 #' - `time_at_sleep_onset`
 #' - `time_at_wakeup`
 #' - `time_at_midsleep`
-#' @param binwidth The width of the bins for the histogram (default 0.25)
 #' @returns A ggplot object with three overlaid histograms (sleep onset, midsleep, wakeup)
 #' @export
 #' @importFrom rlang .data
-sleeptimes_histogram <- function(sessions, col_names = NULL, binwidth = 0.25) {
-  plot_data <- prepare_sleeptimes_data(sessions, col_names)
+sleeptimes_histogram <- function(sessions, binwidth = 0.25) {
+  plot_data <- prepare_sleeptimes_data(sessions)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
   ggplot2::ggplot(plot_data, ggplot2::aes(x = .data$hour, color = .data$variable)) +
@@ -91,16 +91,16 @@ sleeptimes_histogram <- function(sessions, col_names = NULL, binwidth = 0.25) {
 #' Plot density curves for sleep onset, midsleep, and wakeup times with a dashed line showing the median
 #'
 #' @param sessions The sessions dataframe
-#' @param col_names A list to override default column names. This function uses columns:
+#' @param adjust The bandwidth adjustment for the density estimate (default 1)
+#' @details This function uses columns:
 #' - `time_at_sleep_onset`
 #' - `time_at_wakeup`
 #' - `time_at_midsleep`
-#' @param adjust The bandwidth adjustment for the density estimate (default 1)
 #' @returns A ggplot object with three overlaid density curves (sleep onset, midsleep, wakeup)
 #' @export
 #' @importFrom rlang .data
-sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
-  plot_data <- prepare_sleeptimes_data(sessions, col_names)
+sleeptimes_density <- function(sessions, adjust = 1) {
+  plot_data <- prepare_sleeptimes_data(sessions)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
   medians <- plot_data |>
@@ -167,9 +167,9 @@ sleeptimes_density <- function(sessions, col_names = NULL, adjust = 1) {
 }
 
 #' @importFrom rlang .data
-prepare_sleeptimes_data <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions, col_names)
-  sessions <- remove_sessions_no_sleep(sessions, col_names = col)
+prepare_sleeptimes_data <- function(sessions) {
+  col <- get_session_colnames(sessions)
+  sessions <- remove_sessions_no_sleep(sessions)
   plot_data <- tidyr::pivot_longer(
     sessions,
     cols = dplyr::all_of(c(col$time_at_sleep_onset, col$time_at_midsleep, col$time_at_wakeup)),

@@ -4,25 +4,17 @@
 \alias{clean_sessions}
 \title{Clean session data}
 \usage{
-clean_sessions(sessions, col_names = NULL)
+clean_sessions(sessions)
 }
 \arguments{
 \item{sessions}{A dataframe containing the session data}
-
-\item{col_names}{A named list mapping standard column names to the column names in the sessions dataframe}
 }
 \value{
-A list with two elements:
-\itemize{
-\item sessions: the cleaned-up sessions dataframe
-\item col: the updated column names mapping
-}
+The cleaned-up sessions dataframe
 }
 \description{
 Clean session data
 }
 \examples{
-res <- clean_sessions(AmbientViewer::example_sessions)
-sessions <- res$sessions
-col_names <- res$col
+epochs <- clean_sessions(AmbientViewer::example_sessions)
 }

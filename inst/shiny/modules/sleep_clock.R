@@ -25,7 +25,7 @@ sleep_clock_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(common$sessions_colnames, plot_options, input, session)
+    update_colorby_dropdown(get_colnames(common$sessions()), plot_options, input, session)
 
     sleep_clock_plot <- shiny::reactive({
       shiny::req(common$sessions(), common$session_filters())
@@ -33,7 +33,7 @@ sleep_clock_server <- function(id, common) {
       if (nrow(sessions) == 0) {
         return(NULL)
       }
-      col <- common$sessions_colnames()
+      col <- get_colnames(common$sessions())
       shiny::validate(
         shiny::need(!is.null(col$time_at_sleep_onset), "'time_at_sleep_onset' column was not specified."),
         shiny::need(!is.null(col$time_at_wakeup), "'time_at_wakeup' column was not specified."),
@@ -41,8 +41,7 @@ sleep_clock_server <- function(id, common) {
       )
       plot_sleep_clock(
         sessions = sessions,
-        color_by = input$colorby,
-        col_names = common$sessions_colnames()
+        color_by = input$colorby
       )
     })
 

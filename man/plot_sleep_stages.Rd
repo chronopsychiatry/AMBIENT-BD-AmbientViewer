@@ -4,22 +4,23 @@
 \alias{plot_sleep_stages}
 \title{Plot Sleep Stages}
 \usage{
-plot_sleep_stages(epochs, col_names = NULL)
+plot_sleep_stages(epochs)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{night}
-\item \code{sleep_stage}
-}}
 }
 \value{
 A ggplot object showing the proportion of sleep stages for each night
 }
 \description{
 Plot Sleep Stages
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{night}
+\item \code{sleep_stage}
+}
 }
 \seealso{
 \code{\link[=plot_hypnogram]{plot_hypnogram()}} to show the detailed sleep stages over time

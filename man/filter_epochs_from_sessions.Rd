@@ -4,37 +4,27 @@
 \alias{filter_epochs_from_sessions}
 \title{Filter epochs based on session IDs}
 \usage{
-filter_epochs_from_sessions(
-  epochs,
-  sessions,
-  session_col_names = NULL,
-  epoch_col_names = NULL,
-  return_mask = FALSE
-)
+filter_epochs_from_sessions(epochs, sessions, return_mask = FALSE)
 }
 \arguments{
 \item{epochs}{The epochs dataframe}
 
 \item{sessions}{The sessions dataframe}
-
-\item{session_col_names}{A list to override default session column names. This function uses columns:
-\itemize{
-\item \code{session_start}
-\item \code{session_end}
-}}
-
-\item{epoch_col_names}{A list to override default epoch column names. This function uses columns:
-\itemize{
-\item \code{timestamp}
-}}
-
-\item{return_mask}{If TRUE, returns a logical vector indicating which epochs belong to the specified sessions}
 }
 \value{
 The epochs dataframe with only the epochs that belong to the specified sessions, or a logical vector if \code{return_mask} is TRUE
 }
 \description{
 Filter epochs based on session IDs
+}
+\details{
+This function uses sessions columns:
+\itemize{
+\item \code{session_start}
+\item \code{session_end}
+And epoch columns:
+\item \code{timestamp}
+}
 }
 \examples{
 # Apply filtering to sessions to keep specific nights, and filter epochs accordingly

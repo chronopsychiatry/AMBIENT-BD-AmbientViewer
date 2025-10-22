@@ -4,7 +4,7 @@
 \alias{load_epochs}
 \title{Load epoch data}
 \usage{
-load_epochs(epochs_file, timestamp = "timestamp", annotation = "annotation")
+load_epochs(epochs_file)
 }
 \arguments{
 \item{epochs_file}{The path to the epochs file}

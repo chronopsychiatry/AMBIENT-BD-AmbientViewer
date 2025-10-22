@@ -31,7 +31,7 @@ input_server <- function(id, common) {
       show_colnames_modal(
         ns = ns,
         colnames_list = colnames(common$sessions()),
-        current_map = common$sessions_colnames(),
+        current_map = get_colnames(common$sessions()),
         title = "Set Session Column Names",
         save_id = "save_session_col_names",
         reset_id = "reset_session_col_names"
@@ -39,22 +39,20 @@ input_server <- function(id, common) {
     })
 
     shiny::observeEvent(input$reset_session_col_names, {
-      common$sessions_colnames(get_session_colnames(common$sessions()))
+      sessions <- set_colnames(common$sessions(), NULL)
+      col <- get_colnames(sessions)
+      common$sessions(set_colnames(sessions, col))
       shiny::removeModal()
     })
 
     shiny::observeEvent(input$save_session_col_names, {
-      keys <- names(common$sessions_colnames())
+      keys <- names(get_colnames(common$sessions()))
       vals <- lapply(keys, function(key) {
         val <- input[[paste0("col_", key)]]
         if (identical(val, "")) NULL else val
       })
-      common$sessions_colnames(stats::setNames(vals, keys))
-      res <- clean_sessions(common$sessions(), col_names = common$sessions_colnames())
-      sessions <- res$sessions
-      col <- res$col
-      common$sessions(sessions)
-      common$sessions_colnames(col)
+      common$sessions(set_colnames(common$sessions(), stats::setNames(vals, keys)))
+      common$sessions(clean_sessions(common$sessions))
       shiny::removeModal()
     })
 
@@ -67,7 +65,7 @@ input_server <- function(id, common) {
       show_colnames_modal(
         ns = ns,
         colnames_list = colnames(epochs()),
-        current_map = common$epochs_colnames(),
+        current_map = get_colnames(common$epochs()),
         title = "Set Epoch Column Names",
         save_id = "save_epoch_col_names",
         reset_id = "reset_epoch_col_names"
@@ -75,22 +73,20 @@ input_server <- function(id, common) {
     })
 
     shiny::observeEvent(input$reset_epoch_col_names, {
-      common$epochs_colnames(get_epoch_colnames(epochs()))
+      epochs <- set_colnames(common$epochs(), NULL)
+      col <- get_colnames(epochs)
+      common$epochs(set_colnames(epochs, col))
       shiny::removeModal()
     })
 
     shiny::observeEvent(input$save_epoch_col_names, {
-      keys <- names(common$epochs_colnames())
+      keys <- names(get_colnames(common$epochs()))
       vals <- lapply(keys, function(key) {
         val <- input[[paste0("col_", key)]]
         if (identical(val, "")) NULL else val
       })
-      common$epochs_colnames(stats::setNames(vals, keys))
-      res <- clean_epochs(common$epochs(), col_names = common$epochs_colnames())
-      epochs <- res$epochs
-      col <- res$col
-      common$epochs(epochs)
-      common$epochs_colnames(col)
+      common$epochs(set_colnames(common$epochs(), stats::setNames(vals, keys)))
+      common$epochs(clean_epochs(common$epochs))
       shiny::removeModal()
     })
   })
@@ -143,10 +139,4 @@ show_colnames_modal <- function(
       do.call(shiny::tagList, inputs)
     )
   )
-}
-
-set_colname <- function(colnames_reactive, key, value) {
-  col_map <- colnames_reactive()
-  col_map[[key]] <- value
-  colnames_reactive(col_map)
 }

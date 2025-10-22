@@ -2,7 +2,7 @@
 #'
 #' This function calculates the Interdaily Stability (IS) metric from a binary awake/asleep variable
 #' @param epochs The epochs data frame
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `timestamp`
 #' - `is_asleep`
 #' @return The Interdaily Stability (IS) value
@@ -11,8 +11,8 @@
 #' @examples
 #' interdaily_stability(example_epochs)
 #' @importFrom rlang .data
-interdaily_stability <- function(epochs, col_names = NULL) {
-  col <- get_epoch_colnames(epochs, col_names)
+interdaily_stability <- function(epochs) {
+  col <- get_epoch_colnames(epochs)
 
   epochs <- epochs |>
     dplyr::mutate(time = parse_time(.data[[col$timestamp]]),
@@ -38,7 +38,7 @@ interdaily_stability <- function(epochs, col_names = NULL) {
 #' This function calculates the Social Jet Lag (SJL) metric as the difference in mid-sleep times
 #' between workdays and free days.
 #' @param sessions The sessions data frame
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `time_at_midsleep`
 #' - `is_workday`
 #' @return The Social Jet Lag (SJL) value in hours
@@ -47,8 +47,8 @@ interdaily_stability <- function(epochs, col_names = NULL) {
 #' @examples
 #' social_jet_lag(example_sessions)
 #' @importFrom rlang .data
-social_jet_lag <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions, col_names)
+social_jet_lag <- function(sessions) {
+  col <- get_session_colnames(sessions)
 
   sessions <- sessions |>
     dplyr::mutate(is_workday = as.logical(.data[[col$is_workday]])) |>
@@ -67,7 +67,7 @@ social_jet_lag <- function(sessions, col_names = NULL) {
 #' If sleep duration on free days is greater than on workdays, it applies a correction
 #' as described in Roenneberg et al. (2019).
 #' @param sessions The sessions data frame
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `time_at_midsleep`
 #' - `sleep_period`
 #' - `is_workday`
@@ -77,11 +77,11 @@ social_jet_lag <- function(sessions, col_names = NULL) {
 #' @examples
 #' chronotype(example_sessions)
 #' @importFrom rlang .data
-chronotype <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions, col_names)
+chronotype <- function(sessions) {
+  col <- get_session_colnames(sessions)
 
   data <- sessions |>
-    remove_sessions_no_sleep(col_names = col) |>
+    remove_sessions_no_sleep() |>
     dplyr::mutate(is_workday = as.logical(.data[[col$is_workday]])) |>
     dplyr::group_by(.data[[col$is_workday]]) |>
     dplyr::summarise(
@@ -108,7 +108,7 @@ chronotype <- function(sessions, col_names = NULL) {
     chronotype
   } else {
     sleep_duration_all <- sessions |>
-      remove_sessions_no_sleep(col_names = col) |>
+      remove_sessions_no_sleep() |>
       dplyr::summarise(sleep_duration = mean(.data[[col$sleep_period]] / 3600, na.rm = TRUE)) |>
       dplyr::pull(.data$sleep_duration)
     chronotype - (sleep_period_free - sleep_duration_all) / 2
@@ -120,7 +120,7 @@ chronotype <- function(sessions, col_names = NULL) {
 #' This function calculates the Composite Phase Deviation (CPD) metric, used to measure
 #' the regularity of the sleep patterns.
 #' @param sessions The sessions data frame
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `time_at_midsleep`
 #' - `is_workday`
 #' - `night`
@@ -130,13 +130,13 @@ chronotype <- function(sessions, col_names = NULL) {
 #' @examples
 #' composite_phase_deviation(example_sessions)
 #' @importFrom rlang .data
-composite_phase_deviation <- function(sessions, col_names = NULL) {
-  col <- get_session_colnames(sessions, col_names)
+composite_phase_deviation <- function(sessions) {
+  col <- get_session_colnames(sessions)
 
-  chronotype <- chronotype(sessions, col_names)
+  chronotype <- chronotype(sessions)
 
   sessions |>
-    remove_sessions_no_sleep(col_names = col) |>
+    remove_sessions_no_sleep() |>
     dplyr::arrange(.data[[col$night]]) |>
     dplyr::mutate(midsleep_h = time_to_hours(.data[[col$time_at_midsleep]]),
                   mistiming = chronotype - .data$midsleep_h,
@@ -150,7 +150,7 @@ composite_phase_deviation <- function(sessions, col_names = NULL) {
 #' The Sleep Regularity Index (SRI) is a measure of the regularity of sleep patterns.
 #' It is calculated as the percentage of epochs where the sleep state remains the same after 24 hours.
 #' @param epochs The epochs data frame
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `timestamp`
 #' - `is_asleep`
 #' @return The Sleep Regularity Index (SRI) value
@@ -159,8 +159,8 @@ composite_phase_deviation <- function(sessions, col_names = NULL) {
 #' @examples
 #' sleep_regularity_index(example_epochs)
 #' @importFrom rlang .data
-sleep_regularity_index <- function(epochs, col_names = NULL) {
-  col <- get_epoch_colnames(epochs, col_names)
+sleep_regularity_index <- function(epochs) {
+  col <- get_epoch_colnames(epochs)
 
   epochs <- epochs |>
     dplyr::mutate(

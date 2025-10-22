@@ -26,12 +26,12 @@ hypnogram_server <- function(id, common) {
       if (nrow(epochs) == 0) {
         return(NULL)
       }
-      col <- common$epochs_colnames()
+      col <- get_colnames(common$epochs())
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
         shiny::need(!is.null(col$sleep_stage), "'sleep_stage' column was not specified.")
       )
-      plot_hypnogram(epochs = epochs, col_names = col)
+      plot_hypnogram(epochs = epochs)
     })
 
     output$hypnogram_plot <- shiny::renderPlot({

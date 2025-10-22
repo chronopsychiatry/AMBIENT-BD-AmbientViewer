@@ -31,7 +31,9 @@ load_sessions <- function(sessions_file) {
   }
 
   sessions <- sessions |>
-    dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., "")))
+    set_data_type("sessions") |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., ""))) |>
+    clean_sessions()
 
   if (nrow(sessions) == 0) {
     cli::cli_warn(c(
@@ -53,7 +55,7 @@ load_sessions <- function(sessions_file) {
 #' @export
 #' @family data loading
 #' @importFrom rlang .data
-load_epochs <- function(epochs_file, timestamp = "timestamp", annotation = "annotation") {
+load_epochs <- function(epochs_file) {
   if (!file.exists(epochs_file)) {
     cli::cli_abort(c(
       "!" = "Epochs file not found: {.file {epochs_file}}",
@@ -77,7 +79,10 @@ load_epochs <- function(epochs_file, timestamp = "timestamp", annotation = "anno
   }
 
   epochs <- epochs |>
-    dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., "")))
+    set_data_type("epochs") |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., "")),
+                  filename = basename(epochs_file)) |>
+    clean_epochs()
 
   if (nrow(epochs) == 0) {
     cli::cli_warn(c(
@@ -87,7 +92,6 @@ load_epochs <- function(epochs_file, timestamp = "timestamp", annotation = "anno
     return(NULL)
   }
 
-  epochs$filename <- basename(epochs_file)
   epochs
 }
 
@@ -123,11 +127,14 @@ load_sessions_batch <- function(folder_path, pattern = "") {
   all_sessions <- data.frame()
   for (f in all_files) {
     sessions <- load_sessions(f)
-    res <- clean_sessions(sessions)
-    sessions <- res$sessions
     if (!is.null(sessions)) {
       all_sessions <- dplyr::bind_rows(all_sessions, sessions)
     }
   }
   all_sessions
+}
+
+set_data_type <- function(data, type) {
+  attr(data, "type") <- type
+  data
 }

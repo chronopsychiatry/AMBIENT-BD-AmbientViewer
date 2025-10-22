@@ -1,7 +1,7 @@
 #' Plot Sleep Stages
 #'
 #' @param epochs The epochs dataframe
-#' @param col_names A list to override default column names. This function uses columns:
+#' @details This function uses columns:
 #' - `night`
 #' - `sleep_stage`
 #' @returns A ggplot object showing the proportion of sleep stages for each night
@@ -9,8 +9,8 @@
 #' @export
 #' @family plot epochs
 #' @seealso [plot_hypnogram()] to show the detailed sleep stages over time
-plot_sleep_stages <- function(epochs, col_names = NULL) {
-  col <- get_epoch_colnames(epochs, col_names)
+plot_sleep_stages <- function(epochs) {
+  col <- get_epoch_colnames(epochs)
 
   sleep_stage_labels <- c(
     "1" = "Deep",

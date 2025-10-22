@@ -41,13 +41,13 @@ timeseries_sessions_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
-    update_variable_dropdown(common$sessions, common$sessions_colnames, plot_options, input, session)
-    update_colorby_dropdown(common$sessions_colnames, plot_options, input, session)
+    update_variable_dropdown(common$sessions, plot_options, input, session)
+    update_colorby_dropdown(get_colnames(common$sessions()), plot_options, input, session)
 
     timeseries_sessions_plot <- shiny::reactive({
       shiny::req(input$variable, common$sessions(), common$session_filters())
       sessions <- apply_filters(common$sessions(), common$session_filters())
-      col <- common$sessions_colnames()
+      col <- get_colnames(common$sessions())
       shiny::validate(
         shiny::need(!is.null(col$night), "'night' column was not specified.")
       )
@@ -55,8 +55,7 @@ timeseries_sessions_server <- function(id, common) {
         sessions = sessions,
         variable = input$variable,
         color_by = input$colorby,
-        exclude_zero = input$exclude_zero,
-        col_names = col
+        exclude_zero = input$exclude_zero
       )
     })
 

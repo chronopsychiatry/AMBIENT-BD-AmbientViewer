@@ -43,7 +43,7 @@ sleep_regularity_server <- function(id, common) {
     )
 
     metric_values_sessions <- shiny::reactive({
-      col <- common$sessions_colnames()
+      col <- get_colnames(common$sessions())
       shiny::validate(
         shiny::need(!is.null(col$time_at_midsleep), "'time_at_midsleep' column was not specified."),
         shiny::need(!is.null(col$is_workday), "'is_workday' column was not specified."),
@@ -53,22 +53,22 @@ sleep_regularity_server <- function(id, common) {
       if (is.null(sessions()) || nrow(sessions()) == 0) return(rep(NA, length(metric_names_sessions)))
       c(
         sd_time(sessions()[[col$time_at_midsleep]], unit = "hour"),
-        social_jet_lag(sessions(), col_names = col),
-        composite_phase_deviation(sessions(), col_names = col),
-        chronotype(sessions(), col_names = col)
+        social_jet_lag(sessions()),
+        composite_phase_deviation(sessions()),
+        chronotype(sessions())
       )
     })
 
     metric_values_epochs <- shiny::reactive({
-      col <- common$epochs_colnames()
+      col <- get_colnames(common$epochs())
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
         shiny::need(!is.null(col$is_asleep), "'is_asleep' column was not specified."),
       )
       if (is.null(epochs()) || nrow(epochs()) == 0) return(rep(NA, length(metric_names_epochs)))
       c(
-        interdaily_stability(epochs(), col_names = col),
-        sleep_regularity_index(epochs(), col_names = col)
+        interdaily_stability(epochs()),
+        sleep_regularity_index(epochs())
       )
     })
 

@@ -1,4 +1,5 @@
-get_session_colnames <- function(sessions, col_names = NULL) {
+get_session_colnames <- function(sessions) {
+  col_names <- attr(sessions, "col")
   if (is.null(col_names)) {
     col_names <- .sessions_col_none
   }
@@ -16,7 +17,8 @@ get_session_colnames <- function(sessions, col_names = NULL) {
   col_names
 }
 
-get_epoch_colnames <- function(epochs, col_names = NULL) {
+get_epoch_colnames <- function(epochs) {
+  col_names <- attr(epochs, "col")
   if (is.null(col_names)) {
     col_names <- .epochs_col_none
   }
@@ -32,4 +34,23 @@ get_epoch_colnames <- function(epochs, col_names = NULL) {
     }
   }
   col_names
+}
+
+get_colnames <- function(df) {
+  type <- attr(df, "type")
+  if (is.null(type)) {
+    NULL
+  } else if (type == "sessions") {
+    get_session_colnames(df)
+  } else if (type == "epochs") {
+    get_epoch_colnames(df)
+  } else {
+    cli::cli_abort(c("x" = "Unknown data type: {.val {type}}.",
+                     "i" = "Data type must be \"sessions\" or \"epochs\"."))
+  }
+}
+
+set_colnames <- function(df, col) {
+  attr(df, "col") <- col
+  df
 }

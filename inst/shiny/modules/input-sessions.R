@@ -61,17 +61,12 @@ input_sessions_server <- function(id, common) {
 }
 
 init_sessions <- function(sessions, common) {
-  col <- get_session_colnames(sessions)
-  res <- clean_sessions(sessions, col_names = col)
-  sessions <- res$sessions
-  col <- res$col
+  col <- get_colnames(sessions)
   sessions$annotation <- ""
   common$sessions(sessions)
-  common$sessions_colnames(col)
   common$session_filters(data.frame(no_sleep = rep(TRUE, nrow(sessions))))
   common$annotations(data.frame(
     id = sessions[[col$id]],
-
     annotation = "",
     stringsAsFactors = FALSE
   ))

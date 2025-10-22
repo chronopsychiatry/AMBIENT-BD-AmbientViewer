@@ -4,17 +4,10 @@
 \alias{sleeptimes_histogram}
 \title{Plot histograms for sleep onset, midsleep, and wakeup times}
 \usage{
-sleeptimes_histogram(sessions, col_names = NULL, binwidth = 0.25)
+sleeptimes_histogram(sessions, binwidth = 0.25)
 }
 \arguments{
 \item{sessions}{The sessions dataframe}
-
-\item{col_names}{A list to override default column names. This function uses columns:
-\itemize{
-\item \code{time_at_sleep_onset}
-\item \code{time_at_wakeup}
-\item \code{time_at_midsleep}
-}}
 
 \item{binwidth}{The width of the bins for the histogram (default 0.25)}
 }
@@ -23,4 +16,12 @@ A ggplot object with three overlaid histograms (sleep onset, midsleep, wakeup)
 }
 \description{
 Plot histograms for sleep onset, midsleep, and wakeup times
+}
+\details{
+This function uses columns:
+\itemize{
+\item \code{time_at_sleep_onset}
+\item \code{time_at_wakeup}
+\item \code{time_at_midsleep}
+}
 }

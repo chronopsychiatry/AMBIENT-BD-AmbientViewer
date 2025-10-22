@@ -20,16 +20,14 @@ summary_server <- function(id, common) {
     sessions_summary_table <- shiny::reactive({
       shiny::req(common$sessions(), common$session_filters())
       get_sessions_summary(
-        apply_filters(common$sessions(), common$session_filters()),
-        col_names = common$sessions_colnames()
+        apply_filters(common$sessions(), common$session_filters())
       )
     })
 
     epochs_summary_table <- shiny::reactive({
       shiny::req(common$epochs(), common$epoch_filters())
       get_epochs_summary(
-        apply_filters(common$epochs(), common$epoch_filters()),
-        col_names = common$epochs_colnames()
+        apply_filters(common$epochs(), common$epoch_filters())
       )
     })
 
