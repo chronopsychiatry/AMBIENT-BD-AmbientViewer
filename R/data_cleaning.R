@@ -38,7 +38,7 @@ clean_sessions <- function(sessions) {
   }
   #Convert night to date if it exists
   if (!is.null(col$night)) {
-    sessions[[col$night]] <- as.Date(sessions[[col$night]])
+    sessions[[col$night]] <- parse_date(sessions[[col$night]])
   }
   # Create night column if it doesn't exist
   if (is.null(col$night) && !is.null(col$session_start)) {
@@ -60,32 +60,43 @@ clean_sessions <- function(sessions) {
   # Set time_in_bed to numerical, or create it if possible
   if (!is.null(col$time_in_bed)) {
     sessions[[col$time_in_bed]] <- as.numeric(sessions[[col$time_in_bed]])
-  } else if (!is.null(col$time_at_sleep_onset) && !is.null(col$time_at_wakeup)) {
-    sessions$time_in_bed <- time_diff(sessions[[col$time_at_sleep_onset]], sessions[[col$time_at_wakeup]], unit = "second")
+  } else if (!is.null(col$session_start) && !is.null(col$session_end)) {
+    sessions$time_in_bed <- time_diff(sessions[[col$session_start]], sessions[[col$session_end]], unit = "second")
     col$time_in_bed <- "time_in_bed"
+  }
+  # Set sleep_period as numerical and create if possible
+  if (!is.null(col$sleep_period)) {
+    sessions[[col$sleep_period]] <- as.numeric(sessions[[col$sleep_period]])
+  } else if (!is.null(col$time_at_sleep_onset) && !is.null(col$time_at_wakeup)) {
+    sessions$sleep_period <- time_diff(sessions[[col$time_at_sleep_onset]], sessions[[col$time_at_wakeup]], unit = "second")
+    col$sleep_period <- "sleep_period"
   }
   # Parse time at midsleep time, or create it if possible
   if (!is.null(col$time_at_midsleep)) {
     sessions[[col$time_at_midsleep]] <- parse_time(sessions[[col$time_at_midsleep]])
   } else if (!is.null(col$time_at_sleep_onset) && !is.null(col$time_in_bed)) {
-    sessions$time_at_midsleep <- sessions[[col$time_at_sleep_onset]] + (sessions[[col$time_in_bed]] / 2)
+    sessions$time_at_midsleep <- sessions[[col$time_at_sleep_onset]] + (sessions[[col$sleep_period]] / 2)
     col$time_at_midsleep <- "time_at_midsleep"
   }
   # Create is_workday if possible
   if (identical(col$is_workday, "daytype") && !is.logical(sessions[[col$is_workday]])) {
     sessions[[col$is_workday]] <- ifelse(sessions$daytype == "WD", TRUE, FALSE) # Parse GGIR format
-  } else if (is.null(col$is_workday) && !is.null(col$session_start)) {
-    sessions$is_workday <- !(weekdays(sessions[[col$session_start]]) %in% c("Saturday", "Sunday"))
+  } else if (is.null(col$is_workday) && !is.null(col$night)) {
+    sessions$is_workday <- !(weekdays(sessions[[col$night]]) %in% c("Saturday", "Sunday"))
     col$is_workday <- "is_workday"
   }
-  # Set sleep_period as numerical
-  if (!is.null(col$sleep_period)) {
-    sessions[[col$sleep_period]] <- as.numeric(sessions[[col$sleep_period]])
+  # Calculate sleep onset latency if possible
+  if (is.null(col$sleep_onset_latency) && !is.null(col$session_start) && !is.null(col$time_at_sleep_onset)) {
+    sessions$sleep_onset_latency <- time_diff(sessions[[col$session_start]], sessions[[col$time_at_sleep_onset]], unit = "second")
+    col$sleep_onset_latency <- "sleep_onset_latency"
   }
-  # For GGIR data: convert dur_spt_sleep_min to sleep_period in seconds
+  # For GGIR data: convert dur_spt_sleep_min (part 5) or SleepDurationInSpt (part 4) to seconds
   if (identical(col$sleep_period, "dur_spt_sleep_min")) {
     sessions$dur_spt_sleep_sec <- sessions$dur_spt_sleep_min * 60
     col$sleep_period <- "dur_spt_sleep_sec"
+  } else if (identical(col$sleep_period, "SleepDurationInSpt")) {
+    sessions$SleepDurationInSpt_sec <- sessions$SleepDurationInSpt * 60 * 60
+    col$sleep_period <- "SleepDurationInSpt_sec"
   }
   set_colnames(sessions, col)
 }
@@ -119,7 +130,7 @@ clean_epochs <- function(epochs) {
   }
   #Convert night to date if it exists
   if (!is.null(col$night)) {
-    epochs[[col$night]] <- as.Date(epochs[[col$night]])
+    epochs[[col$night]] <- parse_date(epochs[[col$night]])
   }
   # Create night column if it doesn't exist
   if (is.null(col$night) && !is.null(col$timestamp)) {

@@ -78,6 +78,10 @@ load_epochs <- function(epochs_file) {
     ))
   }
 
+  if (is.null(epochs)) {
+    return(NULL)
+  }
+
   epochs <- epochs |>
     set_data_type("epochs") |>
     dplyr::mutate(dplyr::across(dplyr::where(is.character), ~dplyr::na_if(., "")),
@@ -95,14 +99,15 @@ load_epochs <- function(epochs_file) {
   epochs
 }
 
-#' Load session data in batch mode
+#' Load session or epoch data in batch mode
 #'
 #' @param folder_path The path to the folder containing session files
 #' @param pattern An optional pattern to filter files in the folder
-#' @returns A dataframe containing the combined session data from all files in the folder
+#' @param type The type of data to load: "sessions" or "epochs"
+#' @returns A dataframe containing the combined session data from all matching files in the folder
 #' @family data loading
 #' @export
-load_sessions_batch <- function(folder_path, pattern = "") {
+load_batch <- function(folder_path, pattern = "", type = "sessions") {
   if (!dir.exists(folder_path)) {
     cli::cli_abort(c(
       "!" = "Folder not found: {.file {folder_path}}",
@@ -124,14 +129,30 @@ load_sessions_batch <- function(folder_path, pattern = "") {
     return(NULL)
   }
 
-  all_sessions <- data.frame()
+  all_data <- data.frame()
   for (f in all_files) {
-    sessions <- load_sessions(f)
-    if (!is.null(sessions)) {
-      all_sessions <- dplyr::bind_rows(all_sessions, sessions)
+    if (type == "sessions")
+      data <- load_sessions(f)
+    else if (type == "epochs") {
+      data <- load_epochs(f)
+    } else {
+      cli::cli_abort(c(
+        "!" = "Unsupported data type: {.val {type}}",
+        "i" = "Please use 'sessions' or 'epochs'."
+      ))
+    }
+    if (!is.null(data)) {
+      all_data <- dplyr::bind_rows(all_data, data)
     }
   }
-  all_sessions
+  all_data <- all_data |>
+    set_data_type(type)
+
+  if (type == "sessions") {
+    clean_sessions(all_data)
+  } else if (type == "epochs") {
+    clean_epochs(all_data)
+  }
 }
 
 set_data_type <- function(data, type) {

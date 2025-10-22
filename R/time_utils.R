@@ -261,6 +261,15 @@ parse_time <- function(time_vector) {
   lubridate::parse_date_time(time_vector, orders = time_formats, tz = NULL, quiet = TRUE)
 }
 
+parse_date <- function(date_vector) {
+  if (inherits(date_vector, "Date")) {
+    return(date_vector)
+  }
+  date_formats <- c("ymd", "Ymd", "mdY", "dmy", "Y-m-d", "m/d/Y", "d/m/Y")
+  lubridate::parse_date_time(date_vector, orders = date_formats, tz = NULL, quiet = TRUE) |>
+    lubridate::as_date()
+}
+
 update_date <- function(time, date) {
   if (!inherits(time, "POSIXct")) {
     time <- parse_time(time)

@@ -12,6 +12,7 @@
 #' @family plot sessions
 plot_sleep_clock <- function(sessions, color_by = "default") {
   col <- get_session_colnames(sessions)
+
   sessions <- sessions |>
     dplyr::filter(!is.na(.data[[col$time_at_sleep_onset]]) & !is.na(.data[[col$time_at_wakeup]])) |>
     dplyr::mutate(

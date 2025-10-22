@@ -25,9 +25,9 @@ a column for timestamps and a column for sleep stage annotations.
 }
 \seealso{
 Other data loading: 
+\code{\link{load_batch}()},
 \code{\link{load_epochs}()},
 \code{\link{load_sessions}()},
-\code{\link{load_sessions_batch}()},
 \code{\link{read_edf_sessions}()}
 }
 \concept{data loading}

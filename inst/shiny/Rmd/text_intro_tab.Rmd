@@ -16,7 +16,7 @@ output: html_document
   - Column names for essential variables (e.g. timestamps, sleep stages) can be specified
 2. Filter data
   - Filter sessions to exclude spurious sleep events
-  - When sessions are filtered, the corresponding epochs are filtered as well
+  - If both sessions and epochs are loaded, when sessions are filtered, the corresponding epochs are filtered as well
 3. Visualise data
   - When sessions and epochs are filtered, the tables and visualisations are updated accordingly
 4. Export filtered data

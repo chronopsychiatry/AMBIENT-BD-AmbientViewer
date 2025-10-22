@@ -52,7 +52,7 @@ input_server <- function(id, common) {
         if (identical(val, "")) NULL else val
       })
       common$sessions(set_colnames(common$sessions(), stats::setNames(vals, keys)))
-      common$sessions(clean_sessions(common$sessions))
+      common$sessions(clean_sessions(common$sessions()))
       shiny::removeModal()
     })
 
@@ -61,10 +61,10 @@ input_server <- function(id, common) {
     input_epochs_server("epochs_input_panel", common)
 
     shiny::observeEvent(input$open_epoch_col_names, {
-      shiny::req(epochs())
+      shiny::req(common$epochs())
       show_colnames_modal(
         ns = ns,
-        colnames_list = colnames(epochs()),
+        colnames_list = colnames(common$epochs()),
         current_map = get_colnames(common$epochs()),
         title = "Set Epoch Column Names",
         save_id = "save_epoch_col_names",
@@ -86,7 +86,7 @@ input_server <- function(id, common) {
         if (identical(val, "")) NULL else val
       })
       common$epochs(set_colnames(common$epochs(), stats::setNames(vals, keys)))
-      common$epochs(clean_epochs(common$epochs))
+      common$epochs(clean_epochs(common$epochs()))
       shiny::removeModal()
     })
   })

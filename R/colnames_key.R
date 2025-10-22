@@ -33,25 +33,27 @@
   sex = NULL,
   birth_year = NULL,
   device_id = "Unique identifier for the recording device.",
-  session_start = paste0("Start time of the session (YYYY-MM-DD HH:MM:SS).",
-                         " If \"night\" is not provided, it will be calculated from session start."),
-  session_end = "End time of the session (YYYY-MM-DD HH:MM:SS).",
-  time_at_sleep_onset = "Time at Sleep Onset (YYYY-MM-DD HH:MM:SS).",
-  time_at_midsleep = "Time at Midsleep (YYYY-MM-DD HH:MM:SS).",
-  time_at_wakeup = "Time at Wakeup (YYYY-MM-DD HH:MM:SS).",
-  sleep_onset_latency = "Time between session start and sleep onset (in seconds).",
-  sleep_period = "Total time spent asleep during the session (in seconds).",
-  time_in_bed = "Total time spent in bed during the session (in seconds).",
-  is_workday = "Logical variable indicating if the session is on a workday (TRUE) or weekend (FALSE).",
-  night = "Night (from 12pm to 12pm) the session belongs to (YYYY-MM-DD). If not provided, it will be calculated from session_start."
+  session_start = "Start time of the session (YYYY-MM-DD HH:MM:SS or HH:MM).",
+  session_end = "End time of the session (YYYY-MM-DD HH:MM:SS or HH:MM).",
+  time_at_sleep_onset = "Time at Sleep Onset (YYYY-MM-DD HH:MM:SS or HH::MM).",
+  time_at_midsleep = paste0("Time at Midsleep (YYYY-MM-DD HH:MM:SS or HH:MM).",
+                            "If not provided, it will be calculated from time at sleep onset and sleep period."),
+  time_at_wakeup = "Time at Wakeup (YYYY-MM-DD HH:MM:SS or HH:MM).",
+  sleep_onset_latency = "Time between session start and sleep onset (in seconds). Will be calculated if not provided.",
+  sleep_period = paste0("Total time spent asleep during the session (in seconds).",
+                        "If not provided, it will be calculated from time at sleep onset and time at wakeup."),
+  time_in_bed = "Total time spent in bed during the session (in seconds). If not provided, it will be calculated from session start and session end.",
+  is_workday = paste0("Logical variable indicating if the session is on a workday (TRUE) or weekend (FALSE).",
+                      "If not provided, it will be calculated from the night variable."),
+  night = "Night (from 12pm to 12pm) the session belongs to (in any date format). If not provided, it will be calculated from session_start."
 )
 
 .epochs_help <- list(
-  timestamp = "Timestamp of the epoch (YYYY-MM-DD HH:MM:SS). If \"night\" is not provided, it will be calculated from timestamp.",
+  timestamp = "Timestamp of the epoch (YYYY-MM-DD HH:MM:SS).",
   session_id = "Identifier linking the epoch to a session in the sessions dataframe.",
   signal_quality = "Signal quality of the epoch.",
   sleep_stage = "Sleep stage of the epoch.",
-  night = "Night (from 12pm to 12pm) the epoch belongs to (YYYY-MM-DD). If not provided, it will be calculated from timestamp.",
+  night = "Night (from 12pm to 12pm) the epoch belongs to (in any date format). If not provided, it will be calculated from timestamp.",
   is_asleep = "Logical variable indicating if the epoch is classified as asleep (TRUE) or awake (FALSE)."
 )
 
@@ -62,16 +64,16 @@
   sex = c("sex"),
   birth_year = c("birth_year"),
   device_id = c("device_serial_number"),
-  session_start = c("session_start"),
-  session_end = c("session_end"),
-  time_at_sleep_onset = c("time_at_sleep_onset", "sleeponset_ts"),
+  session_start = c("session_start", "startTime", "enter_bed"),
+  session_end = c("session_end", "endTime", "out_of_bed"),
+  time_at_sleep_onset = c("time_at_sleep_onset", "sleeponset_ts", "calculate_sleeponset"),
   time_at_midsleep = c("time_at_midsleep"),
-  time_at_wakeup = c("time_at_wakeup", "wakeup_ts"),
+  time_at_wakeup = c("time_at_wakeup", "wakeup_ts", "final_awakening"),
   sleep_onset_latency = c("sleep_onset_latency"),
-  sleep_period = c("sleep_period", "dur_spt_sleep_min"),
+  sleep_period = c("sleep_period", "dur_spt_sleep_min", "SleepDurationInSpt"),
   time_in_bed = c("time_in_bed"),
   is_workday = c("is_workday", "daytype"),
-  night = c("calendar_date")
+  night = c("calendar_date", "written_date")
 )
 
 .sessions_col_none <- list(

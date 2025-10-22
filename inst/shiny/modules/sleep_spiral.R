@@ -26,7 +26,7 @@ sleep_spiral_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(get_colnames(common$epochs()), plot_options, input, session)
+    update_colorby_dropdown(common$epochs, plot_options, input, session)
 
     sleep_spiral_plot <- shiny::reactive({
       shiny::req(common$epochs(), common$epoch_filters())
@@ -37,7 +37,7 @@ sleep_spiral_server <- function(id, common) {
       col <- get_colnames(common$epochs())
       shiny::validate(
         shiny::need(!is.null(col$timestamp), "'timestamp' column was not specified."),
-        shiny::need(!is.null(col$sleep_stage), "'sleep_stage' column was not specified.")
+        shiny::need(!is.null(col$is_asleep), "'is_asleep' column was not specified.")
       )
       plot_sleep_spiral(
         epochs = epochs,

@@ -36,7 +36,7 @@ bedtimes_waketimes_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
 
     plot_options <- shiny::reactiveValues(colorby = NULL)
-    update_colorby_dropdown(get_colnames(common$sessions), plot_options, input, session)
+    update_colorby_dropdown(common$sessions, plot_options, input, session)
 
     log_shown <- shiny::reactiveVal(FALSE)
     shiny::observe({

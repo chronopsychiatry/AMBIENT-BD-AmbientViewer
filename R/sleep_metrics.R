@@ -17,7 +17,7 @@ interdaily_stability <- function(epochs) {
   epochs <- epochs |>
     dplyr::mutate(time = parse_time(.data[[col$timestamp]]),
                   tod = floor(time_to_hours(.data$time)),
-                  day = as.Date(.data$time))
+                  day = parse_date(.data$time))
 
   mean_tod <- epochs |>
     dplyr::group_by(.data$tod) |>

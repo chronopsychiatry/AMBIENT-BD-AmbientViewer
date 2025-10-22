@@ -130,7 +130,7 @@ filtering_server <- function(id, common) {
           min = 0,
           max = 12,
           value = 0,
-          step = 1,
+          step = 0.5,
           post = "h",
           ticks = FALSE
         )

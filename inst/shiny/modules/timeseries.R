@@ -43,7 +43,7 @@ timeseries_server <- function(id, common) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
     update_variable_dropdown(common$epochs, plot_options, input, session)
-    update_colorby_dropdown(get_colnames(common$epochs()), plot_options, input, session)
+    update_colorby_dropdown(common$epochs, plot_options, input, session)
 
     timeseries_plot <- shiny::reactive({
       shiny::req(input$variable, common$epochs(), common$epoch_filters())

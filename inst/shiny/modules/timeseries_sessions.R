@@ -42,7 +42,7 @@ timeseries_sessions_server <- function(id, common) {
 
     plot_options <- shiny::reactiveValues(variable = NULL, colorby = NULL)
     update_variable_dropdown(common$sessions, plot_options, input, session)
-    update_colorby_dropdown(get_colnames(common$sessions()), plot_options, input, session)
+    update_colorby_dropdown(common$sessions, plot_options, input, session)
 
     timeseries_sessions_plot <- shiny::reactive({
       shiny::req(input$variable, common$sessions(), common$session_filters())

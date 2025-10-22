@@ -5,7 +5,7 @@ input_sessions_ui <- function(id) {
     shinyWidgets::radioGroupButtons(
       inputId = ns("session_input_type"),
       label = NULL,
-      choices = c("Single file upload", "Batch upload", "Build from Epoch data"),
+      choices = c("Single file upload", "Batch upload"),
       direction = "vertical",
       status = "outline-secondary",
       width = "100%"
@@ -27,11 +27,7 @@ input_sessions_ui <- function(id) {
       ),
       shinyFiles::shinyDirButton(ns("folder_select"), "Choose folder", "Please select the folder containing the session files"),
       shiny::actionButton(ns("load_sessions_batch"), "Load Batch Session Data")
-    ),
-    shiny::conditionalPanel(
-      condition = paste0("input['", ns("session_input_type"), "'] == 'Build from Epoch data'"),
-      shiny::actionButton(ns("build_sessions_from_epochs"), "Build Sessions from Epoch Data")
-    ),
+    )
   )
 }
 
@@ -54,7 +50,7 @@ input_sessions_server <- function(id, common) {
       folder_path <- shinyFiles::parseDirPath(roots = volumes, input$folder_select)
       if (length(folder_path) == 0) return()
       common$logger |> write_log(paste0("Batch-loading session files from: ", folder_path), type = "starting")
-      data <- load_sessions_batch(folder_path, input$batch_file_pattern)
+      data <- load_batch(folder_path, input$batch_file_pattern, type = "sessions")
       init_sessions(data, common)
     })
   })

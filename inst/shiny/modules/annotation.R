@@ -94,9 +94,6 @@ make_annotation_table <- function(common) {
       sleep_onset = parse_time(get_col(sessions, col$time_at_sleep_onset)) |> format("%H:%M"),
       wakeup = parse_time(get_col(sessions, col$time_at_wakeup)) |> format("%H:%M"),
       end = parse_time(get_col(sessions, col$session_end)) |> format("%Y-%m-%d %H:%M"),
-      session_duration_h = round(difftime(parse_time(get_col(sessions, col$session_end)),
-                                          parse_time(get_col(sessions, col$session_start)),
-                                          units = "hours"), 2),
       night = format(get_col(sessions, col$night), "%Y-%m-%d"),
       time_in_bed_h = if (!is.null(col$time_in_bed)) round(get_col(sessions, col$time_in_bed) / 60 / 60, 2) else NA
     ) |>
@@ -108,7 +105,6 @@ make_annotation_table <- function(common) {
         "sleep_onset",
         "wakeup",
         "end",
-        "session_duration_h",
         "time_in_bed_h"
       ))
     )

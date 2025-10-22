@@ -21,8 +21,8 @@ Supported formats: CSV, Excel, EDF.
 }
 \seealso{
 Other data loading: 
+\code{\link{load_batch}()},
 \code{\link{load_sessions}()},
-\code{\link{load_sessions_batch}()},
 \code{\link{read_edf_epochs}()},
 \code{\link{read_edf_sessions}()}
 }
