@@ -31,6 +31,17 @@ filtering_tab <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
     shiny::uiOutput(ns("removed_sessions_text")),
+    shinyWidgets::pickerInput(
+      inputId = ns("filters_columns"),
+      label = "Filters to display:",
+      choices = NULL,
+      selected = NULL,
+      multiple = TRUE,
+      options = list(
+        `actions-box` = TRUE,
+        `live-search` = FALSE
+      )
+    ),
     shiny::tableOutput(ns("removed_sessions")),
     shiny::downloadButton(
       outputId = ns("download_removed_sessions"),
@@ -42,6 +53,18 @@ filtering_tab <- function(id) {
 
 filtering_server <- function(id, common) {
   shiny::moduleServer(id, function(input, output, session) {
+
+    shiny::observe({
+      shiny::req(common$session_filters())
+      filters <- common$session_filters()
+      filter_names <- setdiff(colnames(filters), c("no_sleep"))
+      shinyWidgets::updatePickerInput(
+        session = session,
+        inputId = "filters_columns",
+        choices = filter_names,
+        selected = filter_names
+      )
+    })
 
     output$date_range_slider <- shiny::renderUI({
       shiny::req(common$sessions())
@@ -193,14 +216,14 @@ filtering_server <- function(id, common) {
     removed_sessions <- shiny::reactive({
       shiny::req(common$sessions())
       col <- get_colnames(common$sessions())
-      get_removed_sessions_table(common)
+      get_removed_sessions_table(common, input$filters_columns)
     })
 
     output$removed_sessions <- shiny::renderTable({
       shiny::req(removed_sessions())
       shiny::validate(
         shiny::need(nrow(removed_sessions()) > 0,
-                    "No sessions have been removed.")
+                    "No sessions have been removed by the displayed filters.")
       )
       removed_sessions()
     })
@@ -238,10 +261,24 @@ filtering_server <- function(id, common) {
   })
 }
 
-get_removed_sessions_table <- function(common) {
-  common$sessions() |>
-    get_removed_rows(common$session_filters()) |>
+get_removed_sessions_table <- function(common, filter_list) {
+  sessions <- common$sessions()
+  filters <- common$session_filters()
+  sessions <- sessions[filters$no_sleep == TRUE, , drop = FALSE]
+  filters <- filters[filters$no_sleep == TRUE, , drop = FALSE] |>
+    dplyr::select(dplyr::all_of(filter_list))
+  display_table <- sessions |>
+    get_removed_rows(filters) |>
     make_sessions_display_table()
+
+  removed_idx <- which(!apply(filters, 1, all))
+  filter_names <- colnames(filters)
+  filters_applied <- apply(filters[removed_idx, , drop = FALSE], 1, function(row) {
+    paste(filter_names[which(!row)], collapse = ", ")
+  })
+
+  display_table$filters <- filters_applied
+  display_table
 }
 
 apply_filters <- function(df_in, filters) {
