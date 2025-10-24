@@ -1,6 +1,7 @@
 #' Plot boxplots for sleep onset, midsleep, and wakeup times
 #'
 #' @param sessions The sessions dataframe
+#' @param circular Whether to output a circular plot (default FALSE)
 #' @details This function uses columns:
 #' - `time_at_sleep_onset`
 #' - `time_at_wakeup`
@@ -8,24 +9,68 @@
 #' @returns A ggplot object with three horizontal boxplots (onset, midsleep, wakeup)
 #' @export
 #' @importFrom rlang .data
-sleeptimes_boxplot <- function(sessions) {
+sleeptimes_boxplot <- function(sessions, circular = FALSE) {
   plot_data <- prepare_sleeptimes_data(sessions)
   box_colors <- c("Sleep Onset" = "purple", "Midsleep" = "cornflowerblue", "Wakeup" = "orange")
 
-  ggplot2::ggplot(plot_data, ggplot2::aes(y = .data$variable, x = .data$hour, color = .data$variable)) +
-    ggplot2::geom_boxplot(
-      fill = "white",
-      outlier.shape = 16,
-      outlier.size = 2.5,
-      outlier.stroke = 0.7,
-      size = 1.2,
-      staplewidth = 0.5
+  stats <- plot_data |>
+    dplyr::group_by(.data$variable) |>
+    dplyr::summarise(
+      circ_stats = list(compute_circular_stats(.data$hour)),
+      .groups = "drop"
+    ) |>
+    tidyr::unnest_wider(.data$circ_stats)
+
+  # Split IQR if it crosses midnight
+  stats_split <- stats |>
+    dplyr::mutate(
+      box_split = .data$q1 > .data$q3
+    ) |>
+    tidyr::unnest_longer(c(.data$q1, .data$q3)) |>
+    dplyr::group_by(.data$variable) |>
+    dplyr::do({
+      row <- .
+      if (row$q1 > row$q3) {
+        # Two boxes: q1 to 24, 0 to q3
+        dplyr::bind_rows(
+          dplyr::mutate(row, xlower = row$q1, xupper = 24),
+          dplyr::mutate(row, xlower = 0, xupper = row$q3)
+        )
+      } else {
+        dplyr::mutate(row, xlower = row$q1, xupper = row$q3)
+      }
+    }) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(
+      y = as.numeric(factor(.data$variable, levels = c("Wakeup", "Midsleep", "Sleep Onset")))
+    )
+
+  p <- ggplot2::ggplot(stats_split) +
+    ggplot2::geom_rect(
+      ggplot2::aes(
+        xmin = xlower, xmax = xupper,
+        ymin = y - 0.3, ymax = y + 0.3,
+        fill = variable
+      ),
+      color = NA, alpha = 0.4
     ) +
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = median, xend = median,
+        y = y - 0.3, yend = y + 0.3,
+        color = variable
+      ),
+      linewidth = 1.2
+    ) +
+    ggplot2::scale_fill_manual(values = box_colors, guide = "none") +
     ggplot2::scale_color_manual(values = box_colors, guide = "none") +
     ggplot2::scale_x_continuous(
       breaks = seq(0, 24, by = 2),
-      labels = function(x) sprintf("%02d:00", (x + 12) %% 24),
-      expand = ggplot2::expansion(mult = c(0.08, 0.08))
+      labels = function(x) sprintf("%02d:00", (x + 12) %% 24)
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = 1:3,
+      labels = c("Wakeup", "Midsleep", "Sleep Onset")
     ) +
     ggplot2::labs(
       title = NULL,
@@ -39,6 +84,22 @@ sleeptimes_boxplot <- function(sessions) {
       axis.title = ggplot2::element_text(size = 16),
       aspect.ratio = 1 / 4
     )
+
+  if (circular) {
+    p +
+      ggplot2::coord_polar(theta = "x", start = pi) +
+      ggplot2::theme(aspect.ratio = 1) +
+      ggplot2::scale_y_continuous(
+        breaks = 1:3,
+        labels = NULL
+      ) +
+      ggplot2::scale_x_continuous(
+        breaks = seq(0, 23, by = 1),
+        labels = (seq(0, 23, by = 1) + 12) %% 24
+      )
+  } else {
+    p
+  }
 }
 
 #' Plot histograms for sleep onset, midsleep, and wakeup times
@@ -188,3 +249,19 @@ prepare_sleeptimes_data <- function(sessions) {
   plot_data$variable <- factor(plot_data$variable, levels = c("Wakeup", "Midsleep", "Sleep Onset"))
   plot_data
 }
+
+compute_circular_stats <- function(hours) {
+  radians <- hours / 24 * 2 * pi
+  circ <- circular::circular(radians, units = "radians", modulo = "2pi")
+  median_rad <- circular::median.circular(circ)
+  q1_rad <- circular::quantile.circular(circ, probs = 0.25)
+  q3_rad <- circular::quantile.circular(circ, probs = 0.75)
+  # Convert stats back to hours
+  c(
+    median = as.numeric(median_rad) * 24 / (2 * pi),
+    q1 = as.numeric(q1_rad) * 24 / (2 * pi),
+    q3 = as.numeric(q3_rad) * 24 / (2 * pi)
+  )
+}
+
+circular_distance <- function(a, b) abs(atan2(sin(a - b), cos(a - b)))

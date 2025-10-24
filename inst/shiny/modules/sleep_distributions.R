@@ -14,6 +14,11 @@ sleep_distributions_ui <- function(id) {
         shiny::uiOutput(ns("adjust_slider"))
       )
     ),
+    shiny::checkboxInput(
+      inputId = ns("circular"),
+      label = "Circular",
+      value = FALSE
+    ),
     shiny::plotOutput(ns("sleep_distribution_plot")),
     shiny::downloadButton(
       outputId = ns("download_plot"),
@@ -73,7 +78,7 @@ sleep_distributions_server <- function(id, common) {
       )
       switch(input$plot_type,
         "Boxplot" = {
-          sleeptimes_boxplot(sessions)
+          sleeptimes_boxplot(sessions, circular = input$circular)
         },
         "Histogram" = {
           shiny::req(input$binwidth)
